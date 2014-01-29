@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+
+	<package name="squeeze-web-gui-support" extends="squeeze-web-gui-default" namespace="/">
+
+		<action name="EthernetSave_*" method="{1}"
+			class="squeeze.web.EthernetSaveAction">
+			<interceptor-ref name="defaultStack" /> 
+			<interceptor-ref name="execAndWait">
+				<param name="threadPriority">10</param>
+		        <param name="delay">0</param>
+		        <param name="delaySleepInterval">50</param>
+		    </interceptor-ref>
+		    <result name="wait">/wait.jsp</result>
+			<result name="input">/ethernet.jsp</result>
+			<result name="success" type="redirectAction">Ethernet_populate</result>
+			<result name="reboot" type="chain">Reboot</result>
+		</action>
+
+		<action name="Ethernet_*" method="{1}"
+			class="squeeze.web.EthernetAction">
+			<interceptor-ref name="defaultStack" /> 
+			<interceptor-ref name="execAndWait">
+				<param name="threadPriority">10</param>
+		        <param name="delay">0</param>
+		        <param name="delaySleepInterval">50</param>
+		    </interceptor-ref>
+		    <result name="wait">/wait.jsp</result>
+			<result name="populate">/ethernet.jsp</result>
+			<result name="input">/ethernet.jsp</result>
+			<result name="success" type="redirectAction">Ethernet_populate</result>
+		</action>
+
+		<action name="WirelessSave_*" method="{1}" 
+			class="squeeze.web.WirelessSaveAction">
+			<interceptor-ref name="defaultStack" /> 
+			<interceptor-ref name="execAndWait">
+				<param name="threadPriority">10</param>
+		        <param name="delay">0</param>
+		        <param name="delaySleepInterval">50</param>
+		    </interceptor-ref>
+		    <result name="wait">/wait.jsp</result>
+			<result name="input">/wireless.jsp</result>
+			<result name="success" type="redirectAction">Wireless_populate</result>
+			<result name="reboot" type="chain">Reboot</result>
+		</action>
+
+		<action name="Wireless_*" method="{1}"
+			class="squeeze.web.WirelessAction">
+			<interceptor-ref name="defaultStack" /> 
+			<interceptor-ref name="execAndWait">
+				<param name="threadPriority">10</param>
+		        <param name="delay">0</param>
+		        <param name="delaySleepInterval">50</param>
+		    </interceptor-ref>
+		    <result name="wait">/wait.jsp</result>
+			<result name="populate">/wireless.jsp</result>
+			<result name="input">/wireless.jsp</result>
+			<result name="success" type="redirectAction">Wireless_populate</result>
+		</action>
+
+		<action name="SqueezeServer_*" method="{1}"
+			class="squeeze.web.SqueezeServerAction">
+			<interceptor-ref name="defaultStack" /> 
+			<interceptor-ref name="execAndWait">
+				<param name="threadPriority">10</param>
+		        <param name="delay">0</param>
+		        <param name="delaySleepInterval">50</param>
+		    </interceptor-ref>
+		    <result name="wait">/wait.jsp</result>
+			<result name="populate">/squeezeserver.jsp</result>
+			<result name="input">/squeezeserver.jsp</result>
+			<result name="success" type="redirectAction">SqueezeServer_populate</result>
+		</action>
+
+		<action name="SqueezeliteSave_*" method="{1}"
+			class="squeeze.web.SqueezeliteSaveAction">
+			<interceptor-ref name="defaultStack" /> 
+			<interceptor-ref name="execAndWait">
+				<param name="threadPriority">10</param>
+		        <param name="delay">0</param>
+		        <param name="delaySleepInterval">50</param>
+		    </interceptor-ref>
+		    <result name="wait">/wait.jsp</result>
+			<result name="input">/squeezelite.jsp</result> 
+			<result name="success" type="redirectAction">Squeezelite_populate</result>
+		</action>
+
+		<action name="Squeezelite_*" method="{1}"
+			class="squeeze.web.SqueezeliteAction">
+			<interceptor-ref name="defaultStack" /> 
+			<interceptor-ref name="execAndWait">
+				<param name="threadPriority">10</param>
+		        <param name="delay">0</param>
+		        <param name="delaySleepInterval">50</param>
+		    </interceptor-ref>
+		    <result name="wait">/wait.jsp</result>
+			<result name="populate">/squeezelite.jsp</result>
+			<result name="input">/squeezelite.jsp</result>
+			<result name="success" type="redirectAction">Squeezelite_populate</result>
+		</action>
+
+		<action name="Reboot" method="execute"
+			class="squeeze.web.RebootAction">
+			<interceptor-ref name="defaultStack" /> 
+			<interceptor-ref name="execAndWait">
+				<param name="threadPriority">10</param>
+		        <param name="delay">0</param>
+		        <param name="delaySleepInterval">50</param>
+		    </interceptor-ref>
+		    <result name="wait">/reboot.jsp</result>
+			<result name="success">/index.jsp</result>
+		</action>
+
+		<action name="Halt" method="execute"
+			class="squeeze.web.HaltAction">
+			<interceptor-ref name="defaultStack" /> 
+			<interceptor-ref name="execAndWait">
+				<param name="threadPriority">10</param>
+		        <param name="delay">0</param>
+		        <param name="delaySleepInterval">50</param>
+		    </interceptor-ref>
+		    <result name="wait">/halt.jsp</result>
+			<result name="success">/index.jsp</result>
+		</action>
+
+		<action name="Shutdown" method="execute"
+			class="squeeze.web.ShutdownAction">
+		    <result name="input">/shutdown.jsp</result>
+			<result name="success">/shutdown.jsp</result>
+		</action>
+
+		<action name="Fstab_*" method="{1}"
+			class="squeeze.web.FstabAction">
+			<interceptor-ref name="defaultStack" /> 
+			<interceptor-ref name="execAndWait">
+				<param name="threadPriority">10</param>
+		        <param name="delay">0</param>
+		        <param name="delaySleepInterval">50</param>
+		    </interceptor-ref>
+		    <result name="wait">/wait.jsp</result>
+			<result name="populate">/fstab.jsp</result>
+			<result name="input">/fstab.jsp</result>
+			<result name="success" type="redirectAction">Fstab_populate</result>
+		</action>
+
+		<action name="FstabSave_*" method="{1}"
+			class="squeeze.web.FstabSaveAction">
+			<interceptor-ref name="defaultStack" /> 
+			<interceptor-ref name="execAndWait">
+				<param name="threadPriority">10</param>
+		        <param name="delay">0</param>
+		        <param name="delaySleepInterval">50</param>
+		    </interceptor-ref>
+		    <result name="wait">/wait.jsp</result>
+			<result name="input">/fstab.jsp</result> 
+			<result name="success" type="redirectAction">Fstab_populate</result>
+		</action>
+
+		<action name="FstabAdd" method="execute"
+			class="squeeze.web.FstabAddAction">
+			<result name="input">/fstabAdd.jsp</result> 
+			<result name="success">/fstabAdd.jsp</result>
+		</action>
+
+		<action name="FstabAddSave" method="execute"
+			class="squeeze.web.FstabAddSaveAction">
+			<interceptor-ref name="defaultStack" /> 
+			<interceptor-ref name="execAndWait">
+				<param name="threadPriority">10</param>
+		        <param name="delay">0</param>
+		        <param name="delaySleepInterval">50</param>
+		    </interceptor-ref>
+		    <result name="wait">/wait.jsp</result>
+			<result name="input">/fstabAdd.jsp</result> 
+			<result name="success" type="redirectAction">Fstab_populate</result>
+		</action>
+
+		<action name="Configuration_*" method="{1}"
+			class="squeeze.web.ConfigurationAction">
+			<interceptor-ref name="defaultStack" /> 
+			<interceptor-ref name="execAndWait">
+				<param name="threadPriority">10</param>
+		        <param name="delay">0</param>
+		        <param name="delaySleepInterval">50</param>
+		    </interceptor-ref>
+		    <result name="wait">/wait.jsp</result>
+			<result name="populate">/system.jsp</result>
+			<result name="input">/system.jsp</result>
+			<result name="success" type="redirectAction">Configuration_populate</result>
+		</action>
+
+		<action name="Index" 
+			class="squeeze.web.IndexAction">
+			<result name="input">/index.jsp</result> 
+		    <result name="success">/index.jsp</result>
+		</action>
+
+	</package>
+
+</struts>

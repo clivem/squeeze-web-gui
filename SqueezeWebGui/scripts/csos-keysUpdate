@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if [ -e "$1" ] && [ -n "$2" ]; then
+ cp "$1" "/etc/sysconfig/network-scripts/keys-$2"
+fi

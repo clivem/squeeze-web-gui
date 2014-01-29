@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if [ -e /usr/share/zoneinfo/$1 ]; then
+  cd /etc && ln -sf /usr/share/zoneinfo/$1 localtime
+fi

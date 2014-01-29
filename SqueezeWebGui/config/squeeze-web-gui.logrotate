@@ -1,0 +1,8 @@
+/var/log/tomcat/squeeze-web-gui.log {
+    copytruncate
+    daily
+    rotate 7
+    compress
+    missingok
+    create 0664 tomcat tomcat
+}

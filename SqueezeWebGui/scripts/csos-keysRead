@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if [ -e "/etc/sysconfig/network-scripts/keys-$1" ]; then
+ cat "/etc/sysconfig/network-scripts/keys-$1"
+fi

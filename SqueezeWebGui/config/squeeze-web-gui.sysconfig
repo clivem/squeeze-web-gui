@@ -1,0 +1,4 @@
+# SqueezeWebGui Defaults
+TEMP_DIR=/tmp
+WIRED_INTERFACE=p6p1
+WIRELESS_INTERFACE=wlan0
