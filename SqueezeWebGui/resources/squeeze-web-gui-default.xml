@@ -5,18 +5,17 @@
 
 <struts>
 
-    <package name="squeeze-web-gui-default" namespace="/" extends="struts-default">
+	<package name="squeeze-web-gui-default" namespace="/"
+		extends="struts-default">
 
-        <global-results>
-            <result name="error">Error.jsp</result>
-        </global-results>
+		<global-results>
+			<result name="error">Error.jsp</result>
+		</global-results>
 
-        <global-exception-mappings>
-            <exception-mapping
-                    result="error"
-                    exception="java.lang.Throwable"/>
-        </global-exception-mappings>
+		<global-exception-mappings>
+			<exception-mapping result="error" exception="java.lang.Throwable" />
+		</global-exception-mappings>
 
-    </package>
+	</package>
 
 </struts>

@@ -5,11 +5,11 @@
 
 <struts>
 
-    <constant name="struts.devMode" value="false" />
-    <constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<constant name="struts.devMode" value="false" />
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
 	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
 
-    <include file="squeeze-web-gui-default.xml"/>
-    <include file="squeeze-web-gui-support.xml"/>
+	<include file="squeeze-web-gui-default.xml" />
+	<include file="squeeze-web-gui-support.xml" />
 
 </struts>
