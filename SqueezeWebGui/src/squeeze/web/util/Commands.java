@@ -26,13 +26,13 @@ package squeeze.web.util;
  */
 public class Commands {
 	
-	public final static String SCRIPT_INTERFACE_UPDATE = "csos-ifcfgUpdate";
-	public final static String SCRIPT_KEYS_READ = "csos-keysRead";
-	public final static String SCRIPT_KEYS_UPDATE = "csos-keysUpdate";
-	public final static String SCRIPT_SQUEEZELITE_CONFIG_UPDATE = "csos-squeezeliteConfigUpdate";
-	public final static String SCRIPT_REBOOT = "csos-reboot";
-	public final static String SCRIPT_HALT = "csos-halt";
-	public final static String SCRIPT_TIMEZONE = "csos-timeZone";
+	public final static String SCRIPT_INTERFACE_UPDATE = "sp-ifcfgUpdate";
+	public final static String SCRIPT_KEYS_READ = "sp-keysRead";
+	public final static String SCRIPT_KEYS_UPDATE = "sp-keysUpdate";
+	public final static String SCRIPT_SQUEEZELITE_CONFIG_UPDATE = "sp-squeezeliteConfigUpdate";
+	public final static String SCRIPT_REBOOT = "sp-reboot";
+	public final static String SCRIPT_HALT = "sp-halt";
+	public final static String SCRIPT_TIMEZONE = "sp-timeZone";
 	
 	public final static String CMD_SUDO = "sudo";
 	public final static String CMD_NOHUP = "nohup";

@@ -1,12 +1,12 @@
 Defaults  ! requiretty
 tomcat ALL = NOPASSWD:\
- /usr/sbin/csos-ifcfgUpdate,\
- /usr/sbin/csos-keysRead,\
- /usr/sbin/csos-keysUpdate,\
- /usr/sbin/csos-squeezeliteConfigUpdate,\
- /usr/sbin/csos-reboot,\
- /usr/sbin/csos-halt,\
- /usr/sbin/csos-timeZone,\
+ /usr/sbin/sp-ifcfgUpdate,\
+ /usr/sbin/sp-keysRead,\
+ /usr/sbin/sp-keysUpdate,\
+ /usr/sbin/sp-squeezeliteConfigUpdate,\
+ /usr/sbin/sp-reboot,\
+ /usr/sbin/sp-halt,\
+ /usr/sbin/sp-timeZone,\
  /usr/bin/systemctl,\
  /usr/bin/aplay,\
  /usr/sbin/ifconfig,\
