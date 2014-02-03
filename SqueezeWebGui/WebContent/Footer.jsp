@@ -6,7 +6,7 @@
 	<s:a href="http://www.gnu.org/licenses/gpl-3.0-standalone.html"
          target="_blank"> 
 	   <img src="html/images/gplv3-127x51.png" alt="GPLv3"
-            border="0px" align="top" />
+            border="0px" align="top" width="127" height="51" />
 	</s:a>
 </div>
 
