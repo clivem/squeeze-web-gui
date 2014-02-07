@@ -40,9 +40,22 @@ public class ConfigurationAction extends ActionSupport {
 	private final static Logger LOGGER = Logger.getLogger(ConfigurationAction.class);
 	
 	private final static List<String> ZONE_LIST = TimeZone.getTimeZoneList();
+	private final static List<String> LOCALE_LIST = Util.getLocaleList();
+	
+	public final static String HOSTNAME_FILENAME = "/etc/hostname";
+	public final static String FEDORA_VERSION_FILENAME = "/etc/fedora-release";
+	public final static String CSOS_VERSION_FILENAME = "/etc/csos-release";
+	public final static String LOCALE_FILENAME = "/etc/locale.conf";
 	
 	private String timeZone = null;
 	private List<String> timeZoneList = null;
+
+	private String hostName = null;
+	private String fedoraVersion = null;
+	private String csosVersion = null;
+	
+	private String locale_ = null;
+	private List<String> localeList = null;
 	
 	/**
 	 * 
@@ -51,6 +64,7 @@ public class ConfigurationAction extends ActionSupport {
 		
 		super();
 		timeZoneList = ZONE_LIST;
+		localeList = LOCALE_LIST;
 		
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("ConfigurationAction()");
@@ -84,7 +98,20 @@ public class ConfigurationAction extends ActionSupport {
 			LOGGER.debug("populate()");
 		}
 		
+		hostName = Util.getVersion(HOSTNAME_FILENAME);
+		
+		fedoraVersion = Util.getVersion(FEDORA_VERSION_FILENAME);
+		csosVersion = Util.getVersion(CSOS_VERSION_FILENAME);
+		
+		locale_ = Util.getLocale(LOCALE_FILENAME);
+		if (locale_ != null && !localeList.contains(locale_)) {
+			localeList.add(0, locale_);
+		}
+		
 		timeZone = TimeZone.getCurrentTimeZone();
+		if (timeZone != null && !timeZoneList.contains(timeZone)) {
+			timeZoneList.add(0, timeZone);
+		}
 		
 		String result = "populate";
 		if (LOGGER.isDebugEnabled()) {
@@ -110,6 +137,15 @@ public class ConfigurationAction extends ActionSupport {
 			}
 		} catch (Exception e) {
 			LOGGER.warn("Caught exception setting timezone!", e);
+			throw e;
+		}
+		
+		try {
+			if (locale_ != null && locale_.trim().length() > 0) {
+				Util.setLocale(LOCALE_FILENAME, locale_);
+			}
+		} catch (Exception e) {
+			LOGGER.warn("Caught exception setting locale!", e);
 			throw e;
 		}
 		
@@ -140,5 +176,75 @@ public class ConfigurationAction extends ActionSupport {
 	 */
 	public void setTimeZone(String timeZone) {
 		this.timeZone = timeZone;
+	}
+
+	/**
+	 * @return the csosVersion
+	 */
+	public String getCsosVersion() {
+		return csosVersion;
+	}
+
+	/**
+	 * @param csosVersion the csosVersion to set
+	 */
+	public void setCsosVersion(String csosVersion) {
+		this.csosVersion = csosVersion;
+	}
+
+	/**
+	 * @return the fedoraVersion
+	 */
+	public String getFedoraVersion() {
+		return fedoraVersion;
+	}
+
+	/**
+	 * @param fedoraVersion the fedoraVersion to set
+	 */
+	public void setFedoraVersion(String fedoraVersion) {
+		this.fedoraVersion = fedoraVersion;
+	}
+
+	/**
+	 * @return the hostName
+	 */
+	public String getHostName() {
+		return hostName;
+	}
+
+	/**
+	 * @param hostName the hostName to set
+	 */
+	public void setHostName(String hostName) {
+		this.hostName = hostName;
+	}
+
+	/**
+	 * @return the locale_
+	 */
+	public String getLocale_() {
+		return locale_;
+	}
+
+	/**
+	 * @param locale_ the locale_ to set
+	 */
+	public void setLocale_(String locale_) {
+		this.locale_ = locale_;
+	}
+
+	/**
+	 * @return the localeList
+	 */
+	public List<String> getLocaleList() {
+		return localeList;
+	}
+
+	/**
+	 * @param localeList the localeList to set
+	 */
+	public void setLocaleList(List<String> localeList) {
+		this.localeList = localeList;
 	}
 }

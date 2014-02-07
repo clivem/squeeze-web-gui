@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 
@@ -64,6 +65,8 @@ public final class Util {
 	
 	public final static String BLANK_STRING = "";
 	
+	public final static String LOCALE_LIST = "/usr/share/system-config-language/locale-list";
+
 	/**
 	 * 
 	 */
@@ -897,5 +900,114 @@ public final class Util {
 		}
 		
 		return ExecuteProcess.executeCommand(cmdLineArgs);
+	}
+
+	/**
+	 * @param fileName
+	 * @return
+	 */
+	public final static String getVersion(String fileName) {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("getVersion(fileName=" + fileName + ")");
+		}
+		
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(fileName));
+			return reader.readLine();
+		} catch (Exception e) {
+			LOGGER.warn("getVersion(fileName=" + fileName + ")", e);
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (Exception e) {}
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * @param fileName
+	 * @return
+	 */
+	public final static String getLocale(String fileName) {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("getLocale(fileName=" + fileName + ")");
+		}
+		
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(fileName));
+			String line = reader.readLine();
+			if (line != null) {
+				line.trim();
+				if (line.startsWith("LANG=")) {
+					line = line.substring(5);
+					if (line.startsWith("\"")) {
+						line = line.substring(1);
+					}
+					if (line.endsWith("\"")) {
+						line = line.substring(0, line.length() - 1);
+					}
+					return line;
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.warn("getLocale(fileName=" + fileName + ")", e);
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (Exception e) {}
+			}
+		}
+		
+		return null;
+	}
+	
+	public final static void setLocale(String fileName, String locale) {
+		
+	}
+	
+	/**
+	 * @return
+	 */
+	public final static List<String> getLocaleList() {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("getLocaleList()");
+		}
+		
+		ArrayList<String> localeList = new ArrayList<String>();
+		localeList.add("");
+		
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(LOCALE_LIST));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				//String locale = "";
+				// en_GB.UTF-8 utf8 latarcyrheb-sun16 English (Great Britain)
+				StringTokenizer tok = new StringTokenizer(line.trim(), " ");
+				if (tok.hasMoreTokens()) {
+					//locale += tok.nextToken();
+					localeList.add(tok.nextToken());
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.warn("getLocaleList()", e);
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (Exception e) {}
+			}
+		}
+		
+		return localeList;
 	}
 }

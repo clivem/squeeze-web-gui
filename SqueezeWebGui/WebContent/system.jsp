@@ -26,11 +26,32 @@
   </tr>
 </table>
 
+<table>
+<tr>
+<td align="right" >OS Version:</td>
+<td><s:property value="csosVersion" /></td>
+</tr>
+<tr>
+<td align="right" >Fedora Version:</td>
+<td><s:property value="fedoraVersion" /></td>
+</tr>
+</table>
+
 <hr />
 
-<h4><s:text name="header.timezone" /></h4>
+<h4><s:text name="header.configuration" /></h4>
 <s:form action="Configuration_timeZone" theme="simple" >
 <table>
+<tr>
+<tr>
+<td align="right" >
+    <s:text name="configuration.label.hostName" />
+	<img src='struts/tooltip.gif'
+	  	 title="<s:property value="getText('configuration.tooltip.hostName')" />"
+      	 alt="<s:property value="getText('configuration.tooltip.hostName')" />" />
+</td>
+<td><s:textfield name="hostName" cssClass="size-300px" /></td>
+</tr>
 <tr>
 <td align="right">
 	<s:text name="configuration.label.timeZone" />
@@ -40,6 +61,17 @@
 </td>
 <td>
 	<s:select name="timeZone" list="timeZoneList" />
+</td>
+</tr>
+<tr>
+<td align="right">
+	<s:text name="configuration.label.locale" />
+	<img src='struts/tooltip.gif'
+	  	 title="<s:property value="getText('configuration.tooltip.locale')" />"
+      	 alt="<s:property value="getText('configuration.tooltip.locale')" />" />
+</td>
+<td>
+	<s:select name="locale_" list="localeList" />
 </td>
 </tr>
 <tr>

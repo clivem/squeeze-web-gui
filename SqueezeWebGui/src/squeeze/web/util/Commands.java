@@ -33,6 +33,7 @@ public class Commands {
 	public final static String SCRIPT_REBOOT = "sp-reboot";
 	public final static String SCRIPT_HALT = "sp-halt";
 	public final static String SCRIPT_TIMEZONE = "sp-timeZone";
+	public final static String SCRIPT_LOCALE_UPDATE = "sp-localeUpdate";
 	
 	public final static String CMD_SUDO = "sudo";
 	public final static String CMD_NOHUP = "nohup";
@@ -42,6 +43,7 @@ public class Commands {
 	public final static String CMD_IFDOWN = "ifdown";
 	public final static String CMD_MOUNT = "mount";
 	public final static String CMD_WALL = "wall";
+	public final static String CMD_CAT = "cat";
 	
 	public final static String SHUTDOWN_FORCE = "-f";
 	
@@ -62,7 +64,7 @@ public class Commands {
 	public final static String SYSTEMCTL_DISABLE = "disable"; 
 	public final static String SYSTEMCTL_RESTART = "restart"; 
 	public final static String SYSTEMCTL_COND_RESTART = "try-restart"; 
-
+	
 	/**
 	 * 
 	 */
