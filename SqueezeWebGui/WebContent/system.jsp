@@ -40,7 +40,7 @@
 <hr />
 
 <h4><s:text name="header.configuration" /></h4>
-<s:form action="Configuration_timeZone" theme="simple" >
+<s:form action="Configuration_save" theme="simple" >
 <table>
 <tr>
 <tr>
@@ -71,14 +71,19 @@
       	 alt="<s:property value="getText('configuration.tooltip.locale')" />" />
 </td>
 <td>
-	<s:select name="locale_" list="localeList" />
+	<s:select name="locale_"
+        list="localeList"
+        listKey="locale"
+        listValue="description"
+        emptyOption="false"
+        headerKey=""
+        headerValue="None" />
 </td>
 </tr>
 <tr>
 <td colspan="2" align="right">
 	<s:reset key="button.reset"/>
-	<s:submit action="Configuration_timeZone" 
-			  key="button.submit" />
+	<s:submit action="Configuration_save" key="button.submit" />
 </td>
 </tr>
 </table>

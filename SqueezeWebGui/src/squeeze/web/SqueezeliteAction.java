@@ -436,7 +436,7 @@ public class SqueezeliteAction extends SystemctlAction {
 		
 		File file = null;
 		try {
-			file = writeTempSqueezeliteProperties(SQUEEZELITE_CONFIG_FILE_NAME, list);
+			file = writeTempSqueezeliteProperties(list);
 			replaceSqueezeliteConfig(file);
 		} catch (Exception e) {
 			LOGGER.error("Caught exception saving " + getServiceName() + "!", e);
@@ -885,12 +885,11 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return
 	 * @throws IOException
 	 */
-	private File writeTempSqueezeliteProperties(String configName, ArrayList<String> argList) 
+	private File writeTempSqueezeliteProperties(ArrayList<String> argList) 
 			throws IOException {
 		
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("writeTempSqueezeliteProperties(configName=" + 
-							configName + ", argList=" + argList + ")");
+			LOGGER.debug("writeTempSqueezeliteProperties(argList=" + argList + ")");
 		}
 
 		BufferedWriter bw = null;

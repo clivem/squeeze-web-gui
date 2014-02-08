@@ -20,10 +20,17 @@
  */
 package squeeze.web;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import squeeze.web.util.Commands;
+import squeeze.web.util.ExecuteProcess;
+import squeeze.web.util.SystemLocale;
 import squeeze.web.util.TimeZone;
 import squeeze.web.util.Util;
 
@@ -40,13 +47,13 @@ public class ConfigurationAction extends ActionSupport {
 	private final static Logger LOGGER = Logger.getLogger(ConfigurationAction.class);
 	
 	private final static List<String> ZONE_LIST = TimeZone.getTimeZoneList();
-	private final static List<String> LOCALE_LIST = Util.getLocaleList();
+	private final static List<SystemLocale> LOCALE_LIST = SystemLocale.getSystemLocaleList();
 	
 	public final static String HOSTNAME_FILENAME = "/etc/hostname";
 	public final static String FEDORA_VERSION_FILENAME = "/etc/fedora-release";
 	public final static String CSOS_VERSION_FILENAME = "/etc/csos-release";
 	public final static String LOCALE_FILENAME = "/etc/locale.conf";
-	
+		
 	private String timeZone = null;
 	private List<String> timeZoneList = null;
 
@@ -55,7 +62,7 @@ public class ConfigurationAction extends ActionSupport {
 	private String csosVersion = null;
 	
 	private String locale_ = null;
-	private List<String> localeList = null;
+	private List<SystemLocale> localeList = null;
 	
 	/**
 	 * 
@@ -98,15 +105,11 @@ public class ConfigurationAction extends ActionSupport {
 			LOGGER.debug("populate()");
 		}
 		
-		hostName = Util.getVersion(HOSTNAME_FILENAME);
+		hostName = Util.getFirstLineFromFile(HOSTNAME_FILENAME);
 		
-		fedoraVersion = Util.getVersion(FEDORA_VERSION_FILENAME);
-		csosVersion = Util.getVersion(CSOS_VERSION_FILENAME);
-		
-		locale_ = Util.getLocale(LOCALE_FILENAME);
-		if (locale_ != null && !localeList.contains(locale_)) {
-			localeList.add(0, locale_);
-		}
+		fedoraVersion = Util.getFirstLineFromFile(FEDORA_VERSION_FILENAME);
+		csosVersion = Util.getFirstLineFromFile(CSOS_VERSION_FILENAME);		
+		locale_ = getSystemLocale();
 		
 		timeZone = TimeZone.getCurrentTimeZone();
 		if (timeZone != null && !timeZoneList.contains(timeZone)) {
@@ -125,10 +128,10 @@ public class ConfigurationAction extends ActionSupport {
 	 * @return
 	 * @throws Exception
 	 */
-	public String timeZone() throws Exception {
+	public String save() throws Exception {
 
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("timeZone()");
+			LOGGER.debug("save()");
 		}
 		
 		try {
@@ -140,18 +143,43 @@ public class ConfigurationAction extends ActionSupport {
 			throw e;
 		}
 		
-		try {
-			if (locale_ != null && locale_.trim().length() > 0) {
-				Util.setLocale(LOCALE_FILENAME, locale_);
+		if (hostName != null && hostName.trim().length() > 0) {
+			File file = null;
+			try {
+				file = writeTempConfig("hostname", hostName.trim());
+				replaceConfig(file, Commands.SCRIPT_HOSTNAME_UPDATE);
+			} catch (Exception e) {
+				LOGGER.error("Caught exception saving hostname!", e);
+				throw e;
+			} finally {
+				if (file != null) {
+					try {
+						file.delete();
+					} catch (Exception e) {}
+				}
 			}
-		} catch (Exception e) {
-			LOGGER.warn("Caught exception setting locale!", e);
-			throw e;
+		}
+		
+		if (locale_ != null && locale_.trim().length() > 0) {
+			File file = null;
+			try {
+				file = writeTempConfig("locale", "LANG=\"" + locale_.trim() + "\"");
+				replaceConfig(file, Commands.SCRIPT_LOCALE_UPDATE);
+			} catch (Exception e) {
+				LOGGER.error("Caught exception saving locale!", e);
+				throw e;
+			} finally {
+				if (file != null) {
+					try {
+						file.delete();
+					} catch (Exception e) {}
+				}
+			}
 		}
 		
 		String result = SUCCESS;
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("timeZone() returns " + result);
+			LOGGER.debug("save() returns " + result);
 		}
 		
 		return result;
@@ -186,24 +214,10 @@ public class ConfigurationAction extends ActionSupport {
 	}
 
 	/**
-	 * @param csosVersion the csosVersion to set
-	 */
-	public void setCsosVersion(String csosVersion) {
-		this.csosVersion = csosVersion;
-	}
-
-	/**
 	 * @return the fedoraVersion
 	 */
 	public String getFedoraVersion() {
 		return fedoraVersion;
-	}
-
-	/**
-	 * @param fedoraVersion the fedoraVersion to set
-	 */
-	public void setFedoraVersion(String fedoraVersion) {
-		this.fedoraVersion = fedoraVersion;
 	}
 
 	/**
@@ -237,14 +251,88 @@ public class ConfigurationAction extends ActionSupport {
 	/**
 	 * @return the localeList
 	 */
-	public List<String> getLocaleList() {
+	public List<SystemLocale> getLocaleList() {
 		return localeList;
 	}
-
+	
 	/**
-	 * @param localeList the localeList to set
+	 * @param configName
+	 * @param locale_
+	 * @return
+	 * @throws IOException
 	 */
-	public void setLocaleList(List<String> localeList) {
-		this.localeList = localeList;
+	private File writeTempConfig(String configName, String config) 
+			throws IOException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("writeTempConfig(configName=" + 
+							configName + ", config=" + config + ")");
+		}
+
+		BufferedWriter bw = null;
+		try {
+			File tempFile = Util.createTempFile(configName + "_config_", ".txt");
+			bw = new BufferedWriter(new FileWriter(tempFile));
+			bw.write(config + Util.LINE_SEP);
+			return tempFile;
+		} finally {
+			if (bw != null) {
+				try {
+					bw.flush();
+				} catch (Exception e) {}
+				
+				try {
+					bw.close();
+				} catch (Exception e) {}
+ 			}
+		}
 	}
+	
+	/**
+	 * @param tmpFile
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	private int replaceConfig(File tmpFile, String script)
+			throws IOException, InterruptedException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("replaceConfig(tmpFile=" + tmpFile + ", script=" + script + ")");
+		}
+
+		String[] cmdLineArgs = new String[] {
+				Commands.CMD_SUDO, script, 
+				tmpFile.getAbsolutePath()
+		};
+		
+		return ExecuteProcess.executeCommand(cmdLineArgs);
+	}
+	
+	/**
+	 * @return
+	 */
+	private final static String getSystemLocale() {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("getSystemLocale()");
+		}
+		
+		String line = Util.getFirstLineFromFile(LOCALE_FILENAME);
+		if (line != null) {
+			line.trim();
+			if (line.startsWith("LANG=")) {
+				line = line.substring(5).trim();
+				if (line.startsWith("\"")) {
+					line = line.substring(1);
+				}
+				if (line.endsWith("\"")) {
+					line = line.substring(0, line.length() - 1);
+				}
+				return line;
+			}
+		}
+		
+		return null;
+	}	
 }

@@ -34,6 +34,7 @@ public class Commands {
 	public final static String SCRIPT_HALT = "sp-halt";
 	public final static String SCRIPT_TIMEZONE = "sp-timeZone";
 	public final static String SCRIPT_LOCALE_UPDATE = "sp-localeUpdate";
+	public final static String SCRIPT_HOSTNAME_UPDATE = "sp-hostnameUpdate";
 	
 	public final static String CMD_SUDO = "sudo";
 	public final static String CMD_NOHUP = "nohup";

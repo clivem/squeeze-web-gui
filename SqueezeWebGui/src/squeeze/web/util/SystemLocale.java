@@ -20,8 +20,14 @@
  */
 package squeeze.web.util;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.log4j.Logger;
 
 /**
  * @author Clive Messer <clive.m.messer@gmail.com>
@@ -30,6 +36,10 @@ import java.util.regex.Pattern;
 public class SystemLocale {
 
 	private final static Pattern pattern = Pattern.compile("([^ ]+) +([^ ]+) +([^ ]+) +(.*)");
+	
+	private final static String LOCALE_LIST_FILENAME = "/usr/share/system-config-language/locale-list";
+
+	private final static Logger LOGGER = Logger.getLogger(SystemLocale.class);
 	
 	private String locale;
 	private String encoding;
@@ -86,12 +96,14 @@ public class SystemLocale {
 	 * @param locale
 	 * @return
 	 */
-	public final static SystemLocale getLocale(String locale) {
+	private final static SystemLocale getLocale(String locale) {
 
 		synchronized (pattern) {
 			Matcher m = pattern.matcher(locale);
 			if (m.matches()) {
 				return new SystemLocale(m.group(1), m.group(2), m.group(3), m.group(4));
+			} else {
+				LOGGER.warn("getLocale(locale=" + locale + "): Invalid locale!");
 			}
 		}
 		
@@ -99,12 +111,53 @@ public class SystemLocale {
 	}
 	
 	/**
+	 * @return
+	 */
+	public final static List<SystemLocale> getSystemLocaleList() {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("getSystemLocaleList()");
+		}
+		
+		ArrayList<SystemLocale> localeList = new ArrayList<SystemLocale>();
+		
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(LOCALE_LIST_FILENAME));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				SystemLocale l = SystemLocale.getLocale(line.trim());
+				if (l != null) {
+					localeList.add(l);
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.warn("getSystemLocaleList()", e);
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (Exception e) {}
+			}
+		}
+		
+		return localeList;
+	}
+
+	/**
 	 * @param args
 	 */
 	public final static void main(String[] args) {
 		SystemLocale l = SystemLocale.getLocale("en_GB.UTF-8 utf8 latarcyrheb-sun16 English (Great Britain)");
-		if (l != null) {
-			System.out.println(l.getDescription());
-		}
+		System.out.println(l);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "SystemLocale[locale=" + locale + ", encoding=" + encoding
+				+ ", font=" + font + ", description=" + description + "]";
 	}
 }

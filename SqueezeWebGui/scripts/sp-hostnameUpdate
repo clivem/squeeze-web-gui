@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if [ -e "$1" ]; then
+ cp "$1" /etc/hostname
+fi
