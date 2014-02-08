@@ -20,16 +20,12 @@
  */
 package squeeze.web;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import squeeze.web.util.Commands;
-import squeeze.web.util.ExecuteProcess;
 import squeeze.web.util.SystemLocale;
 import squeeze.web.util.TimeZone;
 import squeeze.web.util.Util;
@@ -49,11 +45,6 @@ public class ConfigurationAction extends ActionSupport {
 	private final static List<String> ZONE_LIST = TimeZone.getTimeZoneList();
 	private final static List<SystemLocale> LOCALE_LIST = SystemLocale.getSystemLocaleList();
 	
-	public final static String HOSTNAME_FILENAME = "/etc/hostname";
-	public final static String FEDORA_VERSION_FILENAME = "/etc/fedora-release";
-	public final static String CSOS_VERSION_FILENAME = "/etc/csos-release";
-	public final static String LOCALE_FILENAME = "/etc/locale.conf";
-		
 	private String timeZone = null;
 	private List<String> timeZoneList = null;
 
@@ -105,13 +96,12 @@ public class ConfigurationAction extends ActionSupport {
 			LOGGER.debug("populate()");
 		}
 		
-		hostName = Util.getFirstLineFromFile(HOSTNAME_FILENAME);
-		
-		fedoraVersion = Util.getFirstLineFromFile(FEDORA_VERSION_FILENAME);
-		csosVersion = Util.getFirstLineFromFile(CSOS_VERSION_FILENAME);		
-		locale_ = getSystemLocale();
-		
+		fedoraVersion = Util.getFedoraVersion();
+		csosVersion = Util.getCsosVersion();
+		hostName = Util.getHostName();
+		locale_ = SystemLocale.getSystemLocale();
 		timeZone = TimeZone.getCurrentTimeZone();
+		
 		if (timeZone != null && !timeZoneList.contains(timeZone)) {
 			timeZoneList.add(0, timeZone);
 		}
@@ -146,8 +136,8 @@ public class ConfigurationAction extends ActionSupport {
 		if (hostName != null && hostName.trim().length() > 0) {
 			File file = null;
 			try {
-				file = writeTempConfig("hostname", hostName.trim());
-				replaceConfig(file, Commands.SCRIPT_HOSTNAME_UPDATE);
+				file = Util.writeTempConfig("hostname", hostName.trim());
+				Util.replaceConfig(file, Commands.SCRIPT_HOSTNAME_UPDATE);
 			} catch (Exception e) {
 				LOGGER.error("Caught exception saving hostname!", e);
 				throw e;
@@ -163,8 +153,8 @@ public class ConfigurationAction extends ActionSupport {
 		if (locale_ != null && locale_.trim().length() > 0) {
 			File file = null;
 			try {
-				file = writeTempConfig("locale", "LANG=\"" + locale_.trim() + "\"");
-				replaceConfig(file, Commands.SCRIPT_LOCALE_UPDATE);
+				file = Util.writeTempConfig("locale", "LANG=\"" + locale_.trim() + "\"");
+				Util.replaceConfig(file, Commands.SCRIPT_LOCALE_UPDATE);
 			} catch (Exception e) {
 				LOGGER.error("Caught exception saving locale!", e);
 				throw e;
@@ -253,86 +243,5 @@ public class ConfigurationAction extends ActionSupport {
 	 */
 	public List<SystemLocale> getLocaleList() {
 		return localeList;
-	}
-	
-	/**
-	 * @param configName
-	 * @param locale_
-	 * @return
-	 * @throws IOException
-	 */
-	private File writeTempConfig(String configName, String config) 
-			throws IOException {
-		
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("writeTempConfig(configName=" + 
-							configName + ", config=" + config + ")");
-		}
-
-		BufferedWriter bw = null;
-		try {
-			File tempFile = Util.createTempFile(configName + "_config_", ".txt");
-			bw = new BufferedWriter(new FileWriter(tempFile));
-			bw.write(config + Util.LINE_SEP);
-			return tempFile;
-		} finally {
-			if (bw != null) {
-				try {
-					bw.flush();
-				} catch (Exception e) {}
-				
-				try {
-					bw.close();
-				} catch (Exception e) {}
- 			}
-		}
-	}
-	
-	/**
-	 * @param tmpFile
-	 * @return
-	 * @throws IOException
-	 * @throws InterruptedException
-	 */
-	private int replaceConfig(File tmpFile, String script)
-			throws IOException, InterruptedException {
-		
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("replaceConfig(tmpFile=" + tmpFile + ", script=" + script + ")");
-		}
-
-		String[] cmdLineArgs = new String[] {
-				Commands.CMD_SUDO, script, 
-				tmpFile.getAbsolutePath()
-		};
-		
-		return ExecuteProcess.executeCommand(cmdLineArgs);
-	}
-	
-	/**
-	 * @return
-	 */
-	private final static String getSystemLocale() {
-		
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("getSystemLocale()");
-		}
-		
-		String line = Util.getFirstLineFromFile(LOCALE_FILENAME);
-		if (line != null) {
-			line.trim();
-			if (line.startsWith("LANG=")) {
-				line = line.substring(5).trim();
-				if (line.startsWith("\"")) {
-					line = line.substring(1);
-				}
-				if (line.endsWith("\"")) {
-					line = line.substring(0, line.length() - 1);
-				}
-				return line;
-			}
-		}
-		
-		return null;
 	}	
 }

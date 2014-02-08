@@ -35,7 +35,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import squeeze.web.util.Commands;
-import squeeze.web.util.ExecuteProcess;
 import squeeze.web.util.Util;
 import squeeze.web.util.Validate;
 import squeeze.web.util.WebConfig;
@@ -436,8 +435,8 @@ public class SqueezeliteAction extends SystemctlAction {
 		
 		File file = null;
 		try {
-			file = writeTempSqueezeliteProperties(list);
-			replaceSqueezeliteConfig(file);
+			file = writeTempSqueezeliteProperties(NAME, list);
+			Util.replaceConfig(file, Commands.SCRIPT_SQUEEZELITE_CONFIG_UPDATE);
 		} catch (Exception e) {
 			LOGGER.error("Caught exception saving " + getServiceName() + "!", e);
 			throw e;
@@ -649,14 +648,6 @@ public class SqueezeliteAction extends SystemctlAction {
 		return audioDevList;
 	}
 
-	/**
-	 * @param audioDevList
-	 */
-	public void setAudioDevList(List<String> audioDevList) {
-		
-		this.audioDevList = audioDevList;
-	}
-	
 	/**
 	 * @return the defaultMac
 	 */
@@ -885,7 +876,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return
 	 * @throws IOException
 	 */
-	private File writeTempSqueezeliteProperties(ArrayList<String> argList) 
+	private File writeTempSqueezeliteProperties(String configName, ArrayList<String> argList) 
 			throws IOException {
 		
 		if (LOGGER.isDebugEnabled()) {
@@ -894,7 +885,7 @@ public class SqueezeliteAction extends SystemctlAction {
 
 		BufferedWriter bw = null;
 		try {
-			File tempFile = Util.createTempFile(NAME + "_config_", ".txt");
+			File tempFile = Util.createTempFile(configName + "_config_", ".txt");
 			bw = new BufferedWriter(new FileWriter(tempFile));
 			bw.write(Util.getModifiedComment());
 			Iterator<String> it = argList.iterator();
@@ -913,26 +904,5 @@ public class SqueezeliteAction extends SystemctlAction {
 				} catch (Exception e) {}
  			}
 		}
-	}
-	
-	/**
-	 * @param tmpFile
-	 * @return
-	 * @throws IOException
-	 * @throws InterruptedException
-	 */
-	private int replaceSqueezeliteConfig(File tmpFile)
-			throws IOException, InterruptedException {
-		
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("replaceSqueezeliteConfig(tmpFile=" + tmpFile + ")");
-		}
-
-		String[] cmdLineArgs = new String[] {
-				Commands.CMD_SUDO, Commands.SCRIPT_SQUEEZELITE_CONFIG_UPDATE, 
-				tmpFile.getAbsolutePath()
-		};
-		
-		return ExecuteProcess.executeCommand(cmdLineArgs);
-	}
+	}	
 }

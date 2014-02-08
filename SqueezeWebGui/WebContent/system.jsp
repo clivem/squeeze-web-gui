@@ -26,7 +26,7 @@
   </tr>
 </table>
 
-<table>
+<table class="copyright">
 <tr>
 <td align="right" >OS Version:</td>
 <td><s:property value="csosVersion" /></td>

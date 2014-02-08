@@ -21,6 +21,7 @@
 package squeeze.web.util;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -63,6 +64,13 @@ public final class Util {
 			Commands.SHUTDOWN_FORCE + ") option";
 	
 	public final static String BLANK_STRING = "";
+	
+	private final static String HOSTNAME_FILENAME = "/etc/hostname";
+	private final static String FEDORA_VERSION_FILENAME = "/etc/fedora-release";
+	private final static String CSOS_VERSION_FILENAME = "/etc/csos-release";
+
+	private static String CSOS_VERSION = null;
+	private static String FEDORA_VERSION = null;
 	
 	/**
 	 * 
@@ -924,5 +932,92 @@ public final class Util {
 		}
 		
 		return null;
-	}	
+	}
+	
+	/**
+	 * @return
+	 */
+	public final static String getFedoraVersion() {
+		
+		if (FEDORA_VERSION == null) {
+			FEDORA_VERSION = getFirstLineFromFile(FEDORA_VERSION_FILENAME);
+		}
+
+		return FEDORA_VERSION;
+	}
+	
+	/**
+	 * @return
+	 */
+	public final static String getHostName() {
+		
+		return getFirstLineFromFile(HOSTNAME_FILENAME);
+	}
+	
+	/**
+	 * @return
+	 */
+	public final static String getCsosVersion() {
+		
+		if (CSOS_VERSION == null) {
+			CSOS_VERSION = getFirstLineFromFile(CSOS_VERSION_FILENAME);
+		}
+		
+		return CSOS_VERSION;
+	}
+	
+	/**
+	 * @param configName
+	 * @param config
+	 * @return
+	 * @throws IOException
+	 */
+	public static File writeTempConfig(String configName, String config) 
+			throws IOException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("writeTempConfig(configName=" + 
+							configName + ", config=" + config + ")");
+		}
+
+		BufferedWriter bw = null;
+		try {
+			File tempFile = Util.createTempFile(configName + "_config_", ".txt");
+			bw = new BufferedWriter(new FileWriter(tempFile));
+			bw.write(config + Util.LINE_SEP);
+			return tempFile;
+		} finally {
+			if (bw != null) {
+				try {
+					bw.flush();
+				} catch (Exception e) {}
+				
+				try {
+					bw.close();
+				} catch (Exception e) {}
+ 			}
+		}
+	}
+	
+	/**
+	 * @param tmpFile
+	 * @param script
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public static int replaceConfig(File tmpFile, String script)
+			throws IOException, InterruptedException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("replaceConfig(tmpFile=" + tmpFile + ", script=" + script + ")");
+		}
+
+		String[] cmdLineArgs = new String[] {
+				Commands.CMD_SUDO, script, 
+				tmpFile.getAbsolutePath()
+		};
+		
+		return ExecuteProcess.executeCommand(cmdLineArgs);
+	}
 }

@@ -37,6 +37,7 @@ public class SystemLocale {
 
 	private final static Pattern pattern = Pattern.compile("([^ ]+) +([^ ]+) +([^ ]+) +(.*)");
 	
+	private final static String LOCALE_FILENAME = "/etc/locale.conf";
 	private final static String LOCALE_LIST_FILENAME = "/usr/share/system-config-language/locale-list";
 
 	private final static Logger LOGGER = Logger.getLogger(SystemLocale.class);
@@ -75,6 +76,7 @@ public class SystemLocale {
 	 * @return the locale
 	 */
 	public String getLocale() {
+		
 		return locale;
 	}
 
@@ -82,6 +84,7 @@ public class SystemLocale {
 	 * @return the encoding
 	 */
 	public String getEncoding() {
+		
 		return encoding;
 	}
 
@@ -89,6 +92,7 @@ public class SystemLocale {
 	 * @return the font
 	 */
 	public String getFont() {
+		
 		return font;
 	}
 
@@ -96,7 +100,7 @@ public class SystemLocale {
 	 * @param locale
 	 * @return
 	 */
-	private final static SystemLocale getLocale(String locale) {
+	private final static SystemLocale createSystemLocale(String locale) {
 
 		synchronized (pattern) {
 			Matcher m = pattern.matcher(locale);
@@ -126,7 +130,7 @@ public class SystemLocale {
 			reader = new BufferedReader(new FileReader(LOCALE_LIST_FILENAME));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-				SystemLocale l = SystemLocale.getLocale(line.trim());
+				SystemLocale l = SystemLocale.createSystemLocale(line.trim());
 				if (l != null) {
 					localeList.add(l);
 				}
@@ -143,12 +147,39 @@ public class SystemLocale {
 		
 		return localeList;
 	}
+	
+	/**
+	 * @return
+	 */
+	public final static String getSystemLocale() {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("getSystemLocale()");
+		}
+		
+		String line = Util.getFirstLineFromFile(LOCALE_FILENAME);
+		if (line != null) {
+			line.trim();
+			if (line.startsWith("LANG=")) {
+				line = line.substring(5).trim();
+				if (line.startsWith("\"")) {
+					line = line.substring(1);
+				}
+				if (line.endsWith("\"")) {
+					line = line.substring(0, line.length() - 1);
+				}
+				return line;
+			}
+		}
+		
+		return null;
+	}	
 
 	/**
 	 * @param args
 	 */
 	public final static void main(String[] args) {
-		SystemLocale l = SystemLocale.getLocale("en_GB.UTF-8 utf8 latarcyrheb-sun16 English (Great Britain)");
+		SystemLocale l = SystemLocale.createSystemLocale("en_GB.UTF-8 utf8 latarcyrheb-sun16 English (Great Britain)");
 		System.out.println(l);
 	}
 
