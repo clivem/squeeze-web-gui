@@ -7,6 +7,8 @@ tomcat ALL = NOPASSWD:\
  /usr/sbin/sp-reboot,\
  /usr/sbin/sp-halt,\
  /usr/sbin/sp-timeZone,\
+ /usr/sbin/sp-localeUpdate,\
+ /usr/sbin/sp-hostnameUpdate,\
  /usr/bin/systemctl,\
  /usr/bin/aplay,\
  /usr/sbin/ifconfig,\
