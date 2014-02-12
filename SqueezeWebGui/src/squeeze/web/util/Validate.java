@@ -46,9 +46,14 @@ public class Validate {
 
 	// public final static String SQUEEZELITE_REGEX_ALSA_PARAMS = "^([0-9]*):([0-9]*):(16|24|24_3|32)?:(0|1)?$";
 	// Add optional 5th param, double close / open.
-	public final static String SQUEEZELITE_REGEX_ALSA_PARAMS = "^([0-9]*):([0-9]*):(16|24|24_3|32)?:(0|1)?:?(0|1)?$";
+	public final static String SQUEEZELITE_REGEX_ALSA_PARAMS = "^([0-9]*):([0-9]*):(16|24|24_3|32)?:(0|1)?(:(0|1)?)?$";
 
-	public final static String SQUEEZELITE_REGEX_ALSA_BUFFER = "^([0-9]*):([0-9]*)$";
+	public final static String SQUEEZELITE_REGEX_ALSA_BUFFER = "^([0-9]+):([0-9]+)$";
+
+	// single rate or comma separated list
+	public final static String SQUEEZELITE_REGEX_MAX_RATE = "^([0-9]+)((,[0-9]+)*)$";
+	// range. eg. 44100-192000
+	public final static String SQUEEZELITE_REGEX_MAX_RATE_RANGE = "^([0-9]+)-([0-9]+)$";
 
 	public final static int SQUEEZELITE_MAX_SAMPLE_RATE = 384000;
 	

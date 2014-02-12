@@ -21,11 +21,14 @@
 package squeeze.web;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import squeeze.web.util.Commands;
+import squeeze.web.util.ExecuteProcess;
+import squeeze.web.util.SambaConfig;
 import squeeze.web.util.SystemLocale;
 import squeeze.web.util.TimeZone;
 import squeeze.web.util.Util;
@@ -52,8 +55,11 @@ public class ConfigurationAction extends ActionSupport {
 	private String fedoraVersion = null;
 	private String csosVersion = null;
 	
-	private String locale_ = null;
-	private List<SystemLocale> localeList = null;
+	private String systemLocale = null;
+	private List<SystemLocale> systemLocaleList = null;
+	
+	private String sambaNetbiosName = null;
+	private String sambaWorkgroup = null;
 	
 	/**
 	 * 
@@ -62,7 +68,7 @@ public class ConfigurationAction extends ActionSupport {
 		
 		super();
 		timeZoneList = ZONE_LIST;
-		localeList = LOCALE_LIST;
+		systemLocaleList = LOCALE_LIST;
 		
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("ConfigurationAction()");
@@ -99,7 +105,12 @@ public class ConfigurationAction extends ActionSupport {
 		fedoraVersion = Util.getFedoraVersion();
 		csosVersion = Util.getCsosVersion();
 		hostName = Util.getHostName();
-		locale_ = SystemLocale.getSystemLocale();
+		
+		SambaConfig sambaConfig = SambaConfig.getSambaConfig();
+		sambaNetbiosName = sambaConfig.getNetbiosName();
+		sambaWorkgroup = sambaConfig.getWorkgroup();
+		
+		systemLocale = SystemLocale.getSystemLocale();
 		timeZone = TimeZone.getCurrentTimeZone();
 		
 		if (timeZone != null && !timeZoneList.contains(timeZone)) {
@@ -150,10 +161,10 @@ public class ConfigurationAction extends ActionSupport {
 			}
 		}
 		
-		if (locale_ != null && locale_.trim().length() > 0) {
+		if (systemLocale != null && systemLocale.trim().length() > 0) {
 			File file = null;
 			try {
-				file = Util.writeTempConfig("locale", "LANG=\"" + locale_.trim() + "\"");
+				file = Util.writeTempConfig("locale", "LANG=\"" + systemLocale.trim() + "\"");
 				Util.replaceConfig(file, Commands.SCRIPT_LOCALE_UPDATE);
 			} catch (Exception e) {
 				LOGGER.error("Caught exception saving locale!", e);
@@ -167,12 +178,47 @@ public class ConfigurationAction extends ActionSupport {
 			}
 		}
 		
+		SambaConfig oldSambaConfig = SambaConfig.getSambaConfig();
+		boolean sambaConfigChanged = false;
+		if (sambaNetbiosName != null && sambaNetbiosName.trim().length() > 0) {
+			sambaNetbiosName = sambaNetbiosName.trim();
+			if (!sambaNetbiosName.equals(oldSambaConfig.getNetbiosName())) {
+				// update config
+				Util.updateConfig(sambaNetbiosName, Commands.SCRIPT_SAMBA_NETBIOS_NAME_UPDATE);
+				sambaConfigChanged = true;
+			}
+		}
+		if (sambaWorkgroup != null && sambaWorkgroup.trim().length() > 0) {
+			sambaWorkgroup = sambaWorkgroup.trim();
+			if (!sambaWorkgroup.equals(oldSambaConfig.getWorkgroup())) {
+				// update config
+				Util.updateConfig(sambaWorkgroup, Commands.SCRIPT_SAMBA_WORGROUP_UPDATE);
+				sambaConfigChanged = true;
+			}
+		}
+		if (sambaConfigChanged) {
+			// restart samba
+			condRestartSamba();
+		}
+		
 		String result = SUCCESS;
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("save() returns " + result);
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * @return
+	 * @throws InterruptedException
+	 * @throws IOException
+	 */
+	private int condRestartSamba() 
+			throws InterruptedException, IOException {
+		
+		return ExecuteProcess.executeCommand(
+				Util.getSystemctlCondRestartCmdLine("smb.service"));
 	}
 
 	/**
@@ -204,10 +250,24 @@ public class ConfigurationAction extends ActionSupport {
 	}
 
 	/**
+	 * @param csosVersion the csosVersion to set
+	 */
+	public void setCsosVersion(String csosVersion) {
+		this.csosVersion = csosVersion;
+	}
+
+	/**
 	 * @return the fedoraVersion
 	 */
 	public String getFedoraVersion() {
 		return fedoraVersion;
+	}
+
+	/**
+	 * @param fedoraVersion the fedoraVersion to set
+	 */
+	public void setFedoraVersion(String fedoraVersion) {
+		this.fedoraVersion = fedoraVersion;
 	}
 
 	/**
@@ -225,23 +285,65 @@ public class ConfigurationAction extends ActionSupport {
 	}
 
 	/**
-	 * @return the locale_
+	 * @return the systemLocale
 	 */
-	public String getLocale_() {
-		return locale_;
+	public String getSystemLocale() {
+		return systemLocale;
 	}
 
 	/**
-	 * @param locale_ the locale_ to set
+	 * @param systemLocale the systemLocale to set
 	 */
-	public void setLocale_(String locale_) {
-		this.locale_ = locale_;
+	public void setSystemLocale(String systemLocale) {
+		this.systemLocale = systemLocale;
 	}
 
 	/**
-	 * @return the localeList
+	 * @return the systemLocaleList
 	 */
-	public List<SystemLocale> getLocaleList() {
-		return localeList;
-	}	
+	public List<SystemLocale> getSystemLocaleList() {
+		return systemLocaleList;
+	}
+
+	/**
+	 * @param timeZoneList the timeZoneList to set
+	 */
+	public void setTimeZoneList(List<String> timeZoneList) {
+		this.timeZoneList = timeZoneList;
+	}
+
+	/**
+	 * @param systemLocaleList the systemLocaleList to set
+	 */
+	public void setSystemLocaleList(List<SystemLocale> systemLocaleList) {
+		this.systemLocaleList = systemLocaleList;
+	}
+
+	/**
+	 * @return the sambaNetbiosName
+	 */
+	public String getSambaNetbiosName() {
+		return sambaNetbiosName;
+	}
+
+	/**
+	 * @param sambaNetbiosName the sambaNetbiosName to set
+	 */
+	public void setSambaNetbiosName(String sambaNetbiosName) {
+		this.sambaNetbiosName = sambaNetbiosName;
+	}
+
+	/**
+	 * @return the sambaWorkgroup
+	 */
+	public String getSambaWorkgroup() {
+		return sambaWorkgroup;
+	}
+	
+	/**
+	 * @param sambaWorkgroup the sambaWorkgroup to set
+	 */
+	public void setSambaWorkgroup(String sambaWorkgroup) {
+		this.sambaWorkgroup = sambaWorkgroup;
+	}
 }

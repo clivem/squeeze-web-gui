@@ -107,7 +107,7 @@ public class SystemLocale {
 			if (m.matches()) {
 				return new SystemLocale(m.group(1), m.group(2), m.group(3), m.group(4));
 			} else {
-				LOGGER.warn("getLocale(locale=" + locale + "): Invalid locale!");
+				LOGGER.warn("createSystemLocale(locale=" + locale + "): Invalid locale!");
 			}
 		}
 		
@@ -161,14 +161,7 @@ public class SystemLocale {
 		if (line != null) {
 			line.trim();
 			if (line.startsWith("LANG=")) {
-				line = line.substring(5).trim();
-				if (line.startsWith("\"")) {
-					line = line.substring(1);
-				}
-				if (line.endsWith("\"")) {
-					line = line.substring(0, line.length() - 1);
-				}
-				return line;
+				return Util.trimQuotes(line.substring(5).trim());
 			}
 		}
 		

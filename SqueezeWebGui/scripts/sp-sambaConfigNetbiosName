@@ -1,0 +1,6 @@
+#!/bin/bash
+
+if [ -n "$1" ] && [ -e "/etc/samba/smb.conf" ] ; then
+ cp /etc/samba/smb.conf /etc/samba/smb.conf.bak
+ sed -i "s/^\s*netbios name\s*=\s*.*$/\tnetbios name = \"$1\"/g" /etc/samba/smb.conf
+fi

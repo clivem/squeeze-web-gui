@@ -161,6 +161,8 @@ public class SqueezeliteAction extends SystemctlAction {
 	protected String options;
 	
 	protected boolean visulizer = false;
+	
+	protected boolean showAdvancedOptions = false;
 
 	/**
 	 * 
@@ -641,6 +643,14 @@ public class SqueezeliteAction extends SystemctlAction {
 	}
 
 	/**
+	 * @param priorityList the priorityList to set
+	 */
+	public void setPriorityList(List<String> priorityList) {
+		
+		this.priorityList = priorityList;
+	}
+
+	/**
 	 * @return
 	 */
 	public List<String> getAudioDevList() {
@@ -649,9 +659,18 @@ public class SqueezeliteAction extends SystemctlAction {
 	}
 
 	/**
+	 * @param audioDevList the audioDevList to set
+	 */
+	public void setAudioDevList(List<String> audioDevList) {
+		
+		this.audioDevList = audioDevList;
+	}
+
+	/**
 	 * @return the defaultMac
 	 */
 	public boolean isDefaultMac() {
+		
 		return defaultMac;
 	}
 
@@ -659,6 +678,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param defaultMac the defaultMac to set
 	 */
 	public void setDefaultMac(boolean defaultMac) {
+		
 		this.defaultMac = defaultMac;
 	}
 
@@ -666,6 +686,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the upsample
 	 */
 	public boolean isUpsample() {
+		
 		return upsample;
 	}
 
@@ -673,6 +694,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param upsample the upsample to set
 	 */
 	public void setUpsample(boolean upsample) {
+		
 		this.upsample = upsample;
 	}
 
@@ -680,6 +702,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the upsampleOptions
 	 */
 	public String getUpsampleOptions() {
+		
 		return upsampleOptions;
 	}
 
@@ -687,6 +710,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param upsampleOptions the upsampleOptions to set
 	 */
 	public void setUpsampleOptions(String upsampleOptions) {
+		
 		this.upsampleOptions = upsampleOptions;
 	}
 
@@ -694,6 +718,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the dop
 	 */
 	public boolean isDop() {
+		
 		return dop;
 	}
 
@@ -701,6 +726,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param dop the dop to set
 	 */
 	public void setDop(boolean dop) {
+		
 		this.dop = dop;
 	}
 
@@ -708,6 +734,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the dopOptions
 	 */
 	public String getDopOptions() {
+		
 		return dopOptions;
 	}
 
@@ -715,6 +742,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param dopOptions the dopOptions to set
 	 */
 	public void setDopOptions(String dopOptions) {
+		
 		this.dopOptions = dopOptions;
 	}
 
@@ -722,6 +750,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the options
 	 */
 	public String getOptions() {
+		
 		return options;
 	}
 
@@ -729,6 +758,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param options the options to set
 	 */
 	public void setOptions(String options) {
+		
 		this.options = options;
 	}
 
@@ -736,6 +766,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the visulizer
 	 */
 	public boolean isVisulizer() {
+		
 		return visulizer;
 	}
 
@@ -743,7 +774,22 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param visulizer the visulizer to set
 	 */
 	public void setVisulizer(boolean visulizer) {
+		
 		this.visulizer = visulizer;
+	}
+
+	/**
+	 * @return the showAdvancedOptions
+	 */
+	public boolean isShowAdvancedOptions() {
+		return showAdvancedOptions;
+	}
+
+	/**
+	 * @param showAdvancedOptions the showAdvancedOptions to set
+	 */
+	public void setShowAdvancedOptions(boolean showAdvancedOptions) {
+		this.showAdvancedOptions = showAdvancedOptions;
 	}
 
 	/**
@@ -782,17 +828,9 @@ public class SqueezeliteAction extends SystemctlAction {
 						String value = line.substring(index + 1);
 
 						/*
-						 * remove the '"' at the beginning of value string
+						 * trim Quotes from beginning and end of string
 						 */
-						if (value.startsWith("\"")) {
-							value = value.substring(1);
-						}
-						/*
-						 * remove the '"' at end of value string
-						 */
-						if (value.endsWith("\"")) {
-							value = value.substring(0, value.length() - 1);
-						}
+						value = Util.trimQuotes(value);
 						
 						/*
 						 * we don't use an arg flag for the serverIp

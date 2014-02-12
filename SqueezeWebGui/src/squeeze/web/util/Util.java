@@ -1020,4 +1020,48 @@ public final class Util {
 		
 		return ExecuteProcess.executeCommand(cmdLineArgs);
 	}
+	
+	/**
+	 * @param configLine
+	 * @param script
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public static int updateConfig(String configLine, String script)
+			throws IOException, InterruptedException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("updateConfig(configLine=" + configLine + ", script=" + script + ")");
+		}
+
+		String[] cmdLineArgs = new String[] {Commands.CMD_SUDO, script, configLine};
+		
+		return ExecuteProcess.executeCommand(cmdLineArgs);
+	}
+	
+	/**
+	 * @param text
+	 * @return
+	 */
+	public final static String trimQuotes(String text) {
+
+		String line = text;
+		
+		/*
+		 * remove the quote (single or double) at the beginning of value string, if present
+		 */
+		if (line.startsWith("\"") || line.startsWith("\'")) {
+			line = line.substring(1);
+		}
+		
+		/*
+		 * remove the quote (single or double) at end of value string, if present
+		 */
+		if (line.endsWith("\"") || line.endsWith("\'")) {
+			line = line.substring(0, line.length() - 1);
+		}
+		
+		return line;
+	}
 }

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+if [ -n "$1" ] && [ -e "/etc/samba/smb.conf" ] ; then
+ cp /etc/samba/smb.conf /etc/samba/smb.conf.bak
+ sed -i "s/^\s*workgroup\s*=\s*.*$/\tworkgroup = \"$1\"/g" /etc/samba/smb.conf
+fi

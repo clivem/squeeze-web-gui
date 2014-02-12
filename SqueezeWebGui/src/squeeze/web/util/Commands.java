@@ -35,6 +35,8 @@ public class Commands {
 	public final static String SCRIPT_TIMEZONE = "sp-timeZone";
 	public final static String SCRIPT_LOCALE_UPDATE = "sp-localeUpdate";
 	public final static String SCRIPT_HOSTNAME_UPDATE = "sp-hostnameUpdate";
+	public final static String SCRIPT_SAMBA_NETBIOS_NAME_UPDATE = "sp-sambaConfigNetbiosName";
+	public final static String SCRIPT_SAMBA_WORGROUP_UPDATE = "sp-sambaConfigWorkgroup";
 	
 	public final static String CMD_SUDO = "sudo";
 	public final static String CMD_NOHUP = "nohup";

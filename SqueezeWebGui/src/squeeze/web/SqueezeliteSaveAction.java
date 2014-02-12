@@ -69,6 +69,7 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 		}
 		
 		if (maxRate != null && maxRate.trim().length() > 0) {
+			/*
 			try {
 				int rate = Integer.parseInt(maxRate.trim());
 				if (rate > Validate.SQUEEZELITE_MAX_SAMPLE_RATE) {
@@ -76,6 +77,15 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 				}
 			} catch (NumberFormatException nfe) {
 				addActionError(getText("squeezelite.validation.maxRate.fail"));
+			}
+			*/
+			if(maxRate != null && maxRate.trim().length() > 0) {
+				if (maxRate.trim().matches(Validate.SQUEEZELITE_REGEX_MAX_RATE) || 
+						maxRate.trim().matches(Validate.SQUEEZELITE_REGEX_MAX_RATE_RANGE)) {
+					// Validates OK
+				} else {
+					addActionError(getText("squeezelite.validation.maxRate.fail"));
+				}
 			}
 		}
 		

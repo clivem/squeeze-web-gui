@@ -9,6 +9,8 @@ tomcat ALL = NOPASSWD:\
  /usr/sbin/sp-timeZone,\
  /usr/sbin/sp-localeUpdate,\
  /usr/sbin/sp-hostnameUpdate,\
+ /usr/sbin/sp-sambaConfigNetbiosName,\
+ /usr/sbin/sp-sambaConfigWorkgroup,\
  /usr/bin/systemctl,\
  /usr/bin/aplay,\
  /usr/sbin/ifconfig,\

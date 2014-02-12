@@ -42,7 +42,7 @@
 <h4><s:text name="header.configuration" /></h4>
 <s:form action="Configuration_save" theme="simple" >
 <table>
-<tr>
+
 <tr>
 <td align="right" >
     <s:text name="configuration.label.hostName" />
@@ -52,6 +52,27 @@
 </td>
 <td><s:textfield name="hostName" cssClass="size-300px" /></td>
 </tr>
+
+<tr>
+<td align="right" >
+    <s:text name="configuration.label.sambaNetbiosName" />
+	<img src='struts/tooltip.gif'
+	  	 title="<s:property value="getText('configuration.tooltip.sambaNetbiosName')" />"
+      	 alt="<s:property value="getText('configuration.tooltip.sambaNetBiosName')" />" />
+</td>
+<td><s:textfield name="sambaNetbiosName" cssClass="size-300px" /></td>
+</tr>
+
+<tr>
+<td align="right" >
+    <s:text name="configuration.label.sambaWorkgroup" />
+	<img src='struts/tooltip.gif'
+	  	 title="<s:property value="getText('configuration.tooltip.sambaWorkgroup')" />"
+      	 alt="<s:property value="getText('configuration.tooltip.sambaWorkgroup')" />" />
+</td>
+<td><s:textfield name="sambaWorkgroup" cssClass="size-300px" /></td>
+</tr>
+
 <tr>
 <td align="right">
 	<s:text name="configuration.label.timeZone" />
@@ -63,6 +84,7 @@
 	<s:select name="timeZone" list="timeZoneList" />
 </td>
 </tr>
+
 <tr>
 <td align="right">
 	<s:text name="configuration.label.locale" />
@@ -71,8 +93,8 @@
       	 alt="<s:property value="getText('configuration.tooltip.locale')" />" />
 </td>
 <td>
-	<s:select name="locale_"
-        list="localeList"
+	<s:select name="systemLocale"
+        list="systemLocaleList"
         listKey="locale"
         listValue="description"
         emptyOption="false"
@@ -80,12 +102,14 @@
         headerValue="None" />
 </td>
 </tr>
+
 <tr>
 <td colspan="2" align="right">
 	<s:reset key="button.reset"/>
 	<s:submit action="Configuration_save" key="button.submit" />
 </td>
 </tr>
+
 </table>
 </s:form>
 
