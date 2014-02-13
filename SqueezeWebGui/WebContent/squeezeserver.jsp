@@ -17,6 +17,12 @@
 
 <table>
   <tr>
+	<td>
+	    <img src="<s:text name="squeezeserver.logo" />" 
+			 width="<s:text name="squeezeserver.logo.width" />" 
+			 height="<s:text name="squeezeserver.logo.height" />" 
+			 alt="<s:text name="squeezeserver.logo.alt" />" />
+	</td>
     <td>
 	  <jsp:include page="logo_small.jsp" />
     </td>

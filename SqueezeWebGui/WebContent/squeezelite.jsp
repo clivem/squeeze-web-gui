@@ -27,6 +27,12 @@ function advancedCheck() {
 
 <table>
   <tr>
+	<td>
+	    <img src="<s:text name="squeezeplayer.logo" />" 
+			 width="<s:text name="squeezeplayer.logo.width" />" 
+			 height="<s:text name="squeezeplayer.logo.height" />" 
+			 alt="<s:text name="squeezeplayer.logo.alt" />" />
+	</td>
     <td>
 	  <jsp:include page="logo_small.jsp" />
     </td>

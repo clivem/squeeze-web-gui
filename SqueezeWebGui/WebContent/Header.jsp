@@ -30,10 +30,17 @@
 		<s:a action="SqueezeServer_populate">
 			<s:text name="nav.squeezeserver" />
 		</s:a>
-	</span> 
+	</span>
+	<!-- 
 	<span id="nav-fstab">
 		<s:a action="Fstab_populate">
 			<s:text name="nav.fstab" />
+		</s:a>
+	</span>
+	-->
+	<span id="nav-storage">
+		<s:a action="Storage_populate">
+			<s:text name="nav.storage" />
 		</s:a>
 	</span>
 	<span id="nav-shutdown">

@@ -143,6 +143,19 @@
 			<result name="success" type="redirectAction">Fstab_populate</result>
 		</action>
 
+		<action name="Storage_*" method="{1}" class="squeeze.web.StorageAction">
+			<interceptor-ref name="defaultStack" />
+			<interceptor-ref name="execAndWait">
+				<param name="threadPriority">10</param>
+				<param name="delay">3000</param>
+				<param name="delaySleepInterval">100</param>
+			</interceptor-ref>
+			<result name="wait">/wait.jsp</result>
+			<result name="populate">/storage.jsp</result>
+			<result name="input">/storage.jsp</result>
+			<result name="success" type="redirectAction">Storage_populate</result>
+		</action>
+
 		<action name="FstabSave_*" method="{1}" class="squeeze.web.FstabSaveAction">
 			<interceptor-ref name="defaultStack" />
 			<interceptor-ref name="execAndWait">

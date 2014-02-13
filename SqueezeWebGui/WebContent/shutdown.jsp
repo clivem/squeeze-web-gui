@@ -17,6 +17,12 @@
 
 <table>
   <tr>
+	<td>
+	    <img src="<s:text name="shutdown.logo" />" 
+			 width="<s:text name="shutdown.logo.width" />" 
+			 height="<s:text name="shutdown.logo.height" />" 
+			 alt="<s:text name="shutdown.logo.alt" />" />
+	</td>
     <td>
 	  <jsp:include page="logo_small.jsp" />
     </td>

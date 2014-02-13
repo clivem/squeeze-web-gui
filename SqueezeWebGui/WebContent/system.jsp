@@ -18,6 +18,12 @@
 <table>
   <tr>
     <td>
+	    <img src="<s:text name="system.logo" />" 
+			 width="<s:text name="system.logo.width" />" 
+			 height="<s:text name="system.logo.height" />" 
+			 alt="<s:text name="system.logo.alt" />" />
+    </td>
+    <td>
 	  <jsp:include page="logo_small.jsp" />
     </td>
     <td>

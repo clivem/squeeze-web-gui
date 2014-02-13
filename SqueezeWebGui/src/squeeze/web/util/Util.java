@@ -200,15 +200,32 @@ public final class Util {
 	}
 
 	/**
+	 * @param regex
 	 * @return
 	 */
 	public final static String getMounts(String regex) {
+		
+		String result = "";
+		String[] resultList = getMountList(regex);
+		for (int i = 0; i < resultList.length; i++) {
+			result += resultList[i];
+			if (i + 1 < resultList.length) {
+				result += Util.LINE_SEP;
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * @return
+	 */
+	public final static String[] getMountList(String regex) {
 		
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("getMounts()");
 		}
 		
-		StringBuffer buffer = new StringBuffer();
+		ArrayList<String> resultList = new ArrayList<String>();
 		File tmpFile = null;
 		BufferedReader reader = null;
 		try {
@@ -224,7 +241,7 @@ public final class Util {
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				if (line.matches(regex)) {
-					buffer.append(line + LINE_SEP);
+					resultList.add(line);
 				}
 			}
 		} catch (Exception e) {
@@ -243,7 +260,7 @@ public final class Util {
 			}
 		}
 		
-		return buffer.toString();
+		return resultList.toArray(new String[0]);
 	}
 	
 	/**

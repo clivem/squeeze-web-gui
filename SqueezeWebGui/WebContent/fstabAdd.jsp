@@ -17,6 +17,12 @@
 
 <table>
   <tr>
+  	<td>
+	    <img src="<s:text name="storage.logo" />" 
+			 width="<s:text name="storage.logo.width" />" 
+			 height="<s:text name="storage.logo.height" />" 
+			 alt="<s:text name="storage.logo.alt" />" />
+	</td>
     <td>
       <jsp:include page="logo_small.jsp" />
     </td>

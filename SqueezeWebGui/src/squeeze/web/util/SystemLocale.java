@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
  */
 public class SystemLocale {
 
-	private final static Pattern pattern = Pattern.compile("([^ ]+) +([^ ]+) +([^ ]+) +(.*)");
+	private final static Pattern PATTERN = Pattern.compile("([^ ]+) +([^ ]+) +([^ ]+) +(.*)");
 	
 	private final static String LOCALE_FILENAME = "/etc/locale.conf";
 	private final static String LOCALE_LIST_FILENAME = "/usr/share/system-config-language/locale-list";
@@ -102,8 +102,8 @@ public class SystemLocale {
 	 */
 	private final static SystemLocale createSystemLocale(String locale) {
 
-		synchronized (pattern) {
-			Matcher m = pattern.matcher(locale);
+		synchronized (PATTERN) {
+			Matcher m = PATTERN.matcher(locale);
 			if (m.matches()) {
 				return new SystemLocale(m.group(1), m.group(2), m.group(3), m.group(4));
 			} else {
