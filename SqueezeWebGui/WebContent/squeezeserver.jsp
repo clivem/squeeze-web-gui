@@ -29,7 +29,7 @@
 <hr />
 
 <h4><s:text name="header.service" /></h4>
-<s:form action="SqueezeServer_polpulate" theme="simple" >
+<s:form action="SqueezeServer_populate" theme="simple" >
 <table>
 <tr>
 <td>
@@ -48,10 +48,8 @@
 </tr>
 <tr>
 <td align="right">
-  <s:submit action="SqueezeServer_enableAndStartService" 
-  			key="button.enableAndStart" />
-  <s:submit action="SqueezeServer_disableAndStopService" 
-  			key="button.disableAndStop" />
+  <s:submit action="SqueezeServer_enableAndStartService" key="button.enableAndStart" />
+  <s:submit action="SqueezeServer_disableAndStopService" key="button.disableAndStop" />
 </td>
 </tr>
 </table>
