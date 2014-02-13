@@ -42,18 +42,15 @@ public class StorageAction extends ActionSupport {
 	
 	private static final long serialVersionUID = 6170755172059220738L;
 
-	protected String fsStatus = null;
+	//protected String fsStatus = null;
 	
 	protected List<StorageMount> mountList = null;
+	protected List<StorageMount> userMountList = null;
 	
 	protected final static List<String> MOUNT_POINTS;
 	protected final static List<String> LOCAL_FS_TYPES;
 	protected final static List<String> REMOTE_FS_TYPES;
 	
-	//protected final static String[] MOUNT_POINTS = {"/storage"};
-	//protected final static String[] LOCAL_FS_TYPES = {"", "fat", "ntfs", "ext2", "ext3", "ext4"};
-	//protected final static String[] REMOTE_FS_TYPES = {"", "cifs", "nfs", "nfs4"};
-
 	public final static String FS_STATUS_REGEX = "^.*(type fat|ntfs|ntfs-3g|ext2|ext3|ext4|cifs|nfs|nfs4 on){1}.*$";
 	
 	protected final static List<String> STORAGE_MOUNT_ACTION_LIST = StorageMount.generateActionList();
@@ -163,8 +160,8 @@ public class StorageAction extends ActionSupport {
 			LOGGER.debug("unmount()");
 		}
 		
-		if (mountList != null) {
-			Iterator<StorageMount> it = mountList.iterator();
+		if (userMountList != null) {
+			Iterator<StorageMount> it = userMountList.iterator();
 			while (it.hasNext()) {
 				StorageMount mount = it.next();
 				if (StorageMount.ACTION_UNMOUNT.equals(mount.getAction())) {
@@ -217,23 +214,37 @@ public class StorageAction extends ActionSupport {
 			LOGGER.debug("populateMounts()");
 		}
 		
-		fsStatus = "";
+		//fsStatus = "";
 		mountList = new ArrayList<StorageMount>();
+		userMountList = new ArrayList<StorageMount>();
 
-		String[] list = Util.getMountList(FS_STATUS_REGEX);
-		for (int i = 0; i < list.length; i++) {
+		List<String> list = Util.getMountList(FS_STATUS_REGEX);
+		for (int i = 0; i < list.size(); i++) {
+			String mountSpec = list.get(i); 
+			/*
 			// add entry to the status window
-			fsStatus += list[i];
-			if (i + 1 < list.length) {
+			fsStatus += mountSpec;
+			if (i + 1 < list.size()) {
 				fsStatus += Util.LINE_SEP;
 			}
-			// add to the user controllable list
-			StorageMount mount = StorageMount.createStorageMount(list[i]);
-			String[] mountPoints = MOUNT_POINTS.toArray(new String[0]);
-			for (int j = 0; j < mountPoints.length; j++) {
-				if (mountPoints[j].equals(mount.getMountPoint())) {
+			*/
+
+			StorageMount mount = StorageMount.createStorageMount(mountSpec);
+			if (mount != null) {
+				boolean userMount = false;
+				String[] mountPoints = MOUNT_POINTS.toArray(new String[0]);
+				for (int j = 0; j < mountPoints.length; j++) {
+					if (mountPoints[j].equals(mount.getMountPoint())) {
+						// add to the user controllable list
+						userMountList.add(mount);
+						userMount = true;
+						break;
+					}					
+				}
+				
+				if (!userMount) {
+					// add to the mount list
 					mountList.add(mount);
-					break;
 				}
 			}
 			
@@ -242,30 +253,32 @@ public class StorageAction extends ActionSupport {
 
 	/**
 	 * @return the fsStatus
-	 */
+	 *
 	public String getFsStatus() {
 		return fsStatus;
 	}
+	*/
 
 	/**
 	 * @param fsStatus the fsStatus to set
-	 */
+	 *
 	public void setFsStatus(String fsStatus) {
 		this.fsStatus = fsStatus;
 	}
+	*/
 
 	/**
-	 * @return the mountList
+	 * @return the userMountList
 	 */
-	public List<StorageMount> getMountList() {
-		return mountList;
+	public List<StorageMount> getUserMountList() {
+		return userMountList;
 	}
 
 	/**
-	 * @param mountList the mountList to set
+	 * @param userMountList the userMountList to set
 	 */
-	public void setMountList(List<StorageMount> mountList) {
-		this.mountList = mountList;
+	public void setUserMountList(List<StorageMount> userMountList) {
+		this.userMountList = userMountList;
 	}
 
 	/**
@@ -413,5 +426,12 @@ public class StorageAction extends ActionSupport {
 	 */
 	public void setRemoteFsMountOptions(String remoteFsMountOptions) {
 		this.remoteFsMountOptions = remoteFsMountOptions;
+	}
+
+	/**
+	 * @return the mountList
+	 */
+	public List<StorageMount> getMountList() {
+		return mountList;
 	}
 }

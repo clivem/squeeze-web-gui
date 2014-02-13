@@ -206,10 +206,10 @@ public final class Util {
 	public final static String getMounts(String regex) {
 		
 		String result = "";
-		String[] resultList = getMountList(regex);
-		for (int i = 0; i < resultList.length; i++) {
-			result += resultList[i];
-			if (i + 1 < resultList.length) {
+		List<String> resultList = getMountList(regex);
+		for (int i = 0; i < resultList.size(); i++) {
+			result += resultList.get(i);
+			if (i + 1 < resultList.size()) {
 				result += Util.LINE_SEP;
 			}
 		}
@@ -219,7 +219,7 @@ public final class Util {
 	/**
 	 * @return
 	 */
-	public final static String[] getMountList(String regex) {
+	public final static List<String> getMountList(String regex) {
 		
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("getMounts()");
@@ -260,7 +260,7 @@ public final class Util {
 			}
 		}
 		
-		return resultList.toArray(new String[0]);
+		return resultList;
 	}
 	
 	/**
