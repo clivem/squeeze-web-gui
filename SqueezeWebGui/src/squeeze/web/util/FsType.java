@@ -26,11 +26,17 @@ package squeeze.web.util;
  */
 public class FsType {
 
+	public final static String AUTO = "auto";
 	public final static String EXT4 = "ext4";
 	public final static String EXT3 = "ext3";
 	public final static String EXT2 = "ext2";
 	public final static String NFS = "nfs";
+	public final static String NFS4 = "nfs4";
 	public final static String CIFS = "cifs";
+	public final static String FAT = "fat";
+	public final static String VFAT = "vfat";
+	public final static String NTFS = "ntfs";
+	public final static String NTFS3G = "ntfs-3g";
 	
 	/**
 	 * 

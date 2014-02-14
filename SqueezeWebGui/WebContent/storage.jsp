@@ -34,6 +34,8 @@
   </tr>
 </table>
 
+<s:actionerror />
+
 <!-- Mounted File Systems -->
 <hr />
 <h4><s:text name="storage.header.mountedFileSystems" /></h4>
@@ -93,25 +95,25 @@
 <table>
 <thead>
 <tr>
-	<td>
+	<td width="200">
 		<s:text name="storage.label.file" />
 		<img src='struts/tooltip.gif'
 			 title="<s:property value="getText('storage.tooltip.file')" />"
 			 alt="<s:property value="getText('storage.tooltip.file')" />" />
 	</td>
-	<td>
+	<td width="300">
 		<s:text name="storage.label.spec" />
 		<img src='struts/tooltip.gif'
 			 title="<s:property value="getText('storage.tooltip.spec')" />"
 			 alt="<s:property value="getText('storage.tooltip.spec')" />" />
 	</td>
-	<td>
+	<td width="75">
 		<s:text name="storage.label.vfsType" />
 		<img src='struts/tooltip.gif'
 			 title="<s:property value="getText('storage.tooltip.vfsType')" />"
 			 alt="<s:property value="getText('storage.tooltip.vfsType')" />" />
 	</td>
-	<td>
+	<td width="300">
 		<s:text name="storage.label.mountOptions" />
 		<img src='struts/tooltip.gif'
 			 title="<s:property value="getText('storage.tooltip.mountOptions')" />"
@@ -154,25 +156,25 @@
 <table>
 <thead>
 <tr>
-	<td>
+	<td width="200">
 		<s:text name="storage.label.file" />
 		<img src='struts/tooltip.gif'
 			 title="<s:property value="getText('storage.tooltip.file')" />"
 			 alt="<s:property value="getText('storage.tooltip.file')" />" />
 	</td>
-	<td>
+	<td width="300">
 		<s:text name="storage.label.partition" />
 		<img src='struts/tooltip.gif'
 			 title="<s:property value="getText('storage.tooltip.partition')" />"
 			 alt="<s:property value="getText('storage.tooltip.partition')" />" />
 	</td>
-	<td>
+	<td width="75">
 		<s:text name="storage.label.vfsType" />
 		<img src='struts/tooltip.gif'
 			 title="<s:property value="getText('storage.tooltip.vfsType')" />"
 			 alt="<s:property value="getText('storage.tooltip.vfsType')" />" />
 	</td>
-	<td>
+	<td width="300">
 		<s:text name="storage.label.mountOptions" />
 		<img src='struts/tooltip.gif'
 			 title="<s:property value="getText('storage.tooltip.mountOptions')" />"
@@ -182,8 +184,8 @@
 </thead>
 <tr>
 	<td><s:select name="localFsMountPoint" list="mountPoints" cssClass="size-200px" /></td>
-	<td><s:select name="localFsPartition" list="availablePartitions" cssClass="size-300px" /></td>
-	<td><s:select name="localfsType" list="localFsTypes" cssClass="size-75px" /></td>
+	<td><s:select name="localFsPartition" list="localFsPartitionList" cssClass="size-300px" /></td>
+	<td><s:select name="localFsType" list="localFsTypes" cssClass="size-75px" /></td>
 	<td><s:textfield name="localFsMountOptions" cssClass="size-300px" /></td>
 </tr>
 
@@ -204,25 +206,25 @@
 <table>
 <thead>
 <tr>
-	<td>
+	<td width="200">
 		<s:text name="storage.label.file" />
 		<img src='struts/tooltip.gif'
 			 title="<s:property value="getText('storage.tooltip.file')" />"
 			 alt="<s:property value="getText('storage.tooltip.file')" />" />
 	</td>
-	<td>
+	<td width="300">
 		<s:text name="storage.label.remoteSpec" />
 		<img src='struts/tooltip.gif'
 			 title="<s:property value="getText('storage.tooltip.remoteSpec')" />"
 			 alt="<s:property value="getText('storage.tooltip.remoteSpec')" />" />
 	</td>
-	<td>
+	<td width="75">
 		<s:text name="storage.label.vfsType" />
 		<img src='struts/tooltip.gif'
 			 title="<s:property value="getText('storage.tooltip.vfsType')" />"
 			 alt="<s:property value="getText('storage.tooltip.vfsType')" />" />
 	</td>
-	<td>
+	<td width="300">
 		<s:text name="storage.label.mountOptions" />
 		<img src='struts/tooltip.gif'
 			 title="<s:property value="getText('storage.tooltip.mountOptions')" />"
@@ -233,7 +235,7 @@
 <tr>
 	<td><s:select name="remoteFsMountPoint" list="mountPoints" cssClass="size-200px" /></td>
 	<td><s:textfield name="remoteFsPartition" cssClass="size-300px" /></td>
-	<td><s:select name="remotefsType" list="remoteFsTypes" cssClass="size-75px" /></td>
+	<td><s:select name="remoteFsType" list="remoteFsTypes" cssClass="size-75px" /></td>
 	<td><s:textfield name="remoteFsMountOptions" cssClass="size-300px" /></td>
 </tr>
 

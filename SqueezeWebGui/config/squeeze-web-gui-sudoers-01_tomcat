@@ -16,4 +16,7 @@ tomcat ALL = NOPASSWD:\
  /usr/sbin/ifconfig,\
  /usr/sbin/ifup,\
  /usr/sbin/ifdown,\
- /usr/sbin/wpa_cli
+ /usr/sbin/wpa_cli,\
+ /usr/bin/mount,\
+ /usr/bin/umount
+

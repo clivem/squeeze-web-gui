@@ -1081,4 +1081,77 @@ public final class Util {
 		
 		return line;
 	}
+	
+	/**
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public final static int umount(String mountPoint) 
+			throws IOException, InterruptedException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("umount(mountPoint=" + mountPoint + ")");
+		}
+
+		String[] cmdLineArgs = new String[] {Commands.CMD_SUDO, Commands.CMD_UMOUNT, 
+				Commands.UMOUNT_FORCE, mountPoint};
+		
+		return ExecuteProcess.executeCommand(cmdLineArgs);
+	}
+	
+	/**
+	 * @param mount
+	 * @return
+	 */
+	public final static String[] createMountCommand(StorageMount mount) {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("createMountCommand(mount=" + mount + ")");
+		}
+
+		String[] cmdLineArgs = new String[] {Commands.CMD_SUDO, Commands.CMD_MOUNT, 
+				"-t", mount.getFsType(), 
+				"-o", mount.getOptions(), 
+				mount.getSpec(), 
+				mount.getMountPoint()};
+		
+		return cmdLineArgs;
+	}
+
+	/**
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public final static int mount(String[] cmdLineArgs) 
+			throws IOException, InterruptedException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("mount(cmdLineArgs=" + cmdLineArgs + ")");
+		}
+
+		return ExecuteProcess.executeCommand(cmdLineArgs);
+	}
+	
+	/**
+	 * @return
+	 */
+	public final static ArrayList<String> getPartitions() {
+		
+		ArrayList<String> partitions = new ArrayList<String>();
+		
+		File f = new File("/dev");
+		File[] files = f.listFiles();
+		for (int i = 0; i < files.length; i++) {
+			File file = files[i]; 
+			if (!file.isDirectory() && file.getName().matches("^sd[a-z]+[0-9]+$")) {
+				partitions.add("/dev/" + files[i].getName());
+			}
+		}	
+		
+		Collections.sort(partitions);
+		
+		return partitions;
+	}
 }

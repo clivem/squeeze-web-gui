@@ -170,7 +170,7 @@ public class StorageMount {
 		ArrayList<String> list = new ArrayList<String>();
 		list.add(Util.BLANK_STRING);
 		list.add(ACTION_UNMOUNT);
-		list.add(ACTION_REMOUNT);
+		//list.add(ACTION_REMOUNT);
 		return list;
 	}
 
@@ -181,5 +181,5 @@ public class StorageMount {
 	public String toString() {
 		return "StorageMount[spec=" + spec + ", mountPoint=" + mountPoint
 				+ ", fsType=" + fsType + ", options=" + options + ", action=" + action + "]";
-	}
+	}	
 }
