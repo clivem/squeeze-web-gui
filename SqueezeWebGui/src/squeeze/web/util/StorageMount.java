@@ -34,9 +34,9 @@ import org.apache.log4j.Logger;
 public class StorageMount {
 	
 	// spec on /mountPoint type fsType (options,options,options)
-	private final static Pattern PATTERN = Pattern.compile("([^ ]+) on ([^ ]+) type ([^ ]+) \\((.*)\\)$");
+	private final static Pattern MOUNT_LIST_PATTERN = Pattern.compile("([^ ]+) on ([^ ]+) type ([^ ]+) \\((.*)\\)$");
 
-	//public final static String ACTION_MOUNT = "Mount";
+	public final static String ACTION_MOUNT = "mount";
 	public final static String ACTION_UNMOUNT = "unmount";
 	public final static String ACTION_REMOUNT = "remount";
 	
@@ -146,8 +146,8 @@ public class StorageMount {
 	 */
 	public final static StorageMount createStorageMount(String line) {
 
-		synchronized (PATTERN) {
-			Matcher m = PATTERN.matcher(line);
+		synchronized (MOUNT_LIST_PATTERN) {
+			Matcher m = MOUNT_LIST_PATTERN.matcher(line);
 			if (m.matches()) {
 				return new StorageMount(m.group(1), m.group(2), m.group(3), m.group(4));
 			} else {

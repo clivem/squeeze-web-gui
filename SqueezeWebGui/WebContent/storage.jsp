@@ -91,7 +91,7 @@
 <hr />
 
 <h4><s:text name="storage.header.userControlledMounts" /></h4>
-<s:form action="Storage_populate" theme="simple">
+<s:form action="StorageUnmount_unmount" theme="simple">
 <table>
 <thead>
 <tr>
@@ -140,7 +140,7 @@
 
 <tr>
 <td colspan="4" align="right">
-	<s:submit action="Storage_unmount" key="button.submit" />
+	<s:submit action="StorageUnmount_unmount" key="button.submit" />
 	<s:reset />
 	<s:submit action="Storage_populate" key="button.refresh" />
 </td>
@@ -152,7 +152,7 @@
 <!-- Mount Local File System -->
 <hr />
 <h4><s:text name="storage.header.mountLocalFs" /></h4>
-<s:form action="Storage_mountLocalFs" theme="simple">
+<s:form action="StorageMountLocal_mountLocalFs" theme="simple">
 <table>
 <thead>
 <tr>
@@ -192,7 +192,7 @@
 <tr>
 <td colspan="4" align="right">
 	<s:reset />
-	<s:submit action="Storage_mountLocalFs" key="button.mount" />
+	<s:submit action="StorageMountLocal_mountLocalFs" key="button.mount" />
 </td>
 </tr>
 
@@ -202,7 +202,7 @@
 <!-- Mount Remote File System -->
 <hr />
 <h4><s:text name="storage.header.mountRemoteFs" /></h4>
-<s:form action="Storage_mountRemoteFs" theme="simple">
+<s:form action="StorageMountRemote_mountRemoteFs" theme="simple">
 <table>
 <thead>
 <tr>
@@ -242,7 +242,7 @@
 <tr>
 <td colspan="4" align="right">
 	<s:reset />
-	<s:submit action="Storage_mountRemoteFs" key="button.mount" />
+	<s:submit action="StorageMountRemote_mountRemoteFs" key="button.mount" />
 </td>
 </tr>
 

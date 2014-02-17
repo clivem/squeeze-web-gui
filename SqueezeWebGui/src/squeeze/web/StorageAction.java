@@ -22,7 +22,6 @@ package squeeze.web;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -43,8 +42,6 @@ public class StorageAction extends ActionSupport {
 	
 	private static final long serialVersionUID = 6170755172059220738L;
 
-	//protected String fsStatus = null;
-	
 	protected List<StorageMount> mountList = null;
 	protected List<StorageMount> userMountList = null;
 	
@@ -52,24 +49,26 @@ public class StorageAction extends ActionSupport {
 	protected final static List<String> LOCAL_FS_TYPES;
 	protected final static List<String> REMOTE_FS_TYPES;
 	
-	public final static String FS_STATUS_REGEX = "^.*(type fat|vfat|ntfs|ntfs-3g|ext2|ext3|ext4|cifs|nfs|nfs4 on){1}.*$";
+	public final static String FS_STATUS_REGEX = "^.*(type\\s(" + FsType.FAT + "|" + FsType.VFAT + "|" + FsType.NTFS + 
+			"|" + FsType.NTFS3G + "|" + FsType.EXT2 + "|" + FsType.EXT3 + "|" + FsType.EXT4 + "|" + FsType.CIFS + 
+			"|" + FsType.NFS + "|" + FsType.NFS4 + ")\\s){1}.*$";
 	
 	protected final static List<String> STORAGE_MOUNT_ACTION_LIST = StorageMount.generateActionList();
 	
-	private List<String> localFsPartitionList = null;
+	protected List<String> localFsPartitionList = null;
 	
-	private String localFsPartition = null;
-	private String localFsMountPoint = null;
-	private String localFsType = null;
-	private String localFsMountOptions = null;
+	protected String localFsPartition = null;
+	protected String localFsMountPoint = null;
+	protected String localFsType = null;
+	protected String localFsMountOptions = null;
 	
-	private String remoteFsPartition = null;
-	private String remoteFsMountPoint = null;
-	private String remoteFsType = null;
-	private String remoteFsMountOptions = null;
+	protected String remoteFsPartition = null;
+	protected String remoteFsMountPoint = null;
+	protected String remoteFsType = null;
+	protected String remoteFsMountOptions = null;
 	
-	private final static String LOCAL_FS_DEFAULT_MOUNT_OPTIONS = "defaults";
-	private final static String REMOTE_FS_DEFAULT_MOUNT_OPTIONS = "defaults,_netdev";
+	protected final static String LOCAL_FS_DEFAULT_MOUNT_OPTIONS = "defaults";
+	protected final static String REMOTE_FS_DEFAULT_MOUNT_OPTIONS = "defaults,_netdev";
 	
 	static {
 		MOUNT_POINTS = new ArrayList<String>();
@@ -99,7 +98,7 @@ public class StorageAction extends ActionSupport {
 		super();
 		
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("FstabAction()");
+			LOGGER.debug("StorageAction()");
 		}
 	}
 
@@ -122,107 +121,6 @@ public class StorageAction extends ActionSupport {
 	}
 	
 	/**
-	 * @return
-	 * @throws Exception
-	 */
-	public String mountLocalFs() throws Exception {
-
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("mountLocalFs()");
-		}
-
-		int mountResult = -1;
-		
-		if (localFsPartition != null && localFsPartition.trim().length() > 0 && 
-				localFsMountPoint != null && localFsMountPoint.trim().length() > 0 &&
-				localFsType != null && localFsType.trim().length() > 0) { 
-		
-			localFsPartition = localFsPartition.trim();
-			localFsMountPoint = localFsMountPoint.trim();
-			
-			// map fat -> vfat, ntfs -> ntfs-3g
-			localFsType = localFsType.trim();
-			if (FsType.FAT.equals(localFsType)) {
-				localFsType = FsType.VFAT;
-			} else if (FsType.NTFS.equals(localFsType)) {
-				localFsType = FsType.NTFS3G;
-			}
-
-			if (localFsMountOptions != null || localFsMountOptions.trim().length() > 0) {
-				localFsMountOptions = localFsMountOptions.trim();
-			} else {
-				localFsMountOptions = LOCAL_FS_DEFAULT_MOUNT_OPTIONS;
-			}
-						
-			mountResult = mountFs(localFsPartition, localFsMountPoint, localFsType, localFsMountOptions);
-		}
-
-		String result = "populate";
-		if(mountResult == 0) {
-			// successful mount. 
-			// clear the local and remote fs fields
-			result = populate();
-		} else {
-			// failed mount
-			// just re-populate the mount lists
-			populateMounts();
-		}
-		
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("mountLocalFs() returns " + result);
-		}
-		
-		return result;
-	}
-	
-	/**
-	 * @return
-	 * @throws Exception
-	 */
-	public String mountRemoteFs() throws Exception {
-
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("mountRemoteFs()");
-		}
-
-		int mountResult = -1;
-		
-		if (remoteFsPartition != null && remoteFsPartition.trim().length() > 0 && 
-				remoteFsMountPoint != null && remoteFsMountPoint.trim().length() > 0 &&
-				remoteFsType != null && remoteFsType.trim().length() > 0) { 
-		
-			remoteFsPartition = remoteFsPartition.trim();
-			remoteFsMountPoint = remoteFsMountPoint.trim();
-			remoteFsType = remoteFsType.trim();
-
-			if (remoteFsMountOptions != null || remoteFsMountOptions.trim().length() > 0) {
-				remoteFsMountOptions = remoteFsMountOptions.trim();
-			} else {
-				remoteFsMountOptions = REMOTE_FS_DEFAULT_MOUNT_OPTIONS;
-			}
-
-			mountResult = mountFs(remoteFsPartition, remoteFsMountPoint, remoteFsType, remoteFsMountOptions);
-		}
-		
-		String result = "populate";
-		if(mountResult == 0) {
-			// successful mount. 
-			// clear the local and remote fs fields
-			result = populate();
-		} else {
-			// failed mount
-			// just re-populate the mount lists
-			populateMounts();
-		}
-		
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("mountRemoteFs() returns " + result);
-		}
-		
-		return result;
-	}
-	
-	/**
 	 * @param partition
 	 * @param mountPoint
 	 * @param type
@@ -231,7 +129,7 @@ public class StorageAction extends ActionSupport {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	private int mountFs(String partition, String mountPoint, String type, String options) 
+	protected int mountFs(String partition, String mountPoint, String type, String options) 
 			throws IOException, InterruptedException {
 		
 		// Make sure it isn't already mounted
@@ -260,41 +158,6 @@ public class StorageAction extends ActionSupport {
 		return result;
 	}
 
-	/**
-	 * @return
-	 * @throws Exception
-	 */
-	public String unmount() throws Exception {
-		
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("unmount()");
-		}
-		
-		if (userMountList != null) {
-			Iterator<StorageMount> it = userMountList.iterator();
-			while (it.hasNext()) {
-				StorageMount mount = it.next();
-				if (StorageMount.ACTION_UNMOUNT.equals(mount.getAction())) {
-					if (LOG.isDebugEnabled()) {
-						LOG.debug("Unmount: " + mount);
-					}
-					Util.umount(mount.getMountPoint());
-				} else if (StorageMount.ACTION_REMOUNT.equals(mount.getAction())) {
-					if (LOG.isDebugEnabled()) {
-						LOG.warn("Remount: " + mount);
-					}
-				}
-			}
-		}
-				
-		String result = populate();
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("unmount() returns " + result);
-		}
-		
-		return result;
-	}
-	
 	/**
 	 * @return
 	 * @throws Exception
@@ -336,22 +199,13 @@ public class StorageAction extends ActionSupport {
 			LOGGER.debug("populateMounts()");
 		}
 		
-		//fsStatus = "";
 		mountList = new ArrayList<StorageMount>();
 		userMountList = new ArrayList<StorageMount>();
 		localFsPartitionList = Util.getPartitions();
 
 		List<String> list = Util.getMountList(FS_STATUS_REGEX);
 		for (int i = 0; i < list.size(); i++) {
-			String mountSpec = list.get(i); 
-			/*
-			// add entry to the status window
-			fsStatus += mountSpec;
-			if (i + 1 < list.size()) {
-				fsStatus += Util.LINE_SEP;
-			}
-			*/
-
+			String mountSpec = list.get(i);
 			StorageMount mount = StorageMount.createStorageMount(mountSpec);
 			if (mount != null) {
 				boolean userMount = false;
@@ -373,22 +227,6 @@ public class StorageAction extends ActionSupport {
 			
 		}
 	}
-
-	/**
-	 * @return the fsStatus
-	 *
-	public String getFsStatus() {
-		return fsStatus;
-	}
-	*/
-
-	/**
-	 * @param fsStatus the fsStatus to set
-	 *
-	public void setFsStatus(String fsStatus) {
-		this.fsStatus = fsStatus;
-	}
-	*/
 
 	/**
 	 * @return the userMountList
