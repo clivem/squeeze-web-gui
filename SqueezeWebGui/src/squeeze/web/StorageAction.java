@@ -26,6 +26,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import squeeze.web.util.Commands;
+import squeeze.web.util.ExecuteProcess;
 import squeeze.web.util.FsType;
 import squeeze.web.util.StorageMount;
 import squeeze.web.util.Util;
@@ -42,18 +44,33 @@ public class StorageAction extends ActionSupport {
 	
 	private static final long serialVersionUID = 6170755172059220738L;
 
-	protected List<StorageMount> mountList = null;
-	protected List<StorageMount> userMountList = null;
-	
 	protected final static List<String> MOUNT_POINTS;
 	protected final static List<String> LOCAL_FS_TYPES;
 	protected final static List<String> REMOTE_FS_TYPES;
+	protected final static List<String> STORAGE_MOUNT_ACTION_LIST = StorageMount.generateActionList();
 	
 	public final static String FS_STATUS_REGEX = "^.*(type\\s(" + FsType.FAT + "|" + FsType.VFAT + "|" + FsType.NTFS + 
 			"|" + FsType.NTFS3G + "|" + FsType.EXT2 + "|" + FsType.EXT3 + "|" + FsType.EXT4 + "|" + FsType.CIFS + 
 			"|" + FsType.NFS + "|" + FsType.NFS4 + ")\\s){1}.*$";
+		
+	protected final static String LOCAL_FS_DEFAULT_MOUNT_OPTIONS = "defaults";
+	protected final static String REMOTE_FS_DEFAULT_MOUNT_OPTIONS = "defaults,_netdev";
 	
-	protected final static List<String> STORAGE_MOUNT_ACTION_LIST = StorageMount.generateActionList();
+	protected final static String[] STORAGE_DIR_LIST = new String[] {
+		// "/media", 
+		// "/media/audio", 
+		// "/media/playlists",
+		"/movies",
+		"/music",
+		"/music/flac",
+		"/music/m4a",
+		"/music/mp3",
+		"/music/playlist",
+		"/pictures"
+	};
+	
+	protected List<StorageMount> systemMountList = null;
+	protected List<StorageMount> userMountList = null;
 	
 	protected List<String> localFsPartitionList = null;
 	
@@ -67,12 +84,16 @@ public class StorageAction extends ActionSupport {
 	protected String remoteFsType = null;
 	protected String remoteFsMountOptions = null;
 	
-	protected final static String LOCAL_FS_DEFAULT_MOUNT_OPTIONS = "defaults";
-	protected final static String REMOTE_FS_DEFAULT_MOUNT_OPTIONS = "defaults,_netdev";
+	protected String remoteFsUser = null;
+	protected String remoteFsPassword = null;
+	protected String remoteFsDomain = null;
+	
+	protected String storageDirectory = null;
 	
 	static {
 		MOUNT_POINTS = new ArrayList<String>();
 		MOUNT_POINTS.add("/storage");
+		MOUNT_POINTS.add("/mnt/storage");
 		
 		LOCAL_FS_TYPES = new ArrayList<String>();
 		LOCAL_FS_TYPES.add(Util.BLANK_STRING);
@@ -121,44 +142,6 @@ public class StorageAction extends ActionSupport {
 	}
 	
 	/**
-	 * @param partition
-	 * @param mountPoint
-	 * @param type
-	 * @param options
-	 * @return
-	 * @throws IOException
-	 * @throws InterruptedException
-	 */
-	protected int mountFs(String partition, String mountPoint, String type, String options) 
-			throws IOException, InterruptedException {
-		
-		// Make sure it isn't already mounted
-		int result = Util.umount(mountPoint);
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Util.umount(" + mountPoint + "): returns " + result);
-		}
-
-		//if (result != 0) {
-		//	addActionError("Umount '" + mountPoint + "' returned: " + result);
-		//}
-		
-		// Try to mount it
-		StorageMount mount = new StorageMount(partition, mountPoint, type, options);
-		String[] cmdLineArgs = Util.createMountCommand(mount);
-		result = Util.mount(cmdLineArgs);
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Util.mount(" + Util.arrayToString(cmdLineArgs) + "): returns " + result);
-		}
-
-		if (result != 0) {
-			addActionError("Mount '" + Util.arrayToString(cmdLineArgs) + "' returned: " + result +
-					". (If successful, return code should be 0.)");
-		}
-
-		return result;
-	}
-
-	/**
 	 * @return
 	 * @throws Exception
 	 */
@@ -189,6 +172,74 @@ public class StorageAction extends ActionSupport {
 	}
 	
 	/**
+	 * @return
+	 * @throws Exception
+	 */
+	public String createStorageLayout() throws Exception {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("createStorageLayout()");
+		}
+
+		String[] cmdLineArgs = new String[] {Commands.CMD_SUDO, Commands.SCRIPT_CREATE_STORAGE_LAYOUT, 
+				storageDirectory};
+		
+		int cmdResult = ExecuteProcess.executeCommand(cmdLineArgs);
+		if (cmdResult != 0) {
+			addActionError("'" + Util.arrayToString(cmdLineArgs) + "' returned: " + cmdResult +
+					". (If successful, return code should be 0.)");
+		}
+
+		String result = "populate";
+
+		populateMounts();
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("createStorageLayout() returns " + result);
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * @param partition
+	 * @param mountPoint
+	 * @param type
+	 * @param options
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	protected int mountFs(String partition, String mountPoint, String type, String options) 
+			throws IOException, InterruptedException {
+		
+		StorageMount mount = new StorageMount(partition, mountPoint, type, options);
+		// Make sure it isn't already mounted
+		int result = Util.umount(Util.createUmountCommand(mount));
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Util.umount(" + mountPoint + "): returns " + result);
+		}
+
+		//if (result != 0) {
+		//	addActionError("Umount '" + mountPoint + "' returned: " + result);
+		//}
+		
+		// Try to mount it
+		String[] cmdLineArgs = Util.createMountCommand(mount);
+		result = Util.mount(cmdLineArgs);
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Util.mount(" + Util.arrayToString(cmdLineArgs) + "): returns " + result);
+		}
+
+		if (result != 0) {
+			addActionError("Mount '" + Util.arrayToString(cmdLineArgs) + "' returned: " + result +
+					". (If successful, return code should be 0.)");
+		}
+
+		return result;
+	}
+
+	/**
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
@@ -199,7 +250,7 @@ public class StorageAction extends ActionSupport {
 			LOGGER.debug("populateMounts()");
 		}
 		
-		mountList = new ArrayList<StorageMount>();
+		systemMountList = new ArrayList<StorageMount>();
 		userMountList = new ArrayList<StorageMount>();
 		localFsPartitionList = Util.getPartitions();
 
@@ -221,7 +272,7 @@ public class StorageAction extends ActionSupport {
 				
 				if (!userMount) {
 					// add to the mount list
-					mountList.add(mount);
+					systemMountList.add(mount);
 				}
 			}
 			
@@ -390,10 +441,10 @@ public class StorageAction extends ActionSupport {
 	}
 
 	/**
-	 * @return the mountList
+	 * @return the systemMountList
 	 */
-	public List<StorageMount> getMountList() {
-		return mountList;
+	public List<StorageMount> getSystemMountList() {
+		return systemMountList;
 	}
 
 	/**
@@ -408,5 +459,68 @@ public class StorageAction extends ActionSupport {
 	 */
 	public void setLocalFsPartitionList(List<String> localFsPartitionList) {
 		this.localFsPartitionList = localFsPartitionList;
+	}
+	
+	/**
+	 * @return
+	 */
+	public String[] getStorageLayoutList() {
+		return STORAGE_DIR_LIST;
+	}
+	
+	/**
+	 * @return the storageDirectory
+	 */
+	public String getStorageDirectory() {
+		return storageDirectory;
+	}
+	
+	/**
+	 * @param storageDirectory the storageDirectory to set
+	 */
+	public void setStorageDirectory(String storageDirectory) {
+		this.storageDirectory = storageDirectory;
+	}
+
+	/**
+	 * @return the remoteFsUser
+	 */
+	public String getRemoteFsUser() {
+		return remoteFsUser;
+	}
+
+	/**
+	 * @param remoteFsUser the remoteFsUser to set
+	 */
+	public void setRemoteFsUser(String remoteFsUser) {
+		this.remoteFsUser = remoteFsUser;
+	}
+
+	/**
+	 * @return the remoteFsPassword
+	 */
+	public String getRemoteFsPassword() {
+		return remoteFsPassword;
+	}
+
+	/**
+	 * @param remoteFsPassword the remoteFsPassword to set
+	 */
+	public void setRemoteFsPassword(String remoteFsPassword) {
+		this.remoteFsPassword = remoteFsPassword;
+	}
+
+	/**
+	 * @return the remoteFsDomain
+	 */
+	public String getRemoteFsDomain() {
+		return remoteFsDomain;
+	}
+
+	/**
+	 * @param remoteFsDomain the remoteFsDomain to set
+	 */
+	public void setRemoteFsDomain(String remoteFsDomain) {
+		this.remoteFsDomain = remoteFsDomain;
 	}
 }

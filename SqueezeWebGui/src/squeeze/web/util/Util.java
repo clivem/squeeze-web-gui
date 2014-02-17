@@ -1087,19 +1087,32 @@ public final class Util {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public final static int umount(String mountPoint) 
+	public final static int umount(String[] cmdLineArgs) 
 			throws IOException, InterruptedException {
 		
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("umount(mountPoint=" + mountPoint + ")");
+			LOGGER.debug("umount(cmdLineArgs=" + cmdLineArgs + ")");
 		}
 
-		String[] cmdLineArgs = new String[] {Commands.CMD_SUDO, Commands.CMD_UMOUNT, 
-				Commands.UMOUNT_FORCE, mountPoint};
-		
 		return ExecuteProcess.executeCommand(cmdLineArgs);
 	}
 	
+	/**
+	 * @param mount
+	 * @return
+	 */
+	public final static String[] createUmountCommand(StorageMount mount) {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("createUmountCommand(mount=" + mount + ")");
+		}
+
+		String[] cmdLineArgs = new String[] {Commands.CMD_SUDO, Commands.CMD_UMOUNT, 
+				Commands.UMOUNT_FORCE, mount.getMountPoint()};
+		
+		return cmdLineArgs;
+	}
+
 	/**
 	 * @param mount
 	 * @return
@@ -1120,6 +1133,24 @@ public final class Util {
 	}
 
 	/**
+	 * @param mount
+	 * @return
+	 */
+	public final static String[] createReMountCommand(StorageMount mount) {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("createReMountCommand(mount=" + mount + ")");
+		}
+
+		String[] cmdLineArgs = new String[] {Commands.CMD_SUDO, Commands.CMD_MOUNT, 
+				"-o", "remount," + mount.getOptions(), 
+				mount.getSpec(), 
+				mount.getMountPoint()};
+		
+		return cmdLineArgs;
+	}
+
+	/**
 	 * @return
 	 * @throws IOException
 	 * @throws InterruptedException
@@ -1129,6 +1160,21 @@ public final class Util {
 		
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("mount(cmdLineArgs=" + cmdLineArgs + ")");
+		}
+
+		return ExecuteProcess.executeCommand(cmdLineArgs);
+	}
+	
+	/**
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public final static int remount(String[] cmdLineArgs) 
+			throws IOException, InterruptedException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("remount(cmdLineArgs=" + cmdLineArgs + ")");
 		}
 
 		return ExecuteProcess.executeCommand(cmdLineArgs);

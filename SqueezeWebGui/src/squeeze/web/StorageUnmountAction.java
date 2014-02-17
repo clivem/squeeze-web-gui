@@ -68,10 +68,21 @@ public class StorageUnmountAction extends StorageAction {
 					if (LOG.isDebugEnabled()) {
 						LOG.debug("Unmount: " + mount);
 					}
-					Util.umount(mount.getMountPoint());
+					String[] cmdLineArgs = Util.createUmountCommand(mount);
+					int result = Util.umount(cmdLineArgs);
+					if (result != 0) {
+						addActionError("Unmount '" + Util.arrayToString(cmdLineArgs) + "' returned: " + result +
+								". (If successful, return code should be 0.)");
+					}
 				} else if (StorageMount.ACTION_REMOUNT.equals(mount.getAction())) {
 					if (LOG.isDebugEnabled()) {
 						LOG.warn("Remount: " + mount);
+						String[] cmdLineArgs = Util.createReMountCommand(mount);
+						int result = Util.remount(cmdLineArgs);
+						if (result != 0) {
+							addActionError("Remount '" + Util.arrayToString(cmdLineArgs) + "' returned: " + result +
+									". (If successful, return code should be 0.)");
+						}
 					}
 				}
 			}

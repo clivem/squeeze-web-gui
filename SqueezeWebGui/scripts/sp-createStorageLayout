@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ -n "$1" ]; then
+  mkdir -p "$1"
+  # mkdir -p "$1/media"
+  # mkdir -p "$1/media/audio"
+  # mkdir -p "$1/media/playlists"
+  mkdir -p "$1/movies"
+  mkdir -p "$1/music"
+  mkdir -p "$1/music/flac"
+  mkdir -p "$1/music/m4a"
+  mkdir -p "$1/music/mp3"
+  mkdir -p "$1/music/playlist"
+  mkdir -p "$1/pictures"
+
+  find "$1" -exec chown nobody.nobody {} \;
+  find "$1" -exec chmod 777 {} \;
+fi

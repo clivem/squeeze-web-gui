@@ -71,7 +71,7 @@
 </tr>
 </thead>
 
-<s:iterator value="mountList">
+<s:iterator value="systemMountList">
 <tr>
 	<td><s:textfield name="mountPoint" readonly="true" cssClass="size-200px" /></td>
 	<td><s:textfield name="spec" readonly="true" cssClass="size-300px" /></td>
@@ -133,7 +133,7 @@
 	<td><s:textfield name="userMountList[%{#ind.index}].mountPoint" value="%{mountPoint}" readonly="true" cssClass="size-200px" /></td>
 	<td><s:textfield name="userMountList[%{#ind.index}].spec" value="%{spec}" readonly="true" cssClass="size-300px" /></td>
 	<td><s:textfield name="userMountList[%{#ind.index}].fsType" value="%{fsType}" readonly="true" cssClass="size-75px" /></td>
-	<td><s:textfield name="userMountList[%{#ind.index}].options" value="%{options}" readonly="true" cssClass="size-300px" /></td>
+	<td><s:textfield name="userMountList[%{#ind.index}].options" value="%{options}" cssClass="size-300px" /></td>
 	<td><s:select name="userMountList[%{#ind.index}].action" value="%{action}" list="mountActionList" /></td>
 </tr>
 </s:iterator>
@@ -240,12 +240,67 @@
 </tr>
 
 <tr>
+<td colspan="4">
+<table>
+<tr>
+<td>
+	<s:text name="storage.label.remoteFsUser" />
+	<img src='struts/tooltip.gif'
+		 title="<s:property value="getText('storage.tooltip.remoteFsUser')" />"
+		 alt="<s:property value="getText('storage.tooltip.remoteFsUser')" />" />
+</td>
+<td><s:textfield name="remoteFsUser" cssClass="size-150px" /></td>
+<td>
+	<s:text name="storage.label.remoteFsPassword" />
+	<img src='struts/tooltip.gif'
+		 title="<s:property value="getText('storage.tooltip.remoteFsPassword')" />"
+		 alt="<s:property value="getText('storage.tooltip.remoteFsPassword')" />" />
+</td>
+<td><s:password name="remoteFsPassword" cssClass="size-150px" /></td>
+<td>
+	<s:text name="storage.label.remoteFsDomain" />
+	<img src='struts/tooltip.gif'
+		 title="<s:property value="getText('storage.tooltip.remoteFsDomain')" />"
+		 alt="<s:property value="getText('storage.tooltip.remoteFsDomain')" />" />
+</td>
+<td><s:textfield name="remoteFsDomain" cssClass="size-150px" /></td>
+</tr>
+</table>
+</td>
+</tr>
+
+<tr>
 <td colspan="4" align="right">
 	<s:reset />
 	<s:submit action="StorageMountRemote_mountRemoteFs" key="button.mount" />
 </td>
 </tr>
 
+</table>
+</s:form>
+
+<!-- Create Storage Layout -->
+<hr />
+<h4><s:text name="storage.header.createStorageLayout" /></h4>
+<p>Create the default file system directory structure under the chosen storage directory, DIR. 
+(owner nobody, group nobody and mode 777.)</p>
+<p>
+<s:iterator value="storageLayoutList" status="ind">
+	DIR<s:text name="storageLayoutList[%{#ind.index}]" /><br />
+</s:iterator>
+</p>
+<s:form action="Storage_createStorageLayout" theme="simple">
+<table>
+<tr>
+	<td>
+		<s:text name="storage.label.storageDirectory" />
+		<img src='struts/tooltip.gif'
+			 title="<s:property value="getText('storage.tooltip.storageDirectory')" />"
+			 alt="<s:property value="getText('storage.tooltip.storageDirectory')" />" />
+	</td>
+	<td><s:select name="storageDirectory" list="mountPoints" cssClass="size-200px" /></td>
+	<td><s:submit action="Storage_createStorageLayout" key="button.submit" /></td>
+</tr>
 </table>
 </s:form>
 

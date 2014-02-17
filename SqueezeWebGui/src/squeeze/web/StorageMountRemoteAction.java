@@ -21,6 +21,8 @@ package squeeze.web;
 
 import org.apache.log4j.Logger;
 
+import squeeze.web.util.FsType;
+
 /**
  * @author Clive Messer <clive.m.messer@gmail.com>
  *
@@ -41,6 +43,50 @@ public class StorageMountRemoteAction extends StorageAction {
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("StorageMountRemoteAction()");
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see com.opensymphony.xwork2.ActionSupport#validate()
+	 */
+	@Override
+	public void validate() {
+		if (remoteFsPartition == null || remoteFsPartition.trim().length() < 1) {
+			addActionError(getText("storage.validation.remoteSpec.fail"));
+		}
+
+		if (remoteFsMountPoint == null || remoteFsMountPoint.trim().length() < 1) {
+			addActionError(getText("storage.validation.remoteFsMountPoint.fail"));
+		}
+
+		if (remoteFsType == null || remoteFsType.trim().length() < 1) {
+			addActionError(getText("storage.validation.remoteFsType.fail"));
+		} else {		
+			if (FsType.CIFS.equals(remoteFsType)) {
+				if (remoteFsUser == null || remoteFsUser.trim().length() < 1) {
+					addActionError(getText("storage.validation.remoteFsUser.fail"));
+				}
+			}
+		}
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see squeeze.web.StorageAction#execute()
+	 */
+	@Override
+	public String execute() throws Exception {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("execute()");
+		}
+		
+		String result = mountRemoteFs();
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("execute() returns " + result);
+		}
+		
+		return result;
 	}
 
 	/**
