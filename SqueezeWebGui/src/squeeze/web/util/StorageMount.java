@@ -49,6 +49,8 @@ public class StorageMount {
 
 	private String action = null;
 	
+	private boolean persist = false;
+	
 	/**
 	 * 
 	 */
@@ -138,6 +140,20 @@ public class StorageMount {
 	 */
 	public void setAction(String action) {
 		this.action = action;
+	}
+
+	/**
+	 * @return the persist
+	 */
+	public boolean isPersist() {
+		return persist;
+	}
+
+	/**
+	 * @param persist the persist to set
+	 */
+	public void setPersist(boolean persist) {
+		this.persist = persist;
 	}
 
 	/**

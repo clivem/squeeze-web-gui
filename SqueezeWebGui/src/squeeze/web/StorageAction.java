@@ -78,11 +78,13 @@ public class StorageAction extends ActionSupport {
 	protected String localFsMountPoint = null;
 	protected String localFsType = null;
 	protected String localFsMountOptions = null;
+	protected boolean localFsPersist = false;
 	
 	protected String remoteFsPartition = null;
 	protected String remoteFsMountPoint = null;
 	protected String remoteFsType = null;
 	protected String remoteFsMountOptions = null;
+	protected boolean remoteFsPersist = false;
 	
 	protected String remoteFsUser = null;
 	protected String remoteFsPassword = null;
@@ -522,5 +524,33 @@ public class StorageAction extends ActionSupport {
 	 */
 	public void setRemoteFsDomain(String remoteFsDomain) {
 		this.remoteFsDomain = remoteFsDomain;
+	}
+
+	/**
+	 * @return the localFsPersist
+	 */
+	public boolean isLocalFsPersist() {
+		return localFsPersist;
+	}
+
+	/**
+	 * @param localFsPersist the localFsPersist to set
+	 */
+	public void setLocalFsPersist(boolean localFsPersist) {
+		this.localFsPersist = localFsPersist;
+	}
+
+	/**
+	 * @return the remoteFsPersist
+	 */
+	public boolean isRemoteFsPersist() {
+		return remoteFsPersist;
+	}
+
+	/**
+	 * @param remoteFsPersist the remoteFsPersist to set
+	 */
+	public void setRemoteFsPersist(boolean remoteFsPersist) {
+		this.remoteFsPersist = remoteFsPersist;
 	}
 }

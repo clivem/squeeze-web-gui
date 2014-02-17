@@ -125,6 +125,14 @@
 			 title="<s:property value="getText('storage.tooltip.action')" />"
 			 alt="<s:property value="getText('storage.tooltip.action')" />" />
 	</td>
+	<!-- 
+	<td width="75">
+		<s:text name="storage.label.persist" />
+		<img src='struts/tooltip.gif'
+			 title="<s:property value="getText('storage.tooltip.persist')" />"
+			 alt="<s:property value="getText('storage.tooltip.persist')" />" />
+	</td>
+	-->
 </tr>
 </thead>
 
@@ -135,6 +143,9 @@
 	<td><s:textfield name="userMountList[%{#ind.index}].fsType" value="%{fsType}" readonly="true" cssClass="size-75px" /></td>
 	<td><s:textfield name="userMountList[%{#ind.index}].options" value="%{options}" cssClass="size-300px" /></td>
 	<td><s:select name="userMountList[%{#ind.index}].action" value="%{action}" list="mountActionList" /></td>
+	<!-- 
+	<td><s:checkbox name="userMountList[%{#ind.index}].persist" cssClass="size-75px" /></td>
+	-->
 </tr>
 </s:iterator>
 
@@ -180,6 +191,12 @@
 			 title="<s:property value="getText('storage.tooltip.mountOptions')" />"
 			 alt="<s:property value="getText('storage.tooltip.mountOptions')" />" />
 	</td>
+	<td width="75">
+		<s:text name="storage.label.persist" />
+		<img src='struts/tooltip.gif'
+			 title="<s:property value="getText('storage.tooltip.persist')" />"
+			 alt="<s:property value="getText('storage.tooltip.persist')" />" />
+	</td>
 </tr>
 </thead>
 <tr>
@@ -187,6 +204,7 @@
 	<td><s:select name="localFsPartition" list="localFsPartitionList" cssClass="size-300px" /></td>
 	<td><s:select name="localFsType" list="localFsTypes" cssClass="size-75px" /></td>
 	<td><s:textfield name="localFsMountOptions" cssClass="size-300px" /></td>
+	<td><s:checkbox name="localFsPersist" cssClass="size-75px" /></td>
 </tr>
 
 <tr>
@@ -230,6 +248,12 @@
 			 title="<s:property value="getText('storage.tooltip.mountOptions')" />"
 			 alt="<s:property value="getText('storage.tooltip.mountOptions')" />" />
 	</td>
+	<td width="75">
+		<s:text name="storage.label.persist" />
+		<img src='struts/tooltip.gif'
+			 title="<s:property value="getText('storage.tooltip.persist')" />"
+			 alt="<s:property value="getText('storage.tooltip.persist')" />" />
+	</td>
 </tr>
 </thead>
 <tr>
@@ -237,6 +261,7 @@
 	<td><s:textfield name="remoteFsPartition" cssClass="size-300px" /></td>
 	<td><s:select name="remoteFsType" list="remoteFsTypes" cssClass="size-75px" /></td>
 	<td><s:textfield name="remoteFsMountOptions" cssClass="size-300px" /></td>
+	<td><s:checkbox name="remoteFsPersist" cssClass="size-75px" /></td>
 </tr>
 
 <tr>

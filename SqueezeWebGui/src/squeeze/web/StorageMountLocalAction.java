@@ -45,6 +45,50 @@ public class StorageMountLocalAction extends StorageAction {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see com.opensymphony.xwork2.ActionSupport#validate()
+	 */
+	@Override
+	public void validate() {
+		
+		if (localFsPartition == null || localFsPartition.trim().length() < 1) {
+			addActionError(getText("storage.validation.spec.fail"));
+		}
+
+		if (localFsMountPoint == null || localFsMountPoint.trim().length() < 1) {
+			addActionError(getText("storage.validation.file.fail"));
+		}
+
+		if (localFsType == null || localFsType.trim().length() < 1) {
+			addActionError(getText("storage.validation.vfsType.fail"));
+		}
+		
+		if (hasActionErrors()) {
+			try {
+				populateMounts();
+			} catch (Exception e) {}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see squeeze.web.StorageAction#execute()
+	 */
+	@Override
+	public String execute() throws Exception {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("execute()");
+		}
+		
+		String result = mountLocalFs();
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("execute() returns " + result);
+		}
+		
+		return result;
+	}
+
 	/**
 	 * @return
 	 * @throws Exception
@@ -84,6 +128,9 @@ public class StorageMountLocalAction extends StorageAction {
 		String result = "populate";
 		if(mountResult == 0) {
 			// successful mount. 
+			if (localFsPersist) {
+				// persist to fstab
+			}
 			// clear the local and remote fs fields
 			result = populate();
 		} else {

@@ -50,25 +50,36 @@ public class StorageMountRemoteAction extends StorageAction {
 	 */
 	@Override
 	public void validate() {
+		
 		if (remoteFsPartition == null || remoteFsPartition.trim().length() < 1) {
 			addActionError(getText("storage.validation.remoteSpec.fail"));
 		}
 
 		if (remoteFsMountPoint == null || remoteFsMountPoint.trim().length() < 1) {
-			addActionError(getText("storage.validation.remoteFsMountPoint.fail"));
+			addActionError(getText("storage.validation.file.fail"));
 		}
 
 		if (remoteFsType == null || remoteFsType.trim().length() < 1) {
-			addActionError(getText("storage.validation.remoteFsType.fail"));
+			addActionError(getText("storage.validation.vfsType.fail"));
 		} else {		
 			if (FsType.CIFS.equals(remoteFsType)) {
-				if (remoteFsUser == null || remoteFsUser.trim().length() < 1) {
+				if (remoteFsMountOptions != null && remoteFsMountOptions.contains("user=")) {
+					// user is set in options
+					if (LOGGER.isDebugEnabled()) {
+						LOGGER.debug("cifs user set in mount options.");
+					}
+				} else if (remoteFsUser == null || remoteFsUser.trim().length() < 1) {
 					addActionError(getText("storage.validation.remoteFsUser.fail"));
 				}
 			}
 		}
+		
+		if (hasActionErrors()) {
+			try {
+				populateMounts();
+			} catch (Exception e) {}
+		}
 	}
-	
 	
 	/* (non-Javadoc)
 	 * @see squeeze.web.StorageAction#execute()
@@ -114,13 +125,40 @@ public class StorageMountRemoteAction extends StorageAction {
 			} else {
 				remoteFsMountOptions = REMOTE_FS_DEFAULT_MOUNT_OPTIONS;
 			}
+			
+			String mountOptions = remoteFsMountOptions;
+			
+			/*
+			 * Make sure if we are mounting a cifs share, that we use credentials.
+			 */
+			if (FsType.CIFS.equals(remoteFsType)) {
+				if (!remoteFsType.contains("user=") && 
+						remoteFsUser != null && remoteFsUser.trim().length() > 0) {
+					mountOptions += ",user=" + remoteFsUser.trim();
+				}
+				// blank password allowed!
+				if (!remoteFsMountOptions.contains("pass=")) {
+					if (remoteFsPassword != null && remoteFsPassword.trim().length() > 0) {
+						mountOptions += ",pass=" + remoteFsPassword.trim();
+					} else {
+						mountOptions += ",pass=";
+					}
+				}
+				if (!remoteFsMountOptions.contains("domain=") && 
+						remoteFsDomain != null && remoteFsDomain.trim().length() > 0) {
+					mountOptions += ",domain=" + remoteFsDomain.trim();
+				}
+			}
 
-			mountResult = mountFs(remoteFsPartition, remoteFsMountPoint, remoteFsType, remoteFsMountOptions);
+			mountResult = mountFs(remoteFsPartition, remoteFsMountPoint, remoteFsType, mountOptions);
 		}
 		
 		String result = "populate";
 		if(mountResult == 0) {
-			// successful mount. 
+			// successful mount.
+			if (remoteFsPersist) {
+				// persist to fstab
+			}
 			// clear the local and remote fs fields
 			result = populate();
 		} else {
