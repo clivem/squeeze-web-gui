@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if [ -n "$1" ] && [ -e /sys/class/gpio/gpio101/direction ]; then
+ echo "$1" > /sys/class/gpio/gpio101/direction
+fi
