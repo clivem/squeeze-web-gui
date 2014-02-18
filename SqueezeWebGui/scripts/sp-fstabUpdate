@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if [ -e "$1" ]; then
+ cp /etc/fstab /etc/fstab.bak && cp "$1" /etc/fstab
+fi
