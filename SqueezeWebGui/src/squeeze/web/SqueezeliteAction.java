@@ -914,7 +914,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return
 	 * @throws IOException
 	 */
-	private File writeTempSqueezeliteProperties(String configName, ArrayList<String> argList) 
+	private File writeTempSqueezeliteProperties(String configName, List<String> argList) 
 			throws IOException {
 		
 		if (LOGGER.isDebugEnabled()) {

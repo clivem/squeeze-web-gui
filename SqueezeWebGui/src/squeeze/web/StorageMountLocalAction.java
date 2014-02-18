@@ -22,6 +22,7 @@ package squeeze.web;
 import org.apache.log4j.Logger;
 
 import squeeze.web.util.FsType;
+import squeeze.web.util.StorageMount;
 
 /**
  * @author Clive Messer <clive.m.messer@gmail.com>
@@ -99,6 +100,7 @@ public class StorageMountLocalAction extends StorageAction {
 			LOGGER.debug("mountLocalFs()");
 		}
 
+		StorageMount mount = null;
 		int mountResult = -1;
 		
 		if (localFsPartition != null && localFsPartition.trim().length() > 0 && 
@@ -122,7 +124,8 @@ public class StorageMountLocalAction extends StorageAction {
 				localFsMountOptions = LOCAL_FS_DEFAULT_MOUNT_OPTIONS;
 			}
 						
-			mountResult = mountFs(localFsPartition, localFsMountPoint, localFsType, localFsMountOptions);
+			mount = new StorageMount(localFsPartition, localFsMountPoint, localFsType, localFsMountOptions, false);
+			mountResult = mountFs(mount);
 		}
 
 		String result = "populate";
@@ -130,6 +133,9 @@ public class StorageMountLocalAction extends StorageAction {
 			// successful mount. 
 			if (localFsPersist) {
 				// persist to fstab
+				if (mount != null) {
+					persist(mount);
+				}
 			}
 			// clear the local and remote fs fields
 			result = populate();

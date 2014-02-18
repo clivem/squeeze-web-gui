@@ -12,6 +12,7 @@ tomcat ALL = NOPASSWD:\
  /usr/sbin/sp-sambaConfigNetbiosName,\
  /usr/sbin/sp-sambaConfigWorkgroup,\
  /usr/sbin/sp-createStorageLayout,\
+ /usr/sbin/sp-fstabUpdate,\
  /usr/bin/systemctl,\
  /usr/bin/aplay,\
  /usr/sbin/ifconfig,\

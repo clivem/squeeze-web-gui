@@ -20,7 +20,13 @@
  */
 package squeeze.web.util;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,43 +39,86 @@ import org.apache.log4j.Logger;
  */
 public class StorageMount {
 	
-	// spec on /mountPoint type fsType (options,options,options)
-	private final static Pattern MOUNT_LIST_PATTERN = Pattern.compile("([^ ]+) on ([^ ]+) type ([^ ]+) \\((.*)\\)$");
+	private final static Logger LOGGER = Logger.getLogger(StorageMount.class);
 
+	// output from mount: spec on /mountPoint type fsType (options,options,options)
+	private final static Pattern MOUNT_LIST_PATTERN = 
+			Pattern.compile("([^ ]+) on ([^ ]+) type ([^ ]+) \\((.*)\\)$");
+
+	// parse /etc/fstab
+	private final static Pattern FSTAB_PATTERN = 
+			Pattern.compile("^([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+).*$");
+	
+	public final static String FSTAB_FILE_LOCATION = "/etc/fstab";
+	
+	// ACTIONS
 	public final static String ACTION_MOUNT = "mount";
 	public final static String ACTION_UNMOUNT = "unmount";
 	public final static String ACTION_REMOUNT = "remount";
 	
-	private final static Logger LOGGER = Logger.getLogger(StorageMount.class);
-
 	private String spec = null;
 	private String mountPoint = null;
 	private String fsType = null;
 	private String options = null;
+	private int freq = 0;
+	private int passNo = 0;
+
+	private int lineNo = -1;
 
 	private String action = null;
 	
 	private boolean persist = false;
+
+	private boolean fstabEntry = false;
+	
+	private boolean mounted = false;
 	
 	/**
 	 * 
 	 */
 	public StorageMount() {
-	
+
 		super();
 	}
-	
+
 	/**
 	 * 
 	 */
-	public StorageMount(String spec, String mountPoint, String fsType, String options) {
+	public StorageMount(String spec, String mountPoint, String fsType, String options, boolean mounted) {
 		
-		this();
+		this(spec, mountPoint, fsType, options, 0, 0, -1, null, false, false, mounted);
+	}
+
+	/**
+	 * @param spec
+	 * @param mountPoint
+	 * @param fsType
+	 * @param options
+	 * @param freq
+	 * @param passNo
+	 * @param lineNo
+	 * @param action
+	 * @param persist
+	 * @param fstabEntry
+	 * @param mounted
+	 */
+	public StorageMount(String spec, String mountPoint, String fsType,
+			String options, int freq, int passNo, int lineNo, String action,
+			boolean persist, boolean fstabEntry, boolean mounted) {
+		
+		super();
 		
 		this.spec = spec;
 		this.mountPoint = mountPoint;
 		this.fsType = fsType;
 		this.options = options;
+		this.freq = freq;
+		this.passNo = passNo;
+		this.lineNo = lineNo;
+		this.action = action;
+		this.persist = persist;
+		this.fstabEntry = fstabEntry;
+		this.mounted = mounted;
 	}
 
 	/**
@@ -157,20 +206,94 @@ public class StorageMount {
 	}
 
 	/**
-	 * @param locale
+	 * @return the freq
+	 */
+	public int getFreq() {
+		return freq;
+	}
+
+	/**
+	 * @param freq the freq to set
+	 */
+	public void setFreq(int freq) {
+		this.freq = freq;
+	}
+
+	/**
+	 * @return the passNo
+	 */
+	public int getPassNo() {
+		return passNo;
+	}
+
+	/**
+	 * @param passNo the passNo to set
+	 */
+	public void setPassNo(int passNo) {
+		this.passNo = passNo;
+	}
+
+	/**
+	 * @return the lineNo
+	 */
+	public int getLineNo() {
+		return lineNo;
+	}
+
+	/**
+	 * @param lineNo the lineNo to set
+	 */
+	public void setLineNo(int lineNo) {
+		this.lineNo = lineNo;
+	}
+
+	/**
+	 * @return the fstabEntry
+	 */
+	public boolean isFstabEntry() {
+		return fstabEntry;
+	}
+
+	/**
+	 * @param fstabEntry the fstabEntry to set
+	 */
+	public void setFstabEntry(boolean fstabEntry) {
+		this.fstabEntry = fstabEntry;
+	}
+
+	/**
+	 * @return the mounted
+	 */
+	public boolean isMounted() {
+		return mounted;
+	}
+
+	/**
+	 * @param mounted the mounted to set
+	 */
+	public void setMounted(boolean mounted) {
+		this.mounted = mounted;
+	}
+
+	/**
+	 * @param lineOfMountOutput
 	 * @return
 	 */
-	public final static StorageMount createStorageMount(String line) {
+	public final static StorageMount createStorageMount(String lineOfMountOutput) {
+
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("createStorageMount(lineOfMountOutput=" + lineOfMountOutput + ")");
+		}
 
 		Matcher matcher = null;
 		synchronized (MOUNT_LIST_PATTERN) {
-			matcher = MOUNT_LIST_PATTERN.matcher(line);
+			matcher = MOUNT_LIST_PATTERN.matcher(lineOfMountOutput);
 		}
 		
 		if (matcher.matches()) {
-			return new StorageMount(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4));
+			return new StorageMount(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4), true);
 		} else {
-			LOGGER.warn("createStorageMount(line=" + line + "): Invalid!");
+			LOGGER.warn("createStorageMount(line=" + lineOfMountOutput + "): Invalid!");
 		}
 		
 		return null;
@@ -179,17 +302,122 @@ public class StorageMount {
 	/**
 	 * @return
 	 */
-	public final static List<String> generateActionList() {
+	public List<String> getActionList() {
 		
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("generateActionList()");
+			LOGGER.debug("getActionList()");
 		}
 		
 		ArrayList<String> list = new ArrayList<String>();
 		list.add(Util.BLANK_STRING);
-		list.add(ACTION_UNMOUNT);
-		list.add(ACTION_REMOUNT);
+		if (mounted) {
+			list.add(ACTION_UNMOUNT);
+			list.add(ACTION_REMOUNT);
+		} else {
+			list.add(ACTION_MOUNT);
+		}
+		
 		return list;
+	}
+	
+	/**
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public final static List<StorageMount> parseFstab() 
+			throws FileNotFoundException, IOException {
+				
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("parseFstab()");
+		}
+
+		return parseFstab(getFstab());
+	}
+	
+	/**
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public final static List<StorageMount> parseFstab(List<String> fstabList) 
+			throws FileNotFoundException, IOException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("parseFstab(fstabList=" + fstabList + ")");
+		}
+
+		ArrayList<StorageMount> list = new ArrayList<StorageMount>();
+
+		int lineNo = 0;
+		String line = null;
+		Iterator<String> it = fstabList.iterator();
+		while (it.hasNext()) {
+			line = it.next();
+			lineNo++;
+			
+			if (line.trim().length() > 0 && !line.startsWith(Util.HASH)) {
+				
+				Matcher matcher = null;
+				
+				synchronized (FSTAB_PATTERN) {
+					matcher = FSTAB_PATTERN.matcher(line);
+				}
+				
+				if (matcher.matches() && matcher.groupCount() == 6) {
+					if (!FsType.SWAP.equals(matcher.group(3))) {
+						int freq = 0;
+						try {
+							freq = Integer.parseInt(matcher.group(5));
+						} catch (NumberFormatException nfe) {}
+						
+						int passNo = 0;
+						try {
+							passNo = Integer.parseInt(matcher.group(6));
+						} catch (NumberFormatException nfe) {}
+						
+						StorageMount entry = new StorageMount(matcher.group(1), matcher.group(2), 
+								matcher.group(3), matcher.group(4), freq, passNo, lineNo, null, false, true, false);
+						
+						list.add(entry);
+					}
+				}
+			}
+		}
+		
+		return list;
+	}
+
+	/**
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public final static List<String> getFstab() 
+			throws FileNotFoundException, IOException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("getFstab()");
+		}
+
+		BufferedReader br = null;
+		try {
+			ArrayList<String> list = new ArrayList<String>();
+			
+			br = new BufferedReader(new FileReader(new File(FSTAB_FILE_LOCATION)));
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				list.add(line);
+			}
+			
+			return list;
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (Exception e) {}
+			}
+		}
 	}
 
 	/* (non-Javadoc)
@@ -197,7 +425,10 @@ public class StorageMount {
 	 */
 	@Override
 	public String toString() {
-		return "StorageMount[spec=" + spec + ", mountPoint=" + mountPoint
-				+ ", fsType=" + fsType + ", options=" + options + ", action=" + action + "]";
-	}	
+		
+		return "StorageMount [spec=" + spec + ", mountPoint=" + mountPoint
+				+ ", fsType=" + fsType + ", options=" + options + ", freq="
+				+ freq + ", passNo=" + passNo + ", lineNo=" + lineNo
+				+ ", action=" + action + ", persist=" + persist + "]";
+	}
 }

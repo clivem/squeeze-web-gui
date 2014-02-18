@@ -38,6 +38,7 @@ public class Commands {
 	public final static String SCRIPT_SAMBA_NETBIOS_NAME_UPDATE = "sp-sambaConfigNetbiosName";
 	public final static String SCRIPT_SAMBA_WORGROUP_UPDATE = "sp-sambaConfigWorkgroup";
 	public final static String SCRIPT_CREATE_STORAGE_LAYOUT = "sp-createStorageLayout";
+	public final static String SCRIPT_FSTAB_UPDATE = "sp-fstabUpdate";
 	
 	public final static String CMD_SUDO = "sudo";
 	public final static String CMD_NOHUP = "nohup";

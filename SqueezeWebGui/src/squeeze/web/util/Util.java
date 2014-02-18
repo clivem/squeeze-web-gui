@@ -111,9 +111,11 @@ public final class Util {
 			LOGGER.trace("getModifiedFullDate()");
 		}
 		
+		String date = null;
 		synchronized (DF_FULL) {
-			return DF_FULL.format(new Date());
+			date = DF_FULL.format(new Date());
 		}
+		return date;
 	}
 	
 	/**
@@ -125,7 +127,7 @@ public final class Util {
 			LOGGER.trace("getModifiedComment()");
 		}
 		
-		return ("# Updated by squeeze-web-gui at " + 
+		return ("# Updated by squeeze-web-gui (Java) at " + 
 					getModifiedFullDate() + LINE_SEP);
 	}
 	
@@ -222,14 +224,14 @@ public final class Util {
 	public final static List<String> getMountList(String regex) {
 		
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("getMounts()");
+			LOGGER.debug("getMountList()");
 		}
 		
 		ArrayList<String> resultList = new ArrayList<String>();
 		File tmpFile = null;
 		BufferedReader reader = null;
 		try {
-			tmpFile = Util.createTempFile("mount", ".txt");
+			tmpFile = Util.createTempFile("mount_", ".txt");
 			Writer writer = new FileWriter(tmpFile);
 
 			String[] cmdLineArgs = new String[] {
@@ -1185,13 +1187,17 @@ public final class Util {
 	 */
 	public final static ArrayList<String> getPartitions() {
 		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("getPartitions()");
+		}
+		
 		ArrayList<String> partitions = new ArrayList<String>();
 		
 		File f = new File("/dev");
 		File[] files = f.listFiles();
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i]; 
-			if (!file.isDirectory() && file.getName().matches("^sd[a-z]+[0-9]+$")) {
+			if (!file.isDirectory() && file.getName().matches("^sd[a-z]{1}[0-9]{1}$")) {
 				partitions.add("/dev/" + files[i].getName());
 			}
 		}	

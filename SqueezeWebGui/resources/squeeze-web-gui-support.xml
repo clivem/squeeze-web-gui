@@ -156,7 +156,7 @@
 			<result name="success" type="redirectAction">Storage_populate</result>
 		</action>
 
-		<action name="StorageUnmount_*" method="{1}" class="squeeze.web.StorageUnmountAction">
+		<action name="StorageMount_*" method="{1}" class="squeeze.web.StorageMountAction">
 			<interceptor-ref name="defaultStack" />
 			<interceptor-ref name="execAndWait">
 				<param name="threadPriority">10</param>

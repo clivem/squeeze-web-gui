@@ -20,7 +20,9 @@
  */
 package squeeze.web;
 
+import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -32,39 +34,46 @@ import squeeze.web.util.Util;
  * @author Clive Messer <clive.m.messer@gmail.com>
  *
  */
-public class StorageUnmountAction extends StorageAction {
+public class StorageMountAction extends StorageAction {
 
 	private static final long serialVersionUID = -2979284633849195589L;
 	
-	private final static Logger LOGGER = Logger.getLogger(StorageUnmountAction.class);
+	private final static Logger LOGGER = Logger.getLogger(StorageMountAction.class);
 
 	/**
 	 * 
 	 */
-	public StorageUnmountAction() {
+	public StorageMountAction() {
 		
 		super();
 		
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("StorageUnmountAction()");
+			LOGGER.debug("StorageMountAction()");
 		}
 	}
-
-	/**
-	 * @return
-	 * @throws Exception
-	 */
-	public String unmount() throws Exception {
+	
+	private void action_(List<StorageMount> mountList) 
+			throws InterruptedException, IOException {
 		
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("unmount()");
-		}
-		
-		if (userMountList != null) {
-			Iterator<StorageMount> it = userMountList.iterator();
+		if (mountList != null) {
+			Iterator<StorageMount> it = mountList.iterator();
 			while (it.hasNext()) {
 				StorageMount mount = it.next();
-				if (StorageMount.ACTION_UNMOUNT.equals(mount.getAction())) {
+				if (StorageMount.ACTION_MOUNT.equals(mount.getAction())) {
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("Mount: " + mount);
+					}
+					// Make sure it isn't already mounted.
+					String[] cmdLineArgs = Util.createUmountCommand(mount);
+					int result = Util.umount(cmdLineArgs);
+					// Mount it.
+					cmdLineArgs = Util.createMountCommand(mount);
+					result = Util.mount(cmdLineArgs);
+					if (result != 0) {
+						addActionError("Mount '" + Util.arrayToString(cmdLineArgs) + "' returned: " + result +
+								". (If successful, return code should be 0.)");
+					}					
+				} else if (StorageMount.ACTION_UNMOUNT.equals(mount.getAction())) {
 					if (LOG.isDebugEnabled()) {
 						LOG.debug("Unmount: " + mount);
 					}
@@ -86,11 +95,26 @@ public class StorageUnmountAction extends StorageAction {
 					}
 				}
 			}
+		}		
+	}
+
+	/**
+	 * @return
+	 * @throws Exception
+	 */
+	public String action() 
+			throws Exception {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("action()");
 		}
+		
+		action_(userMountList);
+		action_(fstabUserUnmountedList);
 				
 		String result = populate();
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("unmount() returns " + result);
+			LOGGER.debug("action() returns " + result);
 		}
 		
 		return result;

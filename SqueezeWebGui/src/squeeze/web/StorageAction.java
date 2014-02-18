@@ -20,8 +20,14 @@
  */
 package squeeze.web;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -29,6 +35,7 @@ import org.apache.log4j.Logger;
 import squeeze.web.util.Commands;
 import squeeze.web.util.ExecuteProcess;
 import squeeze.web.util.FsType;
+import squeeze.web.util.FstabEntry;
 import squeeze.web.util.StorageMount;
 import squeeze.web.util.Util;
 
@@ -47,7 +54,7 @@ public class StorageAction extends ActionSupport {
 	protected final static List<String> MOUNT_POINTS;
 	protected final static List<String> LOCAL_FS_TYPES;
 	protected final static List<String> REMOTE_FS_TYPES;
-	protected final static List<String> STORAGE_MOUNT_ACTION_LIST = StorageMount.generateActionList();
+	//protected final static List<String> STORAGE_MOUNT_ACTION_LIST = StorageMount.getStaticActionList();
 	
 	public final static String FS_STATUS_REGEX = "^.*(type\\s(" + FsType.FAT + "|" + FsType.VFAT + "|" + FsType.NTFS + 
 			"|" + FsType.NTFS3G + "|" + FsType.EXT2 + "|" + FsType.EXT3 + "|" + FsType.EXT4 + "|" + FsType.CIFS + 
@@ -69,6 +76,7 @@ public class StorageAction extends ActionSupport {
 		"/pictures"
 	};
 	
+	protected List<StorageMount> fstabUserUnmountedList = null;
 	protected List<StorageMount> systemMountList = null;
 	protected List<StorageMount> userMountList = null;
 	
@@ -157,11 +165,19 @@ public class StorageAction extends ActionSupport {
 		localFsMountPoint = null;
 		localFsType = null;
 		localFsMountOptions = LOCAL_FS_DEFAULT_MOUNT_OPTIONS;
+		localFsPersist = false;
 		
 		remoteFsPartition = null;
 		remoteFsMountPoint = null;
 		remoteFsType = null;
 		remoteFsMountOptions = REMOTE_FS_DEFAULT_MOUNT_OPTIONS;
+		remoteFsPersist = false;
+		
+		remoteFsUser = null;
+		remoteFsPassword = null;
+		remoteFsDomain = null;
+		
+		storageDirectory = null;
 		
 		populateMounts();
 		
@@ -212,14 +228,14 @@ public class StorageAction extends ActionSupport {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	protected int mountFs(String partition, String mountPoint, String type, String options) 
+	protected int mountFs(StorageMount mount) 
 			throws IOException, InterruptedException {
 		
-		StorageMount mount = new StorageMount(partition, mountPoint, type, options);
 		// Make sure it isn't already mounted
-		int result = Util.umount(Util.createUmountCommand(mount));
+		String[] cmdLineArgs = Util.createUmountCommand(mount);
+		int result = Util.umount(cmdLineArgs);
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Util.umount(" + mountPoint + "): returns " + result);
+			LOGGER.debug("Util.umount(" + Util.arrayToString(cmdLineArgs) + "): returns " + result);
 		}
 
 		//if (result != 0) {
@@ -227,7 +243,7 @@ public class StorageAction extends ActionSupport {
 		//}
 		
 		// Try to mount it
-		String[] cmdLineArgs = Util.createMountCommand(mount);
+		cmdLineArgs = Util.createMountCommand(mount);
 		result = Util.mount(cmdLineArgs);
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Util.mount(" + Util.arrayToString(cmdLineArgs) + "): returns " + result);
@@ -251,6 +267,23 @@ public class StorageAction extends ActionSupport {
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("populateMounts()");
 		}
+
+		String[] mountPoints = MOUNT_POINTS.toArray(new String[0]);
+		
+		List<StorageMount> fstabList = StorageMount.parseFstab();
+
+		fstabUserUnmountedList = new ArrayList<StorageMount>();
+		Iterator<StorageMount> it = fstabList.iterator();
+		while (it.hasNext()) {
+			StorageMount mount = it.next();
+			for (int j = 0; j < mountPoints.length; j++) {
+				if (mountPoints[j].equals(mount.getMountPoint())) {
+					// add to the user controllable list
+					fstabUserUnmountedList.add(mount);
+					break;
+				}		
+			}
+		}
 		
 		systemMountList = new ArrayList<StorageMount>();
 		userMountList = new ArrayList<StorageMount>();
@@ -262,12 +295,24 @@ public class StorageAction extends ActionSupport {
 			StorageMount mount = StorageMount.createStorageMount(mountSpec);
 			if (mount != null) {
 				boolean userMount = false;
-				String[] mountPoints = MOUNT_POINTS.toArray(new String[0]);
+				//String[] mountPoints = MOUNT_POINTS.toArray(new String[0]);
 				for (int j = 0; j < mountPoints.length; j++) {
 					if (mountPoints[j].equals(mount.getMountPoint())) {
 						// add to the user controllable list
 						userMountList.add(mount);
 						userMount = true;
+
+						// Make sure it isn't in the unmounted list.
+						it = fstabUserUnmountedList.iterator();
+						while (it.hasNext()) {
+							StorageMount fstabMount = it.next();
+							if (mount.getSpec().equals(fstabMount.getSpec()) && 
+									mount.getMountPoint().equals(fstabMount.getMountPoint())) {
+								it.remove();
+								mount.setFstabEntry(true);
+							}
+						}
+
 						break;
 					}					
 				}
@@ -276,10 +321,105 @@ public class StorageAction extends ActionSupport {
 					// add to the mount list
 					systemMountList.add(mount);
 				}
-			}
-			
+			}	
 		}
 	}
+	
+	/**
+	 * @param mount the mount to persist
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	protected void persist(StorageMount mount) 
+			throws Exception {
+		
+		HashMap<Integer, FstabEntry> map = new HashMap<Integer, FstabEntry>();
+		
+		List<String> fstabRawList = FstabEntry.getFstab();
+		List<FstabEntry> fstabList = FstabEntry.parseFstab(fstabRawList);
+		Iterator<FstabEntry> it = fstabList.iterator();
+		while (it.hasNext()) {
+			FstabEntry entry = it.next();
+			if (entry.getFile().equals(mount.getMountPoint())) {
+				map.put(new Integer(entry.getLineNo()), entry);
+			}
+		}
+		
+		String date = Util.getModifiedFullDate();
+
+		List<String> fstabWriteList = null;
+		if (map.isEmpty()) {
+			fstabWriteList = fstabRawList;
+		} else {
+			fstabWriteList = new ArrayList<String>();
+			for (int i = 0; i < fstabRawList.size(); i++) {
+				if (map.containsKey(new Integer(i + 1))) {
+					// Comment existing entry for mount point.
+					fstabWriteList.add("# START: Commented by squeeze-web-gui (Java) on " + date);
+					fstabWriteList.add("# " + fstabRawList.get(i));
+					fstabWriteList.add("# END: Commented by squeeze-web-gui (Java) on " + date);
+				} else {
+					fstabWriteList.add(fstabRawList.get(i));
+				}
+			}
+		}
+		
+		// Add new entry for mount point.
+		fstabWriteList.add("# START: Addition by squeeze-web-gui (Java) on " + date);
+		fstabWriteList.add(mount.getSpec() + "\t" + mount.getMountPoint() + "\t" + mount.getFsType() +
+				"\t" + mount.getOptions() + "\t0" + "\t0");
+		fstabWriteList.add("# END: Addition by squeeze-web-gui (Java) on " + date);
+		
+		File file = null;
+		try {
+			file = writeTempFstab(fstabWriteList);
+			Util.replaceConfig(file, Commands.SCRIPT_FSTAB_UPDATE);
+		} catch (Exception e) {
+			LOGGER.error("Caught exception saving fstab!", e);
+			throw e;
+		} finally {
+			if (file != null) {
+				try {
+					file.delete();
+				} catch (Exception e) {}
+			}
+		}		
+	}
+	
+	/**
+	 * @param configName
+	 * @param argList
+	 * @return
+	 * @throws IOException
+	 */
+	private File writeTempFstab(List<String> list) 
+			throws IOException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("writeTempFstab(list=" + list + ")");
+		}
+
+		BufferedWriter bw = null;
+		try {
+			File tempFile = Util.createTempFile("fstab_", ".txt");
+			bw = new BufferedWriter(new FileWriter(tempFile));
+			Iterator<String> it = list.iterator();
+			while (it.hasNext()) {
+				bw.write(it.next() + Util.LINE_SEP);
+			}
+			return tempFile;
+		} finally {
+			if (bw != null) {
+				try {
+					bw.flush();
+				} catch (Exception e) {}
+				
+				try {
+					bw.close();
+				} catch (Exception e) {}
+ 			}
+		}
+	}	
 
 	/**
 	 * @return the userMountList
@@ -297,10 +437,11 @@ public class StorageAction extends ActionSupport {
 
 	/**
 	 * @return
-	 */
+	 *
 	public List<String> getMountActionList() {
 		return STORAGE_MOUNT_ACTION_LIST;
 	}
+	*/
 	
 	/**
 	 * @return
@@ -552,5 +693,19 @@ public class StorageAction extends ActionSupport {
 	 */
 	public void setRemoteFsPersist(boolean remoteFsPersist) {
 		this.remoteFsPersist = remoteFsPersist;
+	}
+
+	/**
+	 * @return the fstabUserUnmountedList
+	 */
+	public List<StorageMount> getFstabUserUnmountedList() {
+		return fstabUserUnmountedList;
+	}
+
+	/**
+	 * @param fstabUserUnmountedList the fstabUserUnmountedList to set
+	 */
+	public void setFstabUserUnmountedList(List<StorageMount> fstabUserUnmountedList) {
+		this.fstabUserUnmountedList = fstabUserUnmountedList;
 	}
 }

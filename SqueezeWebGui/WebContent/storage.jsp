@@ -91,7 +91,7 @@
 <hr />
 
 <h4><s:text name="storage.header.userControlledMounts" /></h4>
-<s:form action="StorageUnmount_unmount" theme="simple">
+<s:form action="StorageMount_action" theme="simple">
 <table>
 <thead>
 <tr>
@@ -119,7 +119,7 @@
 			 title="<s:property value="getText('storage.tooltip.mountOptions')" />"
 			 alt="<s:property value="getText('storage.tooltip.mountOptions')" />" />
 	</td>
-	<td>
+	<td width="100">
 		<s:text name="storage.label.action" />
 		<img src='struts/tooltip.gif'
 			 title="<s:property value="getText('storage.tooltip.action')" />"
@@ -142,16 +142,37 @@
 	<td><s:textfield name="userMountList[%{#ind.index}].spec" value="%{spec}" readonly="true" cssClass="size-300px" /></td>
 	<td><s:textfield name="userMountList[%{#ind.index}].fsType" value="%{fsType}" readonly="true" cssClass="size-75px" /></td>
 	<td><s:textfield name="userMountList[%{#ind.index}].options" value="%{options}" cssClass="size-300px" /></td>
-	<td><s:select name="userMountList[%{#ind.index}].action" value="%{action}" list="mountActionList" /></td>
+	<td><s:select name="userMountList[%{#ind.index}].action" value="%{action}" list="userMountList[#ind.index].actionList" /></td>
 	<!-- 
 	<td><s:checkbox name="userMountList[%{#ind.index}].persist" cssClass="size-75px" /></td>
 	-->
+</tr>
+<tr>
+	<td>In /etc/fstab: <s:property value="userMountList[#ind.index].fstabEntry" /></td>
+	<td>Mounted: <s:property value="userMountList[#ind.index].mounted" /></td>
+</tr>
+</s:iterator>
+
+<s:iterator value="fstabUserUnmountedList" status="ind">
+<tr>
+	<td><s:textfield name="fstabUserUnmountedList[%{#ind.index}].mountPoint" value="%{mountPoint}" readonly="true" cssClass="size-200px" /></td>
+	<td><s:textfield name="fstabUserUnmountedList[%{#ind.index}].spec" value="%{spec}" readonly="true" cssClass="size-300px" /></td>
+	<td><s:textfield name="fstabUserUnmountedList[%{#ind.index}].fsType" value="%{fsType}" readonly="true" cssClass="size-75px" /></td>
+	<td><s:textfield name="fstabUserUnmountedList[%{#ind.index}].options" value="%{options}" cssClass="size-300px" /></td>
+	<td><s:select name="fstabUserUnmountedList[%{#ind.index}].action" value="%{action}" list="fstabUserUnmountedList[#ind.index].actionList" /></td>
+	<!-- 
+	<td><s:checkbox name="fstabUserUnmountedList[%{#ind.index}].persist" cssClass="size-75px" /></td>
+	-->
+</tr>
+<tr>
+	<td>In /etc/fstab: <s:property value="fstabUserUnmountedList[#ind.index].fstabEntry" /></td>
+	<td>Mounted: <s:property value="fstabUserUnmountedList[#ind.index].mounted" /></td>
 </tr>
 </s:iterator>
 
 <tr>
 <td colspan="4" align="right">
-	<s:submit action="StorageUnmount_unmount" key="button.submit" />
+	<s:submit action="StorageMount_action" key="button.submit" />
 	<s:reset />
 	<s:submit action="Storage_populate" key="button.refresh" />
 </td>
@@ -281,7 +302,7 @@
 		 title="<s:property value="getText('storage.tooltip.remoteFsPassword')" />"
 		 alt="<s:property value="getText('storage.tooltip.remoteFsPassword')" />" />
 </td>
-<td><s:password name="remoteFsPassword" cssClass="size-150px" /></td>
+<td><s:textfield name="remoteFsPassword" cssClass="size-150px" /></td>
 <td>
 	<s:text name="storage.label.remoteFsDomain" />
 	<img src='struts/tooltip.gif'
@@ -311,7 +332,7 @@
 (owner nobody, group nobody and mode 777.)</p>
 <p>
 <s:iterator value="storageLayoutList" status="ind">
-	DIR<s:text name="storageLayoutList[%{#ind.index}]" /><br />
+	DIR<s:property value="storageLayoutList[#ind.index]" /><br />
 </s:iterator>
 </p>
 <s:form action="Storage_createStorageLayout" theme="simple">

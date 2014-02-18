@@ -41,9 +41,10 @@ public class FstabEntry {
 	
 	private static final Logger LOGGER = Logger.getLogger(FstabEntry.class);
 	
-	private final static Pattern FSTAB_PATTERN = Pattern.compile("^([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+).*$");
+	private final static Pattern FSTAB_PATTERN = 
+			Pattern.compile("^([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+).*$");
 	
-	public final static String FSTAB = "/etc/fstab";
+	public final static String FSTAB_FILE_LOCATION = "/etc/fstab";
 	
 	private String spec = null;
 	private String file = null;
@@ -337,16 +338,19 @@ public class FstabEntry {
 		try {
 			ArrayList<FstabEntry> list = new ArrayList<FstabEntry>();
 			
-			br = new BufferedReader(new FileReader(new File(FSTAB)));
+			br = new BufferedReader(new FileReader(new File(FSTAB_FILE_LOCATION)));
 			int lineNo = 0;
 			String line = null;
 			while ((line = br.readLine()) != null) {
 				lineNo++;
 				if (line.trim().length() > 0 && !line.startsWith(Util.HASH)) {
+					
 					Matcher matcher = null;
+					
 					synchronized (FSTAB_PATTERN) {
 						matcher = FSTAB_PATTERN.matcher(line);
 					}
+					
 					if (matcher.matches() && matcher.groupCount() == 6) {
 						if (!FsType.SWAP.equals(matcher.group(3))) {
 							int freq = 0;
@@ -367,6 +371,83 @@ public class FstabEntry {
 					}
 				}
 			}
+			return list;
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (Exception e) {}
+			}
+		}
+	}
+	
+	/**
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public final static List<FstabEntry> parseFstab(List<String> fstabList) 
+			throws FileNotFoundException, IOException {
+		
+		ArrayList<FstabEntry> list = new ArrayList<FstabEntry>();
+
+		int lineNo = 0;
+		String line = null;
+		Iterator<String> it = fstabList.iterator();
+		while (it.hasNext()) {
+			line = it.next();
+			lineNo++;
+			
+			if (line.trim().length() > 0 && !line.startsWith(Util.HASH)) {
+				
+				Matcher matcher = null;
+				
+				synchronized (FSTAB_PATTERN) {
+					matcher = FSTAB_PATTERN.matcher(line);
+				}
+				
+				if (matcher.matches() && matcher.groupCount() == 6) {
+					if (!FsType.SWAP.equals(matcher.group(3))) {
+						int freq = 0;
+						try {
+							freq = Integer.parseInt(matcher.group(5));
+						} catch (NumberFormatException nfe) {}
+						
+						int passNo = 0;
+						try {
+							passNo = Integer.parseInt(matcher.group(6));
+						} catch (NumberFormatException nfe) {}
+						
+						FstabEntry entry = new FstabEntry(matcher.group(1), matcher.group(2), 
+								matcher.group(3), matcher.group(4), freq, passNo, lineNo);
+						
+						list.add(entry);
+					}
+				}
+			}
+		}
+		
+		return list;
+	}
+	
+	/**
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public final static List<String> getFstab() 
+			throws FileNotFoundException, IOException {
+		
+		BufferedReader br = null;
+		try {
+			ArrayList<String> list = new ArrayList<String>();
+			
+			br = new BufferedReader(new FileReader(new File(FSTAB_FILE_LOCATION)));
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				list.add(line);
+			}
+			
 			return list;
 		} finally {
 			if (br != null) {
