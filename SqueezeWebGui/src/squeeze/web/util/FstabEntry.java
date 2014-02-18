@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -39,12 +41,17 @@ public class FstabEntry {
 	
 	private static final Logger LOGGER = Logger.getLogger(FstabEntry.class);
 	
+	private final static Pattern FSTAB_PATTERN = Pattern.compile("^([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+).*$");
+	
+	public final static String FSTAB = "/etc/fstab";
+	
 	private String spec = null;
 	private String file = null;
 	private String vfsType = null;
 	private String mntOps = null;
 	private int freq = 0;
 	private int passNo = 0;
+	private int lineNo = -1;
 	
 	private boolean delete = false;
 	private String action = null;
@@ -60,8 +67,9 @@ public class FstabEntry {
 	 * @param mntOps
 	 * @param freq
 	 * @param passNo
+	 * @param lineNo
 	 */
-	public FstabEntry(String spec, String file, String vfsType, String mntOps, int freq, int passNo) {
+	public FstabEntry(String spec, String file, String vfsType, String mntOps, int freq, int passNo, int lineNo) {
 		
 		super();
 		
@@ -71,13 +79,29 @@ public class FstabEntry {
 		this.mntOps = mntOps;
 		this.freq = freq;
 		this.passNo = passNo;
+		this.lineNo = lineNo;
 		
+		/*
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("FstabEntry(spec=" + spec + ", file=" + file + ", vfsType=" + vfsType + 
-					", mntOps=" + mntOps + ", freq=" + freq + ", passNo=" + passNo + ")");
+					", mntOps=" + mntOps + ", freq=" + freq + ", passNo=" + passNo + ", lineNo=" + lineNo + ")");
 		}
+		*/
 	}
 
+	/**
+	 * @param spec
+	 * @param file
+	 * @param vfsType
+	 * @param mntOps
+	 * @param freq
+	 * @param passNo
+	 */
+	public FstabEntry(String spec, String file, String vfsType, String mntOps, int freq, int passNo) {
+		
+		this(spec, file, vfsType, mntOps, freq, passNo, -1);
+	}
+	
 	/**
 	 * @return the delete
 	 */
@@ -189,11 +213,25 @@ public class FstabEntry {
 	public void setPassNo(int passNo) {
 		this.passNo = passNo;
 	}
+	
+	/**
+	 * @return the lineNo
+	 */
+	public int getLineNo() {
+		return lineNo;
+	}
+	
+	/**
+	 * @param lineNo the lineNo to set
+	 */
+	public void setLineNo(int lineNo) {
+		this.lineNo = lineNo;
+	}
 
 	/**
 	 * @param line
 	 * @return
-	 */
+	 *
 	public final static FstabEntry parseEntry(String line) {
 
 		String spec = null;
@@ -250,10 +288,11 @@ public class FstabEntry {
 		
 		return null;
 	}
+	*/
 	
 	/**
 	 * @return
-	 */
+	 *
 	public final static List<FstabEntry> parseFstab() 
 			throws FileNotFoundException, IOException {
 		
@@ -270,12 +309,61 @@ public class FstabEntry {
 						!line.startsWith(" ") && 
 						!line.startsWith("\t")) {
 					FstabEntry entry = parseEntry(line.trim() + " ");
-					if (entry != null && 
-							!entry.getVfsType().equals("swap") /*&& 
-							!entry.getFile().equals("/") &&
-							!entry.getFile().equals("/boot") &&
-							!entry.getFile().equals("/home")*/) {
+					if (entry != null && !FsType.SWAP.equals(entry.getVfsType())) {
 						list.add(entry);
+					}
+				}
+			}
+			return list;
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (Exception e) {}
+			}
+		}
+	}
+	*/
+	
+	/**
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public final static List<FstabEntry> parseFstab() 
+			throws FileNotFoundException, IOException {
+		
+		BufferedReader br = null;
+		try {
+			ArrayList<FstabEntry> list = new ArrayList<FstabEntry>();
+			
+			br = new BufferedReader(new FileReader(new File(FSTAB)));
+			int lineNo = 0;
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				lineNo++;
+				if (line.trim().length() > 0 && !line.startsWith(Util.HASH)) {
+					Matcher matcher = null;
+					synchronized (FSTAB_PATTERN) {
+						matcher = FSTAB_PATTERN.matcher(line);
+					}
+					if (matcher.matches() && matcher.groupCount() == 6) {
+						if (!FsType.SWAP.equals(matcher.group(3))) {
+							int freq = 0;
+							try {
+								freq = Integer.parseInt(matcher.group(5));
+							} catch (NumberFormatException nfe) {}
+							
+							int passNo = 0;
+							try {
+								passNo = Integer.parseInt(matcher.group(6));
+							} catch (NumberFormatException nfe) {}
+							
+							FstabEntry entry = new FstabEntry(matcher.group(1), matcher.group(2), 
+									matcher.group(3), matcher.group(4), freq, passNo, lineNo);
+							
+							list.add(entry);
+						}
 					}
 				}
 			}
@@ -309,6 +397,8 @@ public class FstabEntry {
 		buffer.append(freq);
 		buffer.append(", passNo=");
 		buffer.append(passNo);
+		buffer.append(", lineNo=");
+		buffer.append(lineNo);
 		buffer.append("]");
 		
 		return buffer.toString();

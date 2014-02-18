@@ -52,6 +52,8 @@ public final class Util {
 
 	public final static String LINE_SEP = 
 			System.getProperty("line.separator");
+	public final static String BLANK_STRING = "";
+	public final static String HASH = "#";
 	
 	private final static String ALSA_DEFAULT = "default:"; 
 	private final static String ALSA_SYSDEFAULT = "sysdefault:"; 
@@ -62,9 +64,7 @@ public final class Util {
 	private final static String WALL_HALT_MSG = "web-gui requests halt";
 	private final static String WALL_FORCE_OPTION_MSG = " with force (" + 
 			Commands.SHUTDOWN_FORCE + ") option";
-	
-	public final static String BLANK_STRING = "";
-	
+		
 	private final static String HOSTNAME_FILENAME = "/etc/hostname";
 	private final static String FEDORA_VERSION_FILENAME = "/etc/fedora-release";
 	private final static String CSOS_VERSION_FILENAME = "/etc/csos-release";

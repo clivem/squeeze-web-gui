@@ -37,6 +37,7 @@ public class FsType {
 	public final static String VFAT = "vfat";
 	public final static String NTFS = "ntfs";
 	public final static String NTFS3G = "ntfs-3g";
+	public final static String SWAP = "swap";
 	
 	/**
 	 * 

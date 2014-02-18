@@ -162,13 +162,15 @@ public class StorageMount {
 	 */
 	public final static StorageMount createStorageMount(String line) {
 
+		Matcher matcher = null;
 		synchronized (MOUNT_LIST_PATTERN) {
-			Matcher m = MOUNT_LIST_PATTERN.matcher(line);
-			if (m.matches()) {
-				return new StorageMount(m.group(1), m.group(2), m.group(3), m.group(4));
-			} else {
-				LOGGER.warn("createStorageMount(line=" + line + "): Invalid!");
-			}
+			matcher = MOUNT_LIST_PATTERN.matcher(line);
+		}
+		
+		if (matcher.matches()) {
+			return new StorageMount(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4));
+		} else {
+			LOGGER.warn("createStorageMount(line=" + line + "): Invalid!");
 		}
 		
 		return null;
