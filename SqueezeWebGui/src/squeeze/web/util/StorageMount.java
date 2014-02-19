@@ -20,10 +20,7 @@
  */
 package squeeze.web.util;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -48,8 +45,6 @@ public class StorageMount {
 	// parse /etc/fstab
 	private final static Pattern FSTAB_PATTERN = 
 			Pattern.compile("^([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+).*$");
-	
-	public final static String FSTAB_FILE_LOCATION = "/etc/fstab";
 	
 	// ACTIONS
 	public final static String ACTION_MOUNT = "mount";
@@ -332,7 +327,7 @@ public class StorageMount {
 			LOGGER.debug("parseFstab()");
 		}
 
-		return parseFstab(getFstab());
+		return parseFstab(Util.getFstab());
 	}
 	
 	/**
@@ -377,7 +372,8 @@ public class StorageMount {
 						} catch (NumberFormatException nfe) {}
 						
 						StorageMount entry = new StorageMount(matcher.group(1), matcher.group(2), 
-								matcher.group(3), matcher.group(4), freq, passNo, lineNo, null, false, true, false);
+								matcher.group(3), matcher.group(4), freq, passNo, lineNo, null, 
+								false, true, false);
 						
 						list.add(entry);
 					}
@@ -386,38 +382,6 @@ public class StorageMount {
 		}
 		
 		return list;
-	}
-
-	/**
-	 * @return
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	public final static List<String> getFstab() 
-			throws FileNotFoundException, IOException {
-		
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("getFstab()");
-		}
-
-		BufferedReader br = null;
-		try {
-			ArrayList<String> list = new ArrayList<String>();
-			
-			br = new BufferedReader(new FileReader(new File(FSTAB_FILE_LOCATION)));
-			String line = null;
-			while ((line = br.readLine()) != null) {
-				list.add(line);
-			}
-			
-			return list;
-		} finally {
-			if (br != null) {
-				try {
-					br.close();
-				} catch (Exception e) {}
-			}
-		}
 	}
 
 	/* (non-Javadoc)

@@ -153,20 +153,20 @@
 </tr>
 </s:iterator>
 
-<s:iterator value="fstabUserUnmountedList" status="ind">
+<s:iterator value="fstabUserMountList" status="ind">
 <tr>
-	<td><s:textfield name="fstabUserUnmountedList[%{#ind.index}].mountPoint" value="%{mountPoint}" readonly="true" cssClass="size-200px" /></td>
-	<td><s:textfield name="fstabUserUnmountedList[%{#ind.index}].spec" value="%{spec}" readonly="true" cssClass="size-300px" /></td>
-	<td><s:textfield name="fstabUserUnmountedList[%{#ind.index}].fsType" value="%{fsType}" readonly="true" cssClass="size-75px" /></td>
-	<td><s:textfield name="fstabUserUnmountedList[%{#ind.index}].options" value="%{options}" cssClass="size-300px" /></td>
-	<td><s:select name="fstabUserUnmountedList[%{#ind.index}].action" value="%{action}" list="fstabUserUnmountedList[#ind.index].actionList" /></td>
+	<td><s:textfield name="fstabUserMountList[%{#ind.index}].mountPoint" value="%{mountPoint}" readonly="true" cssClass="size-200px" /></td>
+	<td><s:textfield name="fstabUserMountList[%{#ind.index}].spec" value="%{spec}" readonly="true" cssClass="size-300px" /></td>
+	<td><s:textfield name="fstabUserMountList[%{#ind.index}].fsType" value="%{fsType}" readonly="true" cssClass="size-75px" /></td>
+	<td><s:textfield name="fstabUserMountList[%{#ind.index}].options" value="%{options}" cssClass="size-300px" /></td>
+	<td><s:select name="fstabUserMountList[%{#ind.index}].action" value="%{action}" list="fstabUserMountList[#ind.index].actionList" /></td>
 	<!-- 
-	<td><s:checkbox name="fstabUserUnmountedList[%{#ind.index}].persist" cssClass="size-75px" /></td>
+	<td><s:checkbox name="fstabUserMountList[%{#ind.index}].persist" cssClass="size-75px" /></td>
 	-->
 </tr>
 <tr>
-	<td>In /etc/fstab: <s:property value="fstabUserUnmountedList[#ind.index].fstabEntry" /></td>
-	<td>Mounted: <s:property value="fstabUserUnmountedList[#ind.index].mounted" /></td>
+	<td>In /etc/fstab: <s:property value="fstabUserMountList[#ind.index].fstabEntry" /></td>
+	<td>Mounted: <s:property value="fstabUserMountList[#ind.index].mounted" /></td>
 </tr>
 </s:iterator>
 

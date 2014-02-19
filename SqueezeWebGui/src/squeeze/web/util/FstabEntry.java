@@ -44,7 +44,7 @@ public class FstabEntry {
 	private final static Pattern FSTAB_PATTERN = 
 			Pattern.compile("^([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+)\\s+([^\\s]+).*$");
 	
-	public final static String FSTAB_FILE_LOCATION = "/etc/fstab";
+	//public final static String FSTAB_FILE_LOCATION = "/etc/fstab";
 	
 	private String spec = null;
 	private String file = null;
@@ -338,7 +338,7 @@ public class FstabEntry {
 		try {
 			ArrayList<FstabEntry> list = new ArrayList<FstabEntry>();
 			
-			br = new BufferedReader(new FileReader(new File(FSTAB_FILE_LOCATION)));
+			br = new BufferedReader(new FileReader(new File(Util.FSTAB_FILENAME)));
 			int lineNo = 0;
 			String line = null;
 			while ((line = br.readLine()) != null) {
@@ -434,7 +434,7 @@ public class FstabEntry {
 	 * @return
 	 * @throws FileNotFoundException
 	 * @throws IOException
-	 */
+	 *
 	public final static List<String> getFstab() 
 			throws FileNotFoundException, IOException {
 		
@@ -457,6 +457,7 @@ public class FstabEntry {
 			}
 		}
 	}
+	*/
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()

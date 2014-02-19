@@ -69,6 +69,8 @@ public final class Util {
 	private final static String FEDORA_VERSION_FILENAME = "/etc/fedora-release";
 	private final static String CSOS_VERSION_FILENAME = "/etc/csos-release";
 
+	public final static String FSTAB_FILENAME = "/etc/fstab";
+	
 	private static String CSOS_VERSION = null;
 	private static String FEDORA_VERSION = null;
 	
@@ -265,6 +267,38 @@ public final class Util {
 		return resultList;
 	}
 	
+	/**
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public final static List<String> getFstab() 
+			throws FileNotFoundException, IOException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("getFstab()");
+		}
+
+		BufferedReader br = null;
+		try {
+			ArrayList<String> list = new ArrayList<String>();
+			
+			br = new BufferedReader(new FileReader(new File(FSTAB_FILENAME)));
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				list.add(line);
+			}
+			
+			return list;
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (Exception e) {}
+			}
+		}
+	}
+
 	/**
 	 * @param interfaceName
 	 * @return

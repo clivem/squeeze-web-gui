@@ -29,7 +29,6 @@ import org.apache.log4j.Logger;
 import squeeze.web.util.StorageMount;
 import squeeze.web.util.Util;
 
-
 /**
  * @author Clive Messer <clive.m.messer@gmail.com>
  *
@@ -52,6 +51,11 @@ public class StorageMountAction extends StorageAction {
 		}
 	}
 	
+	/**
+	 * @param mountList
+	 * @throws InterruptedException
+	 * @throws IOException
+	 */
 	private void action_(List<StorageMount> mountList) 
 			throws InterruptedException, IOException {
 		
@@ -110,7 +114,7 @@ public class StorageMountAction extends StorageAction {
 		}
 		
 		action_(userMountList);
-		action_(fstabUserUnmountedList);
+		action_(fstabUserMountList);
 				
 		String result = populate();
 		if (LOGGER.isDebugEnabled()) {

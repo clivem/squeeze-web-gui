@@ -22,7 +22,6 @@ package squeeze.web;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +34,6 @@ import org.apache.log4j.Logger;
 import squeeze.web.util.Commands;
 import squeeze.web.util.ExecuteProcess;
 import squeeze.web.util.FsType;
-import squeeze.web.util.FstabEntry;
 import squeeze.web.util.StorageMount;
 import squeeze.web.util.Util;
 
@@ -54,7 +52,6 @@ public class StorageAction extends ActionSupport {
 	protected final static List<String> MOUNT_POINTS;
 	protected final static List<String> LOCAL_FS_TYPES;
 	protected final static List<String> REMOTE_FS_TYPES;
-	//protected final static List<String> STORAGE_MOUNT_ACTION_LIST = StorageMount.getStaticActionList();
 	
 	public final static String FS_STATUS_REGEX = "^.*(type\\s(" + FsType.FAT + "|" + FsType.VFAT + "|" + FsType.NTFS + 
 			"|" + FsType.NTFS3G + "|" + FsType.EXT2 + "|" + FsType.EXT3 + "|" + FsType.EXT4 + "|" + FsType.CIFS + 
@@ -76,7 +73,7 @@ public class StorageAction extends ActionSupport {
 		"/pictures"
 	};
 	
-	protected List<StorageMount> fstabUserUnmountedList = null;
+	protected List<StorageMount> fstabUserMountList = null;
 	protected List<StorageMount> systemMountList = null;
 	protected List<StorageMount> userMountList = null;
 	
@@ -220,10 +217,7 @@ public class StorageAction extends ActionSupport {
 	}
 	
 	/**
-	 * @param partition
-	 * @param mountPoint
-	 * @param type
-	 * @param options
+	 * @param mount
 	 * @return
 	 * @throws IOException
 	 * @throws InterruptedException
@@ -272,14 +266,14 @@ public class StorageAction extends ActionSupport {
 		
 		List<StorageMount> fstabList = StorageMount.parseFstab();
 
-		fstabUserUnmountedList = new ArrayList<StorageMount>();
+		fstabUserMountList = new ArrayList<StorageMount>();
 		Iterator<StorageMount> it = fstabList.iterator();
 		while (it.hasNext()) {
 			StorageMount mount = it.next();
 			for (int j = 0; j < mountPoints.length; j++) {
 				if (mountPoints[j].equals(mount.getMountPoint())) {
 					// add to the user controllable list
-					fstabUserUnmountedList.add(mount);
+					fstabUserMountList.add(mount);
 					break;
 				}		
 			}
@@ -289,36 +283,43 @@ public class StorageAction extends ActionSupport {
 		userMountList = new ArrayList<StorageMount>();
 		localFsPartitionList = Util.getPartitions();
 
-		List<String> list = Util.getMountList(FS_STATUS_REGEX);
-		for (int i = 0; i < list.size(); i++) {
-			String mountSpec = list.get(i);
-			StorageMount mount = StorageMount.createStorageMount(mountSpec);
+		List<String> mountList = Util.getMountList(FS_STATUS_REGEX);
+		for (int i = 0; i < mountList.size(); i++) {
+			StorageMount mount = StorageMount.createStorageMount(mountList.get(i));
 			if (mount != null) {
+				// BUG: Fedora 19 mount appends '/' to spec for nfs mounts.
+				if (mount.getFsType().startsWith("nfs")) {
+					String spec = mount.getSpec();
+					if (spec.endsWith("/")) {
+						mount.setSpec(spec.substring(0, spec.length() - 1));
+					}
+				}
+
 				boolean userMount = false;
-				//String[] mountPoints = MOUNT_POINTS.toArray(new String[0]);
 				for (int j = 0; j < mountPoints.length; j++) {
 					if (mountPoints[j].equals(mount.getMountPoint())) {
 						// add to the user controllable list
 						userMountList.add(mount);
-						userMount = true;
-
 						// Make sure it isn't in the unmounted list.
-						it = fstabUserUnmountedList.iterator();
+						it = fstabUserMountList.iterator();
 						while (it.hasNext()) {
 							StorageMount fstabMount = it.next();
 							if (mount.getSpec().equals(fstabMount.getSpec()) && 
 									mount.getMountPoint().equals(fstabMount.getMountPoint())) {
+								// remove it from what will be the un-mounted list
 								it.remove();
+								// mark the mounted entry as being in fstab
 								mount.setFstabEntry(true);
 							}
 						}
-
+						// don't add it to the system mount list
+						userMount = true;
 						break;
 					}					
 				}
 				
 				if (!userMount) {
-					// add to the mount list
+					// add to the system mount list
 					systemMountList.add(mount);
 				}
 			}	
@@ -326,21 +327,20 @@ public class StorageAction extends ActionSupport {
 	}
 	
 	/**
-	 * @param mount the mount to persist
-	 * @throws FileNotFoundException
-	 * @throws IOException
+	 * @param mount
+	 * @throws Exception
 	 */
 	protected void persist(StorageMount mount) 
 			throws Exception {
 		
-		HashMap<Integer, FstabEntry> map = new HashMap<Integer, FstabEntry>();
+		HashMap<Integer, StorageMount> map = new HashMap<Integer, StorageMount>();
 		
-		List<String> fstabRawList = FstabEntry.getFstab();
-		List<FstabEntry> fstabList = FstabEntry.parseFstab(fstabRawList);
-		Iterator<FstabEntry> it = fstabList.iterator();
+		List<String> fstabRawList = Util.getFstab();
+		List<StorageMount> fstabMountList = StorageMount.parseFstab(fstabRawList);
+		Iterator<StorageMount> it = fstabMountList.iterator();
 		while (it.hasNext()) {
-			FstabEntry entry = it.next();
-			if (entry.getFile().equals(mount.getMountPoint())) {
+			StorageMount entry = it.next();
+			if (entry.getMountPoint().equals(mount.getMountPoint())) {
 				map.put(new Integer(entry.getLineNo()), entry);
 			}
 		}
@@ -387,8 +387,7 @@ public class StorageAction extends ActionSupport {
 	}
 	
 	/**
-	 * @param configName
-	 * @param argList
+	 * @param list
 	 * @return
 	 * @throws IOException
 	 */
@@ -435,14 +434,6 @@ public class StorageAction extends ActionSupport {
 		this.userMountList = userMountList;
 	}
 
-	/**
-	 * @return
-	 *
-	public List<String> getMountActionList() {
-		return STORAGE_MOUNT_ACTION_LIST;
-	}
-	*/
-	
 	/**
 	 * @return
 	 */
@@ -696,16 +687,16 @@ public class StorageAction extends ActionSupport {
 	}
 
 	/**
-	 * @return the fstabUserUnmountedList
+	 * @return the fstabUserMountList
 	 */
-	public List<StorageMount> getFstabUserUnmountedList() {
-		return fstabUserUnmountedList;
+	public List<StorageMount> getFstabUserMountList() {
+		return fstabUserMountList;
 	}
 
 	/**
-	 * @param fstabUserUnmountedList the fstabUserUnmountedList to set
+	 * @param fstabUserMountList the fstabUserMountList to set
 	 */
-	public void setFstabUserUnmountedList(List<StorageMount> fstabUserUnmountedList) {
-		this.fstabUserUnmountedList = fstabUserUnmountedList;
+	public void setFstabUserMountList(List<StorageMount> fstabUserMountList) {
+		this.fstabUserMountList = fstabUserMountList;
 	}
 }
