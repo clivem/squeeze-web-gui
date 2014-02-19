@@ -4,3 +4,4 @@
 TEMP_DIR=/tmp
 WIRED_INTERFACE=eth0
 WIRELESS_INTERFACE=wlan0
+STORAGE_DIRS=/storage,/mnt/storage
