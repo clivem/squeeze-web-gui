@@ -22,9 +22,11 @@ package squeeze.web;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -35,6 +37,7 @@ import squeeze.web.util.Commands;
 import squeeze.web.util.ExecuteProcess;
 import squeeze.web.util.FsType;
 import squeeze.web.util.StorageMount;
+import squeeze.web.util.StorageMountComparator;
 import squeeze.web.util.Util;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -310,6 +313,7 @@ public class StorageAction extends ActionSupport {
 								it.remove();
 								// mark the mounted entry as being in fstab
 								mount.setFstabEntry(true);
+								mount.setLineNo(fstabMount.getLineNo());
 							}
 						}
 						// don't add it to the system mount list
@@ -324,14 +328,20 @@ public class StorageAction extends ActionSupport {
 				}
 			}	
 		}
+		
+		synchronized (StorageMountComparator.COMPARATOR) {
+			Collections.sort(userMountList, StorageMountComparator.COMPARATOR);			
+			Collections.sort(systemMountList, StorageMountComparator.COMPARATOR);			
+			Collections.sort(fstabUserMountList, StorageMountComparator.COMPARATOR);			
+		}
 	}
 	
 	/**
 	 * @param mount
 	 * @throws Exception
 	 */
-	protected void persist(StorageMount mount) 
-			throws Exception {
+	protected void persist(StorageMount mount, boolean delete) 
+			throws FileNotFoundException, InterruptedException, IOException {
 		
 		HashMap<Integer, StorageMount> map = new HashMap<Integer, StorageMount>();
 		
@@ -364,11 +374,13 @@ public class StorageAction extends ActionSupport {
 			}
 		}
 		
-		// Add new entry for mount point.
-		fstabWriteList.add("# START: Addition by squeeze-web-gui (Java) on " + date);
-		fstabWriteList.add(mount.getSpec() + "\t" + mount.getMountPoint() + "\t" + mount.getFsType() +
-				"\t" + mount.getOptions() + "\t0" + "\t0");
-		fstabWriteList.add("# END: Addition by squeeze-web-gui (Java) on " + date);
+		if (!delete) {
+			// Add new entry for mount point.
+			fstabWriteList.add("# START: Addition by squeeze-web-gui (Java) on " + date);
+			fstabWriteList.add(mount.getSpec() + "\t" + mount.getMountPoint() + "\t" + mount.getFsType() +
+					"\t" + mount.getOptions() + "\t0" + "\t0");
+			fstabWriteList.add("# END: Addition by squeeze-web-gui (Java) on " + date);
+		}
 		
 		File file = null;
 		try {

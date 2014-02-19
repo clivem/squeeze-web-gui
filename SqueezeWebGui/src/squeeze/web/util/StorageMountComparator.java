@@ -26,15 +26,16 @@ import java.util.Comparator;
  * @author Clive Messer <clive.m.messer@gmail.com>
  *
  */
-public final class StringIgnoreCaseComparator implements Comparator<String> {
-	
-	public final static StringIgnoreCaseComparator COMPARATOR = 
-			new StringIgnoreCaseComparator();
+public class StorageMountComparator implements Comparator<StorageMount> {
+
+	public final static StorageMountComparator COMPARATOR = 
+			new StorageMountComparator();
 	
 	/* (non-Javadoc)
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 	 */
-	public int compare(String strA, String strB) {
-		return strA.compareToIgnoreCase(strB);
+	public int compare(StorageMount storageMountA, StorageMount storageMountB) {
+		return storageMountA.getMountPoint().compareToIgnoreCase(
+				storageMountB.getMountPoint());
 	}
 }

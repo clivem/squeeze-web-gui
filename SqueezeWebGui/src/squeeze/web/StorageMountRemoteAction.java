@@ -162,7 +162,7 @@ public class StorageMountRemoteAction extends StorageAction {
 			if (remoteFsPersist) {
 				// persist to fstab
 				if (mount != null) {
-					persist(mount);
+					persist(mount, false);
 				}
 			}
 			// clear the local and remote fs fields

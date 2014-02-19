@@ -20,6 +20,7 @@
  */
 package squeeze.web;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -57,13 +58,24 @@ public class StorageMountAction extends StorageAction {
 	 * @throws IOException
 	 */
 	private void action_(List<StorageMount> mountList) 
-			throws InterruptedException, IOException {
+			throws FileNotFoundException, InterruptedException, IOException {
 		
 		if (mountList != null) {
 			Iterator<StorageMount> it = mountList.iterator();
 			while (it.hasNext()) {
 				StorageMount mount = it.next();
-				if (StorageMount.ACTION_MOUNT.equals(mount.getAction())) {
+				if (StorageMount.ACTION_DELETE.equals(mount.getAction())) {
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("Delete: " + mount);
+					}
+					persist(mount, true);
+				} else if (StorageMount.ACTION_PERSIST.equals(mount.getAction()) || 
+						StorageMount.ACTION_UPDATE.equals(mount.getAction())) {
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("Persist: " + mount);
+					}
+					persist(mount, false);
+				} else if (StorageMount.ACTION_MOUNT.equals(mount.getAction())) {
 					if (LOG.isDebugEnabled()) {
 						LOG.debug("Mount: " + mount);
 					}

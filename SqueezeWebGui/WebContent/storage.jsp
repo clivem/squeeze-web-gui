@@ -125,14 +125,6 @@
 			 title="<s:property value="getText('storage.tooltip.action')" />"
 			 alt="<s:property value="getText('storage.tooltip.action')" />" />
 	</td>
-	<!-- 
-	<td width="75">
-		<s:text name="storage.label.persist" />
-		<img src='struts/tooltip.gif'
-			 title="<s:property value="getText('storage.tooltip.persist')" />"
-			 alt="<s:property value="getText('storage.tooltip.persist')" />" />
-	</td>
-	-->
 </tr>
 </thead>
 
@@ -142,14 +134,10 @@
 	<td><s:textfield name="userMountList[%{#ind.index}].spec" value="%{spec}" readonly="true" cssClass="size-300px" /></td>
 	<td><s:textfield name="userMountList[%{#ind.index}].fsType" value="%{fsType}" readonly="true" cssClass="size-75px" /></td>
 	<td><s:textfield name="userMountList[%{#ind.index}].options" value="%{options}" cssClass="size-300px" /></td>
-	<td><s:select name="userMountList[%{#ind.index}].action" value="%{action}" list="userMountList[#ind.index].actionList" /></td>
-	<!-- 
-	<td><s:checkbox name="userMountList[%{#ind.index}].persist" cssClass="size-75px" /></td>
-	-->
+	<td><s:select name="userMountList[%{#ind.index}].action" value="%{action}" list="userMountList[#ind.index].actionList" cssClass="size-100px" /></td>
 </tr>
 <tr>
-	<td>In /etc/fstab: <s:property value="userMountList[#ind.index].fstabEntry" /></td>
-	<td>Mounted: <s:property value="userMountList[#ind.index].mounted" /></td>
+	<td colspan="4" class="copyright"><s:property value="userMountList[#ind.index].status" /></td>
 </tr>
 </s:iterator>
 
@@ -159,14 +147,10 @@
 	<td><s:textfield name="fstabUserMountList[%{#ind.index}].spec" value="%{spec}" readonly="true" cssClass="size-300px" /></td>
 	<td><s:textfield name="fstabUserMountList[%{#ind.index}].fsType" value="%{fsType}" readonly="true" cssClass="size-75px" /></td>
 	<td><s:textfield name="fstabUserMountList[%{#ind.index}].options" value="%{options}" cssClass="size-300px" /></td>
-	<td><s:select name="fstabUserMountList[%{#ind.index}].action" value="%{action}" list="fstabUserMountList[#ind.index].actionList" /></td>
-	<!-- 
-	<td><s:checkbox name="fstabUserMountList[%{#ind.index}].persist" cssClass="size-75px" /></td>
-	-->
+	<td><s:select name="fstabUserMountList[%{#ind.index}].action" value="%{action}" list="fstabUserMountList[#ind.index].actionList" cssClass="size-100px" /></td>
 </tr>
 <tr>
-	<td>In /etc/fstab: <s:property value="fstabUserMountList[#ind.index].fstabEntry" /></td>
-	<td>Mounted: <s:property value="fstabUserMountList[#ind.index].mounted" /></td>
+	<td colspan="4" class="copyright"><s:property value="fstabUserMountList[#ind.index].status" /></td>
 </tr>
 </s:iterator>
 

@@ -50,6 +50,9 @@ public class StorageMount {
 	public final static String ACTION_MOUNT = "mount";
 	public final static String ACTION_UNMOUNT = "unmount";
 	public final static String ACTION_REMOUNT = "remount";
+	public final static String ACTION_PERSIST = "persist";
+	public final static String ACTION_UPDATE = "update";
+	public final static String ACTION_DELETE = "delete";
 	
 	private String spec = null;
 	private String mountPoint = null;
@@ -269,6 +272,14 @@ public class StorageMount {
 	public void setMounted(boolean mounted) {
 		this.mounted = mounted;
 	}
+	
+	/**
+	 * @return
+	 */
+	public String getStatus() {
+		return "Status: " + (mounted ? "Mounted" : "Not mounted") + 
+				(fstabEntry ? (". Fstab line: " + lineNo) : ". Not in fstab.");
+	}
 
 	/**
 	 * @param lineOfMountOutput
@@ -310,6 +321,12 @@ public class StorageMount {
 			list.add(ACTION_REMOUNT);
 		} else {
 			list.add(ACTION_MOUNT);
+		}
+		if (fstabEntry) {
+			list.add(ACTION_UPDATE);
+			list.add(ACTION_DELETE);
+		} else {
+			list.add(ACTION_PERSIST);
 		}
 		
 		return list;
