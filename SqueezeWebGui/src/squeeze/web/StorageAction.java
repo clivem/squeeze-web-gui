@@ -39,6 +39,7 @@ import squeeze.web.util.FsType;
 import squeeze.web.util.StorageMount;
 import squeeze.web.util.StorageMountComparator;
 import squeeze.web.util.Util;
+import squeeze.web.util.WebConfig;
 
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -102,8 +103,10 @@ public class StorageAction extends ActionSupport {
 	
 	static {
 		MOUNT_POINTS = new ArrayList<String>();
-		MOUNT_POINTS.add("/storage");
-		MOUNT_POINTS.add("/mnt/storage");
+		String[] storageDirs = WebConfig.getStorageDirs();
+		for (int i = 0; i < storageDirs.length; i++) {
+			MOUNT_POINTS.add(storageDirs[i]);
+		}
 		
 		LOCAL_FS_TYPES = new ArrayList<String>();
 		LOCAL_FS_TYPES.add(Util.BLANK_STRING);

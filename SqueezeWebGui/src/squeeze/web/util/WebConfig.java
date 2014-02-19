@@ -23,6 +23,8 @@ package squeeze.web.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 
@@ -42,12 +44,17 @@ public class WebConfig {
 			"WIRED_INTERFACE";
 	private final static String CFG_WIRELESS_INTERFACE_NAME = 
 			"WIRELESS_INTERFACE";
+	private final static String STORAGE_DIRS_NAME = 
+			"STORAGE_DIRS";
 	
 	private static File TEMP_DIR = null;
 	
 	private static String WIRED_INTERFACE_NAME = "eth0";
 	
 	private static String WIRELESS_INTERFACE_NAME = "wlan0";
+	
+	private static String[] STORAGE_DIRS = 
+			new String[] {"/storage", "/mnt/storage"};
 	
 	static {
 		
@@ -100,6 +107,13 @@ public class WebConfig {
 	}
 	
 	/**
+	 * @return
+	 */
+	public final static String[] getStorageDirs() {
+		return STORAGE_DIRS;
+	}
+	
+	/**
 	 * 
 	 */
 	private final static void init() {
@@ -144,6 +158,20 @@ public class WebConfig {
 							}
 							WIRELESS_INTERFACE_NAME = value;
 						}
+					} else if (line.startsWith(STORAGE_DIRS_NAME)) {
+						String value = getValue(line);
+						if (value.length() > 0) {
+							StringTokenizer tok = new StringTokenizer(value, ",");
+							if (tok.countTokens() > 0) {
+								ArrayList<String> storageDirList = new ArrayList<String>();
+								while (tok.hasMoreTokens()) {
+									storageDirList.add(tok.nextToken().trim());
+								}
+								STORAGE_DIRS = storageDirList.toArray(new String[storageDirList.size()]);
+							}
+						} /* else if (value.length() > 0) {
+							STORAGE_DIRS = new String[] {value};
+						} */
 					} else {
 						LOGGER.info("Ignoring line: " + line);
 					}
