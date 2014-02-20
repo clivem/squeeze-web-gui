@@ -1022,8 +1022,7 @@ public abstract class InterfaceAction extends ActionSupport {
 					tmpFile.delete();
 				} catch (Exception e) {}
 			}
-		}
-		
+		}		
 	}
 	
 	/**

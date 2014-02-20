@@ -54,6 +54,7 @@ public final class Util {
 			System.getProperty("line.separator");
 	public final static String BLANK_STRING = "";
 	public final static String HASH = "#";
+	public final static String EQUALS = "=";
 	
 	private final static String ALSA_DEFAULT = "default:"; 
 	private final static String ALSA_SYSDEFAULT = "sysdefault:"; 
@@ -690,7 +691,7 @@ public final class Util {
 	 * @throws IOException
 	 */
 	public final static void readConfigProperties(Reader reader, Map<String, String> properties) 
-			throws FileNotFoundException, IOException {
+			throws IOException {
 		
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("readConfigProperties(reader=" + 
@@ -713,21 +714,9 @@ public final class Util {
 						if (split != null && split.length == 2) {
 							String name = split[0].trim();
 							String value = split[1].trim();
-							
-							/*
-							 * get rid of leading quote
-							 */
-							if (value.startsWith("\"") || value.startsWith("\'")) {
-								value = value.substring(1);
-							}
-							
-							/*
-							 * get rid of trailing quote
-							 */
-							if (value.endsWith("\"") || value.endsWith("\'")) {
-								value = value.substring(0, value.length() - 1);
-							}
-							
+
+							trimQuotes(value);
+
 							properties.put(name, value);
 							if (LOGGER.isTraceEnabled()) {
 								LOGGER.trace("Name='" + name + "', Value='" + value + "'");

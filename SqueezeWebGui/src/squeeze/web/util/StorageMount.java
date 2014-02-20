@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -70,6 +71,8 @@ public class StorageMount {
 	private boolean fstabEntry = false;
 	
 	private boolean mounted = false;
+	
+	private CifsCredentials cifsCredentials = null;
 	
 	/**
 	 * 
@@ -274,6 +277,20 @@ public class StorageMount {
 	}
 	
 	/**
+	 * @return the cifsCredentials
+	 */
+	public CifsCredentials getCifsCredentials() {
+		return cifsCredentials;
+	}
+	
+	/**
+	 * @param cifsCredentials the cifsCredentials to set
+	 */
+	public void setCifsCredentials(CifsCredentials cifsCredentials) {
+		this.cifsCredentials = cifsCredentials;
+	}
+	
+	/**
 	 * @return
 	 */
 	public String getStatus() {
@@ -391,6 +408,21 @@ public class StorageMount {
 						StorageMount entry = new StorageMount(matcher.group(1), matcher.group(2), 
 								matcher.group(3), matcher.group(4), freq, passNo, lineNo, null, 
 								false, true, false);
+						
+						/*
+						 * Deal with cifs credentials
+						 */
+						if (FsType.CIFS.equals(entry.getFsType())) {
+							String options = entry.getOptions();
+							int index = options.indexOf("credentials=");
+							if (index > -1) {
+								StringTokenizer tok = new StringTokenizer(
+										options.substring(index + 12), ",");
+								if (tok.hasMoreTokens()) {
+									entry.setCifsCredentials(new CifsCredentials(tok.nextToken()));
+								}
+							}
+						}
 						
 						list.add(entry);
 					}

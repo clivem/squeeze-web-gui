@@ -39,6 +39,8 @@ public class Commands {
 	public final static String SCRIPT_SAMBA_WORGROUP_UPDATE = "sp-sambaConfigWorkgroup";
 	public final static String SCRIPT_CREATE_STORAGE_LAYOUT = "sp-createStorageLayout";
 	public final static String SCRIPT_FSTAB_UPDATE = "sp-fstabUpdate";
+	public final static String SCRIPT_CREDENTIALS_READ = "sp-credentialsRead";
+	public final static String SCRIPT_CREDENTIALS_UPDATE = "sp-credentialsUpdate";
 	
 	public final static String CMD_SUDO = "sudo";
 	public final static String CMD_NOHUP = "nohup";
