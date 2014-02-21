@@ -45,8 +45,9 @@ public class CifsCredentials {
 	private final static String PASSWORD = "password";
 	private final static String DOMAIN = "domain";
 	
-	private final static String CREDENTIALS = "credentials";
-	private final static String CREDENTIALS_DIR = "/etc/credentials";
+	public final static String GUEST_USER = "guest";
+	public final static String CREDENTIALS = "credentials";
+	public final static String CREDENTIALS_DIR = "/etc/credentials";
 	
 	private String credentialsFile = null;
 	private Map<String, String> credentialsMap = new HashMap<String, String>();
@@ -59,6 +60,11 @@ public class CifsCredentials {
 	public CifsCredentials(String username, String password, String domain) {
 		
 		super();
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("CifsCredentials(username=" + username + ", password=" + 
+					password + ", domain=" + domain + ")");
+		}
 
 		setUsername(username);
 		setPassword(password);
@@ -66,23 +72,32 @@ public class CifsCredentials {
 	}
 
 	/**
-	 * 
-	 */
-	public CifsCredentials() {
-		
-		super();
-	}
-	
-	/**
 	 * @param credentialsFile
 	 */
 	public CifsCredentials(String credentialsFile) {
 		
 		super();
 
-		setCredentialsFile(credentialsFile);
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("CifsCredentials(credentialsFile=" + credentialsFile + ")");
+		}
+
+		this.credentialsFile = credentialsFile;
+		populateCredentials();
 	}
-	
+
+	/**
+	 * 
+	 */
+	public CifsCredentials() {
+
+		super();
+
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("CifsCredentials()");
+		}
+	}
+		
 	private void populateCredentials() {
 		
 		if (LOGGER.isDebugEnabled()) {
@@ -145,7 +160,7 @@ public class CifsCredentials {
 			writer.write(Util.getModifiedComment());
 
 			String username = getUsername();
-			writer.write(USERNAME + Util.EQUALS + (username != null ? username : "guest") + Util.LINE_SEP );
+			writer.write(USERNAME + Util.EQUALS + (username != null ? username : GUEST_USER) + Util.LINE_SEP );
 			
 			String password = getPassword();
 			writer.write(PASSWORD + Util.EQUALS + (password != null ? password : "") + Util.LINE_SEP );
@@ -200,7 +215,6 @@ public class CifsCredentials {
 	 */
 	public void setCredentialsFile(String credentialsFile) {
 		this.credentialsFile = credentialsFile;
-		populateCredentials();
 	}
 
 	/**
@@ -251,6 +265,26 @@ public class CifsCredentials {
 	 */
 	public void setDomain(String domain) {
 		credentialsMap.put(DOMAIN, domain);
+	}
+	
+	/**
+	 * 
+	 */
+	public void save() 
+			throws IOException, InterruptedException {
+		
+		File tmpFile = null;
+		try {
+			File file = new File(credentialsFile);
+			tmpFile = writeTempCredentialsProperties(file.getName());
+			createOrReplaceCredentials(tmpFile, file.getName());
+		} finally {
+			if (tmpFile != null) {
+				try {
+					tmpFile.delete();
+				} catch (Exception e) {}
+			}
+		}
 	}
 	
 	/**

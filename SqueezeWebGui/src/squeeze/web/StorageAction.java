@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import squeeze.web.util.CifsCredentials;
 import squeeze.web.util.Commands;
 import squeeze.web.util.ExecuteProcess;
 import squeeze.web.util.FsType;
@@ -317,6 +318,8 @@ public class StorageAction extends ActionSupport {
 								// mark the mounted entry as being in fstab
 								mount.setFstabEntry(true);
 								mount.setLineNo(fstabMount.getLineNo());
+								mount.setOptions(fstabMount.getOptions());
+								mount.setCifsCredentials(fstabMount.getCifsCredentials());
 							}
 						}
 						// don't add it to the system mount list
@@ -378,6 +381,12 @@ public class StorageAction extends ActionSupport {
 		}
 		
 		if (!delete) {
+			if (FsType.CIFS.equals(mount.getFsType())) {
+				CifsCredentials credentials = mount.getCifsCredentials();
+				if (credentials != null) {
+					credentials.save();
+				}
+			}
 			// Add new entry for mount point.
 			fstabWriteList.add("# START: Addition by squeeze-web-gui (Java) on " + date);
 			fstabWriteList.add(mount.getSpec() + "\t" + mount.getMountPoint() + "\t" + mount.getFsType() +

@@ -124,7 +124,7 @@ public class StorageMountLocalAction extends StorageAction {
 				localFsMountOptions = LOCAL_FS_DEFAULT_MOUNT_OPTIONS;
 			}
 						
-			mount = new StorageMount(localFsPartition, localFsMountPoint, localFsType, localFsMountOptions, false);
+			mount = new StorageMount(localFsPartition, localFsMountPoint, localFsType, localFsMountOptions, false, null);
 			mountResult = mountFs(mount);
 		}
 

@@ -20,6 +20,7 @@
  */
 package squeeze.web.util;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -85,9 +86,9 @@ public class StorageMount {
 	/**
 	 * 
 	 */
-	public StorageMount(String spec, String mountPoint, String fsType, String options, boolean mounted) {
+	public StorageMount(String spec, String mountPoint, String fsType, String options, boolean mounted, CifsCredentials cifsCredentials) {
 		
-		this(spec, mountPoint, fsType, options, 0, 0, -1, null, false, false, mounted);
+		this(spec, mountPoint, fsType, options, 0, 0, -1, null, false, false, mounted, cifsCredentials);
 	}
 
 	/**
@@ -105,7 +106,7 @@ public class StorageMount {
 	 */
 	public StorageMount(String spec, String mountPoint, String fsType,
 			String options, int freq, int passNo, int lineNo, String action,
-			boolean persist, boolean fstabEntry, boolean mounted) {
+			boolean persist, boolean fstabEntry, boolean mounted, CifsCredentials cifsCredentials) {
 		
 		super();
 		
@@ -120,6 +121,14 @@ public class StorageMount {
 		this.persist = persist;
 		this.fstabEntry = fstabEntry;
 		this.mounted = mounted;
+		this.cifsCredentials = cifsCredentials;
+		
+		/*
+		 * check for and parse cifs credentials
+		 */
+		if (cifsCredentials == null) {
+			parseOptions();
+		}
 	}
 
 	/**
@@ -314,7 +323,7 @@ public class StorageMount {
 		}
 		
 		if (matcher.matches()) {
-			return new StorageMount(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4), true);
+			return new StorageMount(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4), true, null);
 		} else {
 			LOGGER.warn("createStorageMount(line=" + lineOfMountOutput + "): Invalid!");
 		}
@@ -405,32 +414,54 @@ public class StorageMount {
 							passNo = Integer.parseInt(matcher.group(6));
 						} catch (NumberFormatException nfe) {}
 						
-						StorageMount entry = new StorageMount(matcher.group(1), matcher.group(2), 
+						StorageMount mount = new StorageMount(matcher.group(1), matcher.group(2), 
 								matcher.group(3), matcher.group(4), freq, passNo, lineNo, null, 
-								false, true, false);
-						
-						/*
-						 * Deal with cifs credentials
-						 */
-						if (FsType.CIFS.equals(entry.getFsType())) {
-							String options = entry.getOptions();
-							int index = options.indexOf("credentials=");
-							if (index > -1) {
-								StringTokenizer tok = new StringTokenizer(
-										options.substring(index + 12), ",");
-								if (tok.hasMoreTokens()) {
-									entry.setCifsCredentials(new CifsCredentials(tok.nextToken()));
-								}
-							}
-						}
-						
-						list.add(entry);
+								false, true, false, null);
+												
+						list.add(mount);
 					}
 				}
 			}
 		}
 		
 		return list;
+	}
+	
+	/**
+	 * @param options
+	 * @return
+	 */
+	public final static String getCifsCredentialFileName(String options) {
+		
+		String CRED = "credentials=";
+		int index = options.indexOf(CRED);
+		if (index > -1) {
+			StringTokenizer tok = new StringTokenizer(
+					options.substring(index + CRED.length()), ",");
+			if (tok.hasMoreTokens()) {
+				return tok.nextToken();
+			}
+		}		
+		
+		return null;
+	}
+	
+	/**
+	 * 
+	 */
+	private void parseOptions() {
+		
+		/*
+		 * Deal with cifs credentials
+		 */
+		if (fsType != null && FsType.CIFS.equals(fsType)) {
+			if (options != null) {
+				String fileName = getCifsCredentialFileName(options);
+				if (fileName != null) {
+					cifsCredentials = new CifsCredentials(fileName);
+				}
+			}
+		}
 	}
 
 	/* (non-Javadoc)
@@ -443,5 +474,37 @@ public class StorageMount {
 				+ ", fsType=" + fsType + ", options=" + options + ", freq="
 				+ freq + ", passNo=" + passNo + ", lineNo=" + lineNo
 				+ ", action=" + action + ", persist=" + persist + "]";
+	}
+	
+	/**
+	 * @param options
+	 * @return
+	 */
+	public final static String sanitiseMountOptions(String options) {
+		
+		String result = "";
+		
+		StringTokenizer tok = new StringTokenizer(options, ",");
+		while (tok.hasMoreTokens()) {
+			String config = tok.nextToken();
+			StringTokenizer tok1 = new StringTokenizer(config, "=");
+			if (tok1.countTokens() == 1) {
+				result += tok1.nextToken() + (tok.hasMoreTokens() ? "," : "");
+			} else if (tok1.countTokens() == 2) {
+				String param = tok1.nextToken();
+				String value = tok1.nextToken();
+				
+				if (CifsCredentials.CREDENTIALS.equals(param)) {
+					if (!value.startsWith(CifsCredentials.CREDENTIALS_DIR)) {
+						File f = new File(value);
+						value = CifsCredentials.CREDENTIALS_DIR + "/" + f.getName();
+					}
+				}
+				
+				result += param + "=" + value + (tok.hasMoreTokens() ? "," : "");
+			}
+		}
+		
+		return result;
 	}
 }

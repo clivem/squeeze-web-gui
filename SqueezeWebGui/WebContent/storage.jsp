@@ -13,6 +13,18 @@
 </head>
 <body>
 
+<script type="text/javascript">
+function displayRemoteCifsCredentials() {
+	var e = document.getElementById("remoteFsType");
+	var val = e.options[e.selectedIndex].value;
+	if (val == 'cifs') {
+		document.getElementById('remoteFsCifsCredentials').style.display = '';
+	} else {
+		document.getElementById('remoteFsCifsCredentials').style.display = 'none';
+	}
+}
+</script>  
+
 <!-- Header -->
 <jsp:include page="Header.jsp"/>
 
@@ -73,10 +85,10 @@
 
 <s:iterator value="systemMountList">
 <tr>
-	<td><s:textfield name="mountPoint" readonly="true" cssClass="size-200px" /></td>
-	<td><s:textfield name="spec" readonly="true" cssClass="size-300px" /></td>
-	<td><s:textfield name="fsType" readonly="true" cssClass="size-75px" /></td>
-	<td><s:textfield name="options" readOnly="true" cssClass="size-300px" /></td>
+	<td><s:textfield name="mountPoint" readonly="true" cssClass="mounted-size-200px" /></td>
+	<td><s:textfield name="spec" readonly="true" cssClass="mounted-size-300px" /></td>
+	<td><s:textfield name="fsType" readonly="true" cssClass="mounted-size-75px" /></td>
+	<td><s:textfield name="options" readOnly="true" cssClass="mounted-size-300px" /></td>
 </tr>
 </s:iterator>
 
@@ -130,12 +142,45 @@
 
 <s:iterator value="userMountList" status="ind">
 <tr>
-	<td><s:textfield name="userMountList[%{#ind.index}].mountPoint" value="%{mountPoint}" readonly="true" cssClass="size-200px" /></td>
-	<td><s:textfield name="userMountList[%{#ind.index}].spec" value="%{spec}" readonly="true" cssClass="size-300px" /></td>
-	<td><s:textfield name="userMountList[%{#ind.index}].fsType" value="%{fsType}" readonly="true" cssClass="size-75px" /></td>
-	<td><s:textfield name="userMountList[%{#ind.index}].options" value="%{options}" cssClass="size-300px" /></td>
+	<td><s:textfield name="userMountList[%{#ind.index}].mountPoint" value="%{mountPoint}" readonly="true" cssClass="mounted-size-200px" /></td>
+	<td><s:textfield name="userMountList[%{#ind.index}].spec" value="%{spec}" readonly="true" cssClass="mounted-size-300px" /></td>
+	<td><s:textfield name="userMountList[%{#ind.index}].fsType" value="%{fsType}" readonly="true" cssClass="mounted-size-75px" /></td>
+	<td><s:textfield name="userMountList[%{#ind.index}].options" value="%{options}" cssClass="mounted-size-300px" /></td>
 	<td><s:select name="userMountList[%{#ind.index}].action" value="%{action}" list="userMountList[#ind.index].actionList" cssClass="size-100px" /></td>
 </tr>
+
+<s:if test="%{cifsCredentials != null}">
+<tr>
+	<td align="right">
+		<s:text name="storage.label.remoteFsUser" />
+		<img src='struts/tooltip.gif'
+			 title="<s:property value="getText('storage.tooltip.remoteFsUser')" />"
+			 alt="<s:property value="getText('storage.tooltip.remoteFsUser')" />" />
+	</td>
+	<td><s:textfield name="userMountList[%{#ind.index}].cifsCredentials.username" value="%{cifsCredentials.username}" />
+		<s:hidden name="userMountList[%{#ind.index}].cifsCredentials.credentialsFile" value="%{cifsCredentials.credentialsFile}" />
+	</td>
+</tr>
+<tr>
+	<td align="right">
+		<s:text name="storage.label.remoteFsPassword" />
+		<img src='struts/tooltip.gif'
+			 title="<s:property value="getText('storage.tooltip.remoteFsPassword')" />"
+			 alt="<s:property value="getText('storage.tooltip.remoteFsPassword')" />" />
+	</td>
+	<td><s:textfield name="userMountList[%{#ind.index}].cifsCredentials.password" value="%{cifsCredentials.password}" /></td>
+</tr>
+<tr>
+	<td align="right">
+		<s:text name="storage.label.remoteFsDomain" />
+		<img src='struts/tooltip.gif'
+			 title="<s:property value="getText('storage.tooltip.remoteFsDomain')" />"
+			 alt="<s:property value="getText('storage.tooltip.remoteFsDomain')" />" />
+	</td>
+	<td><s:textfield name="userMountList[%{#ind.index}].cifsCredentials.domain" value="%{cifsCredentials.domain}" /></td>
+</tr>
+</s:if>
+
 <tr>
 	<td colspan="4" class="copyright"><s:property value="userMountList[#ind.index].status" /></td>
 </tr>
@@ -149,6 +194,39 @@
 	<td><s:textfield name="fstabUserMountList[%{#ind.index}].options" value="%{options}" cssClass="size-300px" /></td>
 	<td><s:select name="fstabUserMountList[%{#ind.index}].action" value="%{action}" list="fstabUserMountList[#ind.index].actionList" cssClass="size-100px" /></td>
 </tr>
+
+<s:if test="%{cifsCredentials != null}">
+<tr>
+	<td align="right">
+		<s:text name="storage.label.remoteFsUser" />
+		<img src='struts/tooltip.gif'
+			 title="<s:property value="getText('storage.tooltip.remoteFsUser')" />"
+			 alt="<s:property value="getText('storage.tooltip.remoteFsUser')" />" />
+	</td>
+	<td><s:textfield name="fstabUserMountList[%{#ind.index}].cifsCredentials.username" value="%{cifsCredentials.username}" />
+		<s:hidden name="fstabUserMountList[%{#ind.index}].cifsCredentials.credentialsFile" value="%{cifsCredentials.credentialsFile}" />
+	</td>
+</tr>
+<tr>
+	<td align="right">
+		<s:text name="storage.label.remoteFsPassword" />
+		<img src='struts/tooltip.gif'
+			 title="<s:property value="getText('storage.tooltip.remoteFsPassword')" />"
+			 alt="<s:property value="getText('storage.tooltip.remoteFsPassword')" />" />
+	</td>
+	<td><s:textfield name="fstabUserMountList[%{#ind.index}].cifsCredentials.password" value="%{cifsCredentials.password}" /></td>
+</tr>
+<tr>
+	<td align="right">
+		<s:text name="storage.label.remoteFsDomain" />
+		<img src='struts/tooltip.gif'
+			 title="<s:property value="getText('storage.tooltip.remoteFsDomain')" />"
+			 alt="<s:property value="getText('storage.tooltip.remoteFsDomain')" />" />
+	</td>
+	<td><s:textfield name="fstabUserMountList[%{#ind.index}].cifsCredentials.domain" value="%{cifsCredentials.domain}" /></td>
+</tr>
+</s:if>
+
 <tr>
 	<td colspan="4" class="copyright"><s:property value="fstabUserMountList[#ind.index].status" /></td>
 </tr>
@@ -264,36 +342,43 @@
 <tr>
 	<td><s:select name="remoteFsMountPoint" list="mountPoints" cssClass="size-200px" /></td>
 	<td><s:textfield name="remoteFsPartition" cssClass="size-300px" /></td>
-	<td><s:select name="remoteFsType" list="remoteFsTypes" cssClass="size-75px" /></td>
+	<td><s:select name="remoteFsType" id="remoteFsType" onclick="javascript:displayRemoteCifsCredentials();" list="remoteFsTypes" cssClass="size-75px" /></td>
 	<td><s:textfield name="remoteFsMountOptions" cssClass="size-300px" /></td>
 	<td><s:checkbox name="remoteFsPersist" cssClass="size-75px" /></td>
 </tr>
 
-<tr>
+<tr id="remoteFsCifsCredentials" 
+  <s:if test="%{remoteFsType == 'cifs'}">style="display:"</s:if>
+  <s:else>style="display:none"</s:else>
+>
 <td colspan="4">
 <table>
 <tr>
-<td>
+<td align="right">
 	<s:text name="storage.label.remoteFsUser" />
 	<img src='struts/tooltip.gif'
 		 title="<s:property value="getText('storage.tooltip.remoteFsUser')" />"
 		 alt="<s:property value="getText('storage.tooltip.remoteFsUser')" />" />
 </td>
-<td><s:textfield name="remoteFsUser" cssClass="size-150px" /></td>
-<td>
+<td><s:textfield name="remoteFsUser" cssClass="size-200px" /></td>
+</tr>
+<tr>
+<td align="right">
 	<s:text name="storage.label.remoteFsPassword" />
 	<img src='struts/tooltip.gif'
 		 title="<s:property value="getText('storage.tooltip.remoteFsPassword')" />"
 		 alt="<s:property value="getText('storage.tooltip.remoteFsPassword')" />" />
 </td>
-<td><s:textfield name="remoteFsPassword" cssClass="size-150px" /></td>
-<td>
+<td><s:textfield name="remoteFsPassword" cssClass="size-200px" /></td>
+</tr>
+<tr>
+<td align="right">
 	<s:text name="storage.label.remoteFsDomain" />
 	<img src='struts/tooltip.gif'
 		 title="<s:property value="getText('storage.tooltip.remoteFsDomain')" />"
 		 alt="<s:property value="getText('storage.tooltip.remoteFsDomain')" />" />
 </td>
-<td><s:textfield name="remoteFsDomain" cssClass="size-150px" /></td>
+<td><s:textfield name="remoteFsDomain" cssClass="size-200px" /></td>
 </tr>
 </table>
 </td>
@@ -312,6 +397,7 @@
 <!-- Create Storage Layout -->
 <hr />
 <h4><s:text name="storage.header.createStorageLayout" /></h4>
+<p class="warning">For expert users, ONLY! Don't press the submit button unless you understand what will happen!</p>
 <p>Create the default file system directory structure under the chosen storage directory, DIR. 
 (owner nobody, group nobody and mode 777.)</p>
 <p>

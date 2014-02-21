@@ -14,12 +14,12 @@
 <body>
 
 <script type="text/javascript">
-function advancedCheck() {
-  if (document.getElementById('advanced_check').checked) {
-    document.getElementById('advanced').style.display = '';
-  } else {
-    document.getElementById('advanced').style.display = 'none';
-  }
+function displayAdvancedOptions() {
+	if (document.getElementById('showAdvancedOptions').checked) {
+		document.getElementById('advancedOptions').style.display = '';
+	} else {
+		document.getElementById('advancedOptions').style.display = 'none';
+	}
 }
 </script>  
 
@@ -167,7 +167,7 @@ function advancedCheck() {
 <td align="right">
 </td>
 <td>
-    <s:checkbox name="showAdvancedOptions" id="advanced_check" onclick="javascript:advancedCheck();" />
+    <s:checkbox name="showAdvancedOptions" id="showAdvancedOptions" onclick="javascript:displayAdvancedOptions();" />
     <s:text name="squeezelite.label.advancedOptions" />
 </td>
 </tr>
@@ -175,7 +175,10 @@ function advancedCheck() {
 <!-- Start: Advanced Options -->
 <tr>
 <td colspan="2">
-<table id="advanced" style="display:none">
+<table id="advancedOptions" 
+  <s:if test="%{showAdvancedOptions}">style="display:"</s:if>
+  <s:else>style="display:none"</s:else>
+>
 <tr>
 <td align="right">
     <s:text name="squeezelite.label.mac" />
