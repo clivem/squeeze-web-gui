@@ -63,17 +63,17 @@
   </logger>
 
   <logger name="squeeze.web">
-  	<level value="debug"/> 
+  	<level value="warn"/> 
   </logger>
 
   <logger name="squeeze.web.util">
-  	<level value="debug"/> 
+  	<level value="warn"/> 
   </logger>
 
   <root> 
-    <priority value="debug" /> 
-    <appender-ref ref="console" />
-    <!-- appender-ref ref="util" / --> 
+    <priority value="warn" /> 
+    <!-- appender-ref ref="console" / -->
+    <appender-ref ref="util" /> 
   </root>
   
 </log4j:configuration>
