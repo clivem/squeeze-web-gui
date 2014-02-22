@@ -232,6 +232,10 @@ public class StorageAction extends ActionSupport {
 	protected int mountFs(StorageMount mount) 
 			throws IOException, InterruptedException {
 		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("mountFs(mount=" + mount + ")");
+		}
+		
 		// Make sure it isn't already mounted
 		String[] cmdLineArgs = Util.createUmountCommand(mount);
 		int result = Util.umount(cmdLineArgs);
@@ -322,6 +326,11 @@ public class StorageAction extends ActionSupport {
 								mount.setCifsCredentials(fstabMount.getCifsCredentials());
 							}
 						}
+						
+						if (!mount.isFstabEntry() && FsType.CIFS.equals(mount.getFsType())) {
+							mount.createOrUpdateCifsCredentials();
+						}
+						
 						// don't add it to the system mount list
 						userMount = true;
 						break;
@@ -348,6 +357,10 @@ public class StorageAction extends ActionSupport {
 	 */
 	protected void persist(StorageMount mount, boolean delete) 
 			throws FileNotFoundException, InterruptedException, IOException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("persist(mount=" + mount + ", delete=" + delete + ")");
+		}
 		
 		HashMap<Integer, StorageMount> map = new HashMap<Integer, StorageMount>();
 		
@@ -448,6 +461,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the userMountList
 	 */
 	public List<StorageMount> getUserMountList() {
+		
 		return userMountList;
 	}
 
@@ -455,6 +469,7 @@ public class StorageAction extends ActionSupport {
 	 * @param userMountList the userMountList to set
 	 */
 	public void setUserMountList(List<StorageMount> userMountList) {
+		
 		this.userMountList = userMountList;
 	}
 
@@ -462,6 +477,7 @@ public class StorageAction extends ActionSupport {
 	 * @return
 	 */
 	public List<String> getLocalFsTypes() {
+		
 		return LOCAL_FS_TYPES;
 	}
 
@@ -469,6 +485,7 @@ public class StorageAction extends ActionSupport {
 	 * @return
 	 */
 	public List<String> getRemoteFsTypes() {
+		
 		return REMOTE_FS_TYPES;
 	}
 
@@ -476,6 +493,7 @@ public class StorageAction extends ActionSupport {
 	 * @return
 	 */
 	public List<String> getMountPoints() {
+		
 		return MOUNT_POINTS;
 	}
 	
@@ -483,6 +501,7 @@ public class StorageAction extends ActionSupport {
 	 * @return
 	 */
 	public List<String> getAvailablePartitions() {
+		
 		return new ArrayList<String>();
 	}
 	
@@ -490,6 +509,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the localFsPartition
 	 */
 	public String getLocalFsPartition() {
+		
 		return localFsPartition;
 	}
 
@@ -497,6 +517,7 @@ public class StorageAction extends ActionSupport {
 	 * @param localFsPartition the localFsPartition to set
 	 */
 	public void setLocalFsPartition(String localFsPartition) {
+		
 		this.localFsPartition = localFsPartition;
 	}
 
@@ -504,6 +525,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the localFsMountPoint
 	 */
 	public String getLocalFsMountPoint() {
+		
 		return localFsMountPoint;
 	}
 
@@ -511,6 +533,7 @@ public class StorageAction extends ActionSupport {
 	 * @param localFsMountPoint the localFsMountPoint to set
 	 */
 	public void setLocalFsMountPoint(String localFsMountPoint) {
+		
 		this.localFsMountPoint = localFsMountPoint;
 	}
 
@@ -518,6 +541,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the localFsType
 	 */
 	public String getLocalFsType() {
+		
 		return localFsType;
 	}
 
@@ -525,6 +549,7 @@ public class StorageAction extends ActionSupport {
 	 * @param localFsType the localFsType to set
 	 */
 	public void setLocalFsType(String localFsType) {
+		
 		this.localFsType = localFsType;
 	}
 
@@ -532,6 +557,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the remoteFsPartition
 	 */
 	public String getRemoteFsPartition() {
+		
 		return remoteFsPartition;
 	}
 
@@ -539,6 +565,7 @@ public class StorageAction extends ActionSupport {
 	 * @param remoteFsPartition the remoteFsPartition to set
 	 */
 	public void setRemoteFsPartition(String remoteFsPartition) {
+		
 		this.remoteFsPartition = remoteFsPartition;
 	}
 
@@ -546,6 +573,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the remoteFsMountPoint
 	 */
 	public String getRemoteFsMountPoint() {
+		
 		return remoteFsMountPoint;
 	}
 
@@ -553,6 +581,7 @@ public class StorageAction extends ActionSupport {
 	 * @param remoteFsMountPoint the remoteFsMountPoint to set
 	 */
 	public void setRemoteFsMountPoint(String remoteFsMountPoint) {
+		
 		this.remoteFsMountPoint = remoteFsMountPoint;
 	}
 
@@ -560,6 +589,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the remoteFsType
 	 */
 	public String getRemoteFsType() {
+		
 		return remoteFsType;
 	}
 
@@ -567,6 +597,7 @@ public class StorageAction extends ActionSupport {
 	 * @param remoteFsType the remoteFsType to set
 	 */
 	public void setRemoteFsType(String remoteFsType) {
+		
 		this.remoteFsType = remoteFsType;
 	}
 
@@ -574,6 +605,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the localFsMountOptions
 	 */
 	public String getLocalFsMountOptions() {
+		
 		return localFsMountOptions;
 	}
 
@@ -581,6 +613,7 @@ public class StorageAction extends ActionSupport {
 	 * @param localFsMountOptions the localFsMountOptions to set
 	 */
 	public void setLocalFsMountOptions(String localFsMountOptions) {
+		
 		this.localFsMountOptions = localFsMountOptions;
 	}
 
@@ -588,6 +621,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the remoteFsMountOptions
 	 */
 	public String getRemoteFsMountOptions() {
+		
 		return remoteFsMountOptions;
 	}
 
@@ -595,6 +629,7 @@ public class StorageAction extends ActionSupport {
 	 * @param remoteFsMountOptions the remoteFsMountOptions to set
 	 */
 	public void setRemoteFsMountOptions(String remoteFsMountOptions) {
+		
 		this.remoteFsMountOptions = remoteFsMountOptions;
 	}
 
@@ -602,6 +637,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the systemMountList
 	 */
 	public List<StorageMount> getSystemMountList() {
+		
 		return systemMountList;
 	}
 
@@ -609,6 +645,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the localFsPartitionList
 	 */
 	public List<String> getLocalFsPartitionList() {
+		
 		return localFsPartitionList;
 	}
 
@@ -616,6 +653,7 @@ public class StorageAction extends ActionSupport {
 	 * @param localFsPartitionList the localFsPartitionList to set
 	 */
 	public void setLocalFsPartitionList(List<String> localFsPartitionList) {
+		
 		this.localFsPartitionList = localFsPartitionList;
 	}
 	
@@ -623,6 +661,7 @@ public class StorageAction extends ActionSupport {
 	 * @return
 	 */
 	public String[] getStorageLayoutList() {
+		
 		return STORAGE_DIR_LIST;
 	}
 	
@@ -630,6 +669,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the storageDirectory
 	 */
 	public String getStorageDirectory() {
+		
 		return storageDirectory;
 	}
 	
@@ -637,6 +677,7 @@ public class StorageAction extends ActionSupport {
 	 * @param storageDirectory the storageDirectory to set
 	 */
 	public void setStorageDirectory(String storageDirectory) {
+		
 		this.storageDirectory = storageDirectory;
 	}
 
@@ -644,6 +685,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the remoteFsUser
 	 */
 	public String getRemoteFsUser() {
+		
 		return remoteFsUser;
 	}
 
@@ -651,6 +693,7 @@ public class StorageAction extends ActionSupport {
 	 * @param remoteFsUser the remoteFsUser to set
 	 */
 	public void setRemoteFsUser(String remoteFsUser) {
+		
 		this.remoteFsUser = remoteFsUser;
 	}
 
@@ -658,6 +701,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the remoteFsPassword
 	 */
 	public String getRemoteFsPassword() {
+		
 		return remoteFsPassword;
 	}
 
@@ -665,6 +709,7 @@ public class StorageAction extends ActionSupport {
 	 * @param remoteFsPassword the remoteFsPassword to set
 	 */
 	public void setRemoteFsPassword(String remoteFsPassword) {
+		
 		this.remoteFsPassword = remoteFsPassword;
 	}
 
@@ -672,6 +717,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the remoteFsDomain
 	 */
 	public String getRemoteFsDomain() {
+		
 		return remoteFsDomain;
 	}
 
@@ -679,6 +725,7 @@ public class StorageAction extends ActionSupport {
 	 * @param remoteFsDomain the remoteFsDomain to set
 	 */
 	public void setRemoteFsDomain(String remoteFsDomain) {
+		
 		this.remoteFsDomain = remoteFsDomain;
 	}
 
@@ -686,6 +733,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the localFsPersist
 	 */
 	public boolean isLocalFsPersist() {
+		
 		return localFsPersist;
 	}
 
@@ -693,6 +741,7 @@ public class StorageAction extends ActionSupport {
 	 * @param localFsPersist the localFsPersist to set
 	 */
 	public void setLocalFsPersist(boolean localFsPersist) {
+		
 		this.localFsPersist = localFsPersist;
 	}
 
@@ -700,6 +749,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the remoteFsPersist
 	 */
 	public boolean isRemoteFsPersist() {
+		
 		return remoteFsPersist;
 	}
 
@@ -707,6 +757,7 @@ public class StorageAction extends ActionSupport {
 	 * @param remoteFsPersist the remoteFsPersist to set
 	 */
 	public void setRemoteFsPersist(boolean remoteFsPersist) {
+		
 		this.remoteFsPersist = remoteFsPersist;
 	}
 
@@ -714,6 +765,7 @@ public class StorageAction extends ActionSupport {
 	 * @return the fstabUserMountList
 	 */
 	public List<StorageMount> getFstabUserMountList() {
+		
 		return fstabUserMountList;
 	}
 
@@ -721,6 +773,7 @@ public class StorageAction extends ActionSupport {
 	 * @param fstabUserMountList the fstabUserMountList to set
 	 */
 	public void setFstabUserMountList(List<StorageMount> fstabUserMountList) {
+		
 		this.fstabUserMountList = fstabUserMountList;
 	}
 }

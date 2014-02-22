@@ -27,6 +27,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import squeeze.web.util.CifsCredentials;
+import squeeze.web.util.FsType;
 import squeeze.web.util.StorageMount;
 import squeeze.web.util.Util;
 
@@ -52,68 +54,77 @@ public class StorageMountAction extends StorageAction {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.opensymphony.xwork2.ActionSupport#validate()
+	 */
+	@Override
+	public void validate() {
+	
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("validate()");
+		}
+		
+		validate_(userMountList);
+		validate_(fstabUserMountList);
+		
+		if (hasActionErrors()) {
+			try {
+				populateMounts();
+			} catch (Exception e) {}
+		}
+	}
+	
 	/**
 	 * @param mountList
-	 * @throws InterruptedException
-	 * @throws IOException
 	 */
-	private void action_(List<StorageMount> mountList) 
-			throws FileNotFoundException, InterruptedException, IOException {
+	private void validate_(List<StorageMount> mountList) {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("validate_(mountList=" + mountList + ")");
+		}
 		
 		if (mountList != null) {
 			Iterator<StorageMount> it = mountList.iterator();
 			while (it.hasNext()) {
 				StorageMount mount = it.next();
-				if (StorageMount.ACTION_DELETE.equals(mount.getAction())) {
-					if (LOG.isDebugEnabled()) {
-						LOG.debug("Delete: " + mount);
-					}
-					persist(mount, true);
-				} else if (StorageMount.ACTION_PERSIST.equals(mount.getAction()) || 
-						StorageMount.ACTION_UPDATE.equals(mount.getAction())) {
-					if (LOG.isDebugEnabled()) {
-						LOG.debug("Persist: " + mount);
-					}
-					persist(mount, false);
-				} else if (StorageMount.ACTION_MOUNT.equals(mount.getAction())) {
-					if (LOG.isDebugEnabled()) {
-						LOG.debug("Mount: " + mount);
-					}
-					// Make sure it isn't already mounted.
-					String[] cmdLineArgs = Util.createUmountCommand(mount);
-					int result = Util.umount(cmdLineArgs);
-					// Mount it.
-					cmdLineArgs = Util.createMountCommand(mount);
-					result = Util.mount(cmdLineArgs);
-					if (result != 0) {
-						addActionError("Mount '" + Util.arrayToString(cmdLineArgs) + "' returned: " + result +
-								". (If successful, return code should be 0.)");
-					}					
-				} else if (StorageMount.ACTION_UNMOUNT.equals(mount.getAction())) {
-					if (LOG.isDebugEnabled()) {
-						LOG.debug("Unmount: " + mount);
-					}
-					String[] cmdLineArgs = Util.createUmountCommand(mount);
-					int result = Util.umount(cmdLineArgs);
-					if (result != 0) {
-						addActionError("Unmount '" + Util.arrayToString(cmdLineArgs) + "' returned: " + result +
-								". (If successful, return code should be 0.)");
-					}
-				} else if (StorageMount.ACTION_REMOUNT.equals(mount.getAction())) {
-					if (LOG.isDebugEnabled()) {
-						LOG.warn("Remount: " + mount);
-						String[] cmdLineArgs = Util.createReMountCommand(mount);
-						int result = Util.remount(cmdLineArgs);
-						if (result != 0) {
-							addActionError("Remount '" + Util.arrayToString(cmdLineArgs) + "' returned: " + result +
-									". (If successful, return code should be 0.)");
-						}
-					}
+				
+				String action = mount.getAction();
+				if (StorageMount.ACTION_PERSIST.equals(action) || 
+						StorageMount.ACTION_UPDATE.equals(action) ||
+						StorageMount.ACTION_MOUNT.equals(action) ||
+						StorageMount.ACTION_REMOUNT.equals(action)) {
+					
+					validateMount(mount, action);
 				}
 			}
 		}		
 	}
 
+	/**
+	 * @param mount
+	 * @param action
+	 */
+	private void validateMount(StorageMount mount, String action) {
+
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("validateMount(mount=" + mount + ", action=" + action + ")");
+		}
+		
+		if (FsType.CIFS.equals(mount.getFsType())) {
+			CifsCredentials credentials = mount.getCifsCredentials();
+			if (credentials == null) {
+				addActionError(action + ": " + mount.getSpec() + ": " + 
+						getText("storage.validation.remoteFsUser.fail"));
+			} else {
+				String username = credentials.getUsername();
+				if (username == null || username.trim().length() < 1) {
+					addActionError(action + ": " + mount.getSpec() + ": " + 
+							getText("storage.validation.remoteFsUser.fail"));
+				}
+			}
+		}
+	}
+	
 	/**
 	 * @return
 	 * @throws Exception
@@ -135,4 +146,96 @@ public class StorageMountAction extends StorageAction {
 		
 		return result;
 	}
+
+	/**
+	 * @param mountList
+	 * @throws InterruptedException
+	 * @throws IOException
+	 */
+	private void action_(List<StorageMount> mountList) 
+			throws FileNotFoundException, InterruptedException, IOException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("action_(mountList=" + mountList + ")");
+		}
+		
+		if (mountList != null) {
+			Iterator<StorageMount> it = mountList.iterator();
+			while (it.hasNext()) {
+				StorageMount mount = it.next();
+				if (StorageMount.ACTION_DELETE.equals(mount.getAction())) {
+					
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("Delete: " + mount);
+					}
+					
+					persist(mount, true);
+				} else if (StorageMount.ACTION_PERSIST.equals(mount.getAction()) || 
+						StorageMount.ACTION_UPDATE.equals(mount.getAction())) {
+					
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("Persist: " + mount);
+					}
+					
+					/*
+					 * Deal with cifs credentials
+					 */
+					if (FsType.CIFS.equals(mount.getFsType())) {
+						mount.createOrUpdateCifsCredentials(null, null, null);
+					}
+					
+					persist(mount, false);
+				} else if (StorageMount.ACTION_MOUNT.equals(mount.getAction())) {
+					
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("Mount: " + mount);
+					}
+					
+					// Make sure it isn't already mounted.
+					String[] cmdLineArgs = Util.createUmountCommand(mount);
+					int result = Util.umount(cmdLineArgs);
+
+					if (FsType.CIFS.equals(mount.getFsType())) {
+						mount.createOrUpdateCifsCredentials(null, null, null);
+					}
+					
+					// Mount it.
+					cmdLineArgs = Util.createMountCommand(mount);
+					result = Util.mount(cmdLineArgs);
+					if (result != 0) {
+						addActionError("Mount '" + Util.arrayToString(cmdLineArgs) + "' returned: " + result +
+								". (If successful, return code should be 0.)");
+					}					
+				} else if (StorageMount.ACTION_UNMOUNT.equals(mount.getAction())) {
+					
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("Unmount: " + mount);
+					}
+					
+					if (FsType.CIFS.equals(mount.getFsType())) {
+						mount.createOrUpdateCifsCredentials(null, null, null);
+					}
+
+					String[] cmdLineArgs = Util.createUmountCommand(mount);
+					int result = Util.umount(cmdLineArgs);
+					if (result != 0) {
+						addActionError("Unmount '" + Util.arrayToString(cmdLineArgs) + "' returned: " + result +
+								". (If successful, return code should be 0.)");
+					}
+				} else if (StorageMount.ACTION_REMOUNT.equals(mount.getAction())) {
+					
+					if (LOG.isDebugEnabled()) {
+						LOG.warn("Remount: " + mount);
+					}
+
+					String[] cmdLineArgs = Util.createReMountCommand(mount);
+					int result = Util.remount(cmdLineArgs);
+					if (result != 0) {
+						addActionError("Remount '" + Util.arrayToString(cmdLineArgs) + "' returned: " + result +
+								". (If successful, return code should be 0.)");
+					}
+				}
+			}
+		}		
+	}	
 }

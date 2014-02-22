@@ -51,6 +51,10 @@ public class StorageMountLocalAction extends StorageAction {
 	 */
 	@Override
 	public void validate() {
+	
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("validate()");
+		}
 		
 		if (localFsPartition == null || localFsPartition.trim().length() < 1) {
 			addActionError(getText("storage.validation.spec.fail"));

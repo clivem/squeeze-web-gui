@@ -54,6 +54,10 @@ public class StorageMountRemoteAction extends StorageAction {
 	@Override
 	public void validate() {
 		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("validate()");
+		}
+		
 		if (remoteFsPartition == null || remoteFsPartition.trim().length() < 1) {
 			addActionError(getText("storage.validation.remoteSpec.fail"));
 		}
@@ -64,17 +68,11 @@ public class StorageMountRemoteAction extends StorageAction {
 
 		if (remoteFsType == null || remoteFsType.trim().length() < 1) {
 			addActionError(getText("storage.validation.vfsType.fail"));
-		} else {		
-			if (FsType.CIFS.equals(remoteFsType)) {
-				if (remoteFsMountOptions != null && remoteFsMountOptions.contains("user=")) {
-					// user is set in options
-					if (LOGGER.isDebugEnabled()) {
-						LOGGER.debug("cifs user set in mount options.");
-					}
-				} else if (remoteFsUser == null || remoteFsUser.trim().length() < 1) {
-					addActionError(getText("storage.validation.remoteFsUser.fail"));
-				}
-			}
+		}
+		
+		if (FsType.CIFS.equals(remoteFsType) && 
+				(remoteFsUser == null || remoteFsUser.trim().length() < 1)) {
+			addActionError(getText("storage.validation.remoteFsUser.fail"));
 		}
 		
 		if (hasActionErrors()) {
@@ -132,89 +130,47 @@ public class StorageMountRemoteAction extends StorageAction {
 			
 			String mountOptions = remoteFsMountOptions;
 			
+			mount = new StorageMount(remoteFsPartition, remoteFsMountPoint, remoteFsType, 
+					mountOptions, false, null);
+
 			/*
 			 * Make sure if we are mounting a cifs share, that we use credentials.
 			 */
-			CifsCredentials credentials = null;
 			if (FsType.CIFS.equals(remoteFsType)) {
-				// make sure if using credentials, that we are using the correct credentials dir.
-				mountOptions = StorageMount.sanitiseMountOptions(remoteFsMountOptions);
-				
-				String credentialsFileName = StorageMount.getCifsCredentialFileName(mountOptions);
-				if (credentialsFileName != null) {
-					credentials = new CifsCredentials();
-					credentials.setCredentialsFile(credentialsFileName);
-				}
-				
-				/*
-				if (!remoteFsMountOptions.contains("user=") && 
-						remoteFsUser != null && remoteFsUser.trim().length() > 0) {
-					mountOptions += ",user=" + remoteFsUser.trim();
-				}
-				*/
-				if (!remoteFsMountOptions.contains("user=")) {
-					if (remoteFsUser != null && remoteFsUser.trim().length() > 0) {
-						remoteFsUser = remoteFsUser.trim();
-						if (credentials != null) {
-							credentials.setUsername(remoteFsUser);
-						} else {
-							mountOptions += ",user=" + remoteFsUser.trim();
-						}
-					}
-				}
-				/*
-				// blank password allowed!
-				if (!remoteFsMountOptions.contains("pass=")) {
-					if (remoteFsPassword != null && remoteFsPassword.trim().length() > 0) {
-						mountOptions += ",pass=" + remoteFsPassword.trim();
-					} else {
-						mountOptions += ",pass=";
-					}
-				}
-				*/
-				// blank password allowed!
-				if (!remoteFsMountOptions.contains("pass=")) {
-					if (remoteFsPassword != null && remoteFsPassword.trim().length() > 0) {
-						remoteFsPassword = remoteFsPassword.trim();
-					} else {
-						remoteFsPassword = Util.BLANK_STRING;
-					}
-					if (credentials != null) {
-						credentials.setPassword(remoteFsPassword);
-					} else {
-						mountOptions += ",pass=" + remoteFsPassword;
-					}
-				}
-				/*
-				if (!remoteFsMountOptions.contains("domain=") && 
-						remoteFsDomain != null && remoteFsDomain.trim().length() > 0) {
-					mountOptions += ",domain=" + remoteFsDomain.trim();
-				}
-				*/
-				if (!remoteFsMountOptions.contains("domain=")) { 
-					if (remoteFsDomain != null && remoteFsDomain.trim().length() > 0) {
-						remoteFsDomain = remoteFsDomain.trim();
-					} else {
-						remoteFsDomain = Util.BLANK_STRING;
-					}
-					if (credentials != null) {
-						credentials.setDomain(remoteFsDomain);
-					} else {
-						mountOptions += ",domain=" + remoteFsDomain;
-					}
-				}
-			}
-			
-			/* 
-			 * if we are using cifs credentials, save them before we attempt to mount
-			 */
-			if (credentials != null) {
-				credentials.save();
-			}
 
-			mount = new StorageMount(remoteFsPartition, remoteFsMountPoint, remoteFsType, 
-					mountOptions, false, credentials);
-			
+				/*
+				 * CIFS USERNAME
+				 */
+				String username = null;
+				if (remoteFsUser != null && remoteFsUser.trim().length() > 0) {
+					username = remoteFsUser.trim();
+				} else {
+					username = CifsCredentials.GUEST;
+				}	
+
+				/*
+				 * CIFS PASSWORD
+				 */
+				String password = null;
+				if (remoteFsPassword != null && remoteFsPassword.trim().length() > 0) {
+					password = remoteFsPassword.trim();
+				} else {
+					password = Util.BLANK_STRING;
+				}
+
+				/*
+				 * CIFS DOMAIN
+				 */
+				String domain = null;
+				if (remoteFsDomain != null && remoteFsDomain.trim().length() > 0) {
+					domain = remoteFsDomain.trim();
+				} else {
+					domain = Util.BLANK_STRING;
+				}
+				
+				mount.createOrUpdateCifsCredentials(username, password, domain);
+			}
+						
 			mountResult = mountFs(mount);
 		}
 		

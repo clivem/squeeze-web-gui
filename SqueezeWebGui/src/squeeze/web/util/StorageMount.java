@@ -24,8 +24,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -81,6 +85,10 @@ public class StorageMount {
 	public StorageMount() {
 
 		super();
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("StorageMount()");
+		}
 	}
 
 	/**
@@ -89,6 +97,12 @@ public class StorageMount {
 	public StorageMount(String spec, String mountPoint, String fsType, String options, boolean mounted, CifsCredentials cifsCredentials) {
 		
 		this(spec, mountPoint, fsType, options, 0, 0, -1, null, false, false, mounted, cifsCredentials);
+
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("StorageMount(spec=" + spec + ", mountPoint=" + mountPoint + 
+					", fsType=" + fsType + ", options=" + options + ", mounted=" + mounted + 
+					", cifsCredentials=" + cifsCredentials + ")");
+		}
 	}
 
 	/**
@@ -108,7 +122,15 @@ public class StorageMount {
 			String options, int freq, int passNo, int lineNo, String action,
 			boolean persist, boolean fstabEntry, boolean mounted, CifsCredentials cifsCredentials) {
 		
-		super();
+		this();
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("StorageMount(spec=" + spec + ", mountPoint=" + mountPoint + 
+					", fsType=" + fsType + ", options=" + options + ", freq=" + freq + 
+					", passNo=" + passNo + ", lineNo=" + lineNo + ", action=" + action +
+					", persist=" + persist + ", fstabEntry=" + fstabEntry + 
+					", mounted=" + mounted + ", cifsCredentials=" + cifsCredentials + ")");
+		}
 		
 		this.spec = spec;
 		this.mountPoint = mountPoint;
@@ -135,6 +157,7 @@ public class StorageMount {
 	 * @return the spec
 	 */
 	public String getSpec() {
+		
 		return spec;
 	}
 
@@ -142,6 +165,7 @@ public class StorageMount {
 	 * @return the mountPoint
 	 */
 	public String getMountPoint() {
+		
 		return mountPoint;
 	}
 
@@ -149,6 +173,7 @@ public class StorageMount {
 	 * @return the fsType
 	 */
 	public String getFsType() {
+		
 		return fsType;
 	}
 
@@ -156,6 +181,7 @@ public class StorageMount {
 	 * @return the options
 	 */
 	public String getOptions() {
+		
 		return options;
 	}
 	
@@ -163,6 +189,7 @@ public class StorageMount {
 	 * @param spec the spec to set
 	 */
 	public void setSpec(String spec) {
+		
 		this.spec = spec;
 	}
 
@@ -170,6 +197,7 @@ public class StorageMount {
 	 * @param mountPoint the mountPoint to set
 	 */
 	public void setMountPoint(String mountPoint) {
+		
 		this.mountPoint = mountPoint;
 	}
 
@@ -177,6 +205,7 @@ public class StorageMount {
 	 * @param fsType the fsType to set
 	 */
 	public void setFsType(String fsType) {
+		
 		this.fsType = fsType;
 	}
 
@@ -184,6 +213,7 @@ public class StorageMount {
 	 * @param options the options to set
 	 */
 	public void setOptions(String options) {
+		
 		this.options = options;
 	}
 
@@ -191,6 +221,7 @@ public class StorageMount {
 	 * @return the action
 	 */
 	public String getAction() {
+		
 		return action;
 	}
 
@@ -198,6 +229,7 @@ public class StorageMount {
 	 * @param action the action to set
 	 */
 	public void setAction(String action) {
+		
 		this.action = action;
 	}
 
@@ -205,6 +237,7 @@ public class StorageMount {
 	 * @return the persist
 	 */
 	public boolean isPersist() {
+		
 		return persist;
 	}
 
@@ -212,6 +245,7 @@ public class StorageMount {
 	 * @param persist the persist to set
 	 */
 	public void setPersist(boolean persist) {
+		
 		this.persist = persist;
 	}
 
@@ -219,6 +253,7 @@ public class StorageMount {
 	 * @return the freq
 	 */
 	public int getFreq() {
+		
 		return freq;
 	}
 
@@ -226,6 +261,7 @@ public class StorageMount {
 	 * @param freq the freq to set
 	 */
 	public void setFreq(int freq) {
+		
 		this.freq = freq;
 	}
 
@@ -233,6 +269,7 @@ public class StorageMount {
 	 * @return the passNo
 	 */
 	public int getPassNo() {
+		
 		return passNo;
 	}
 
@@ -240,6 +277,7 @@ public class StorageMount {
 	 * @param passNo the passNo to set
 	 */
 	public void setPassNo(int passNo) {
+		
 		this.passNo = passNo;
 	}
 
@@ -247,6 +285,7 @@ public class StorageMount {
 	 * @return the lineNo
 	 */
 	public int getLineNo() {
+		
 		return lineNo;
 	}
 
@@ -254,6 +293,7 @@ public class StorageMount {
 	 * @param lineNo the lineNo to set
 	 */
 	public void setLineNo(int lineNo) {
+		
 		this.lineNo = lineNo;
 	}
 
@@ -261,6 +301,7 @@ public class StorageMount {
 	 * @return the fstabEntry
 	 */
 	public boolean isFstabEntry() {
+		
 		return fstabEntry;
 	}
 
@@ -268,6 +309,7 @@ public class StorageMount {
 	 * @param fstabEntry the fstabEntry to set
 	 */
 	public void setFstabEntry(boolean fstabEntry) {
+		
 		this.fstabEntry = fstabEntry;
 	}
 
@@ -275,6 +317,7 @@ public class StorageMount {
 	 * @return the mounted
 	 */
 	public boolean isMounted() {
+		
 		return mounted;
 	}
 
@@ -282,6 +325,7 @@ public class StorageMount {
 	 * @param mounted the mounted to set
 	 */
 	public void setMounted(boolean mounted) {
+		
 		this.mounted = mounted;
 	}
 	
@@ -289,6 +333,7 @@ public class StorageMount {
 	 * @return the cifsCredentials
 	 */
 	public CifsCredentials getCifsCredentials() {
+		
 		return cifsCredentials;
 	}
 	
@@ -296,6 +341,7 @@ public class StorageMount {
 	 * @param cifsCredentials the cifsCredentials to set
 	 */
 	public void setCifsCredentials(CifsCredentials cifsCredentials) {
+		
 		this.cifsCredentials = cifsCredentials;
 	}
 	
@@ -303,6 +349,7 @@ public class StorageMount {
 	 * @return
 	 */
 	public String getStatus() {
+		
 		return "Status: " + (mounted ? "Mounted" : "Not mounted") + 
 				(fstabEntry ? (". Fstab line: " + lineNo) : ". Not in fstab.");
 	}
@@ -342,17 +389,23 @@ public class StorageMount {
 		
 		ArrayList<String> list = new ArrayList<String>();
 		list.add(Util.BLANK_STRING);
+		
 		if (mounted) {
 			list.add(ACTION_UNMOUNT);
-			list.add(ACTION_REMOUNT);
+			if (!FsType.CIFS.equals(fsType) /*|| cifsCredentials != null*/) {
+				list.add(ACTION_REMOUNT);
+			}
 		} else {
 			list.add(ACTION_MOUNT);
 		}
+		
 		if (fstabEntry) {
 			list.add(ACTION_UPDATE);
 			list.add(ACTION_DELETE);
 		} else {
-			list.add(ACTION_PERSIST);
+			if (!FsType.CIFS.equals(fsType)) {
+				list.add(ACTION_PERSIST);
+			}
 		}
 		
 		return list;
@@ -431,17 +484,23 @@ public class StorageMount {
 	 * @param options
 	 * @return
 	 */
-	public final static String getCifsCredentialFileName(String options) {
+	private String getCredentialsFileNameFromMountOptions() {
+
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("getCredentialsFileNameFromMountOptions()");
+		}
 		
-		String CRED = "credentials=";
-		int index = options.indexOf(CRED);
-		if (index > -1) {
-			StringTokenizer tok = new StringTokenizer(
-					options.substring(index + CRED.length()), ",");
-			if (tok.hasMoreTokens()) {
-				return tok.nextToken();
+		if (options != null) {
+			String cred = CifsCredentials.CREDENTIALS + Util.EQUALS;
+			int index = options.indexOf(cred);
+			if (index > -1) {
+				StringTokenizer tok = new StringTokenizer(
+						options.substring(index + cred.length()), ",");
+				if (tok.hasMoreTokens()) {
+					return tok.nextToken();
+				}
 			}
-		}		
+		}
 		
 		return null;
 	}
@@ -451,12 +510,16 @@ public class StorageMount {
 	 */
 	private void parseOptions() {
 		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("parseOptions()");
+		}
+		
 		/*
 		 * Deal with cifs credentials
 		 */
 		if (fsType != null && FsType.CIFS.equals(fsType)) {
 			if (options != null) {
-				String fileName = getCifsCredentialFileName(options);
+				String fileName = getCredentialsFileNameFromMountOptions();
 				if (fileName != null) {
 					cifsCredentials = new CifsCredentials(fileName);
 				}
@@ -473,38 +536,187 @@ public class StorageMount {
 		return "StorageMount [spec=" + spec + ", mountPoint=" + mountPoint
 				+ ", fsType=" + fsType + ", options=" + options + ", freq="
 				+ freq + ", passNo=" + passNo + ", lineNo=" + lineNo
-				+ ", action=" + action + ", persist=" + persist + "]";
+				+ ", action=" + action + ", persist=" + persist 
+				+ ", cifsCredentials=" + cifsCredentials + "]";
 	}
 	
 	/**
-	 * @param options
+	 * @param value
 	 * @return
 	 */
-	public final static String sanitiseMountOptions(String options) {
+	public final static String sanitiseCredentialsFileName(String value) {
 		
-		String result = "";
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("sanitiseCredentialsFileName(value" + value + ")");
+		}
+
+		if (!value.startsWith(CifsCredentials.CREDENTIALS_DIR)) {
+			File f = new File(value);
+			String value_ = CifsCredentials.CREDENTIALS_DIR + File.separator + f.getName();
+			LOGGER.debug("sanitiseCredentialsFileName(value=" + value + 
+					"): Changing credentials value from '" + value + "' to '" + value_ + "'");
+			return value_;
+		}
 		
-		StringTokenizer tok = new StringTokenizer(options, ",");
+		return value;
+	}
+	
+	/**
+	 * @param swallowUserPassDomain
+	 */
+	private void sanitiseMountOptions(boolean swallowUserPassDomain) {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("sanitiseMountOptions(swallowUserPassDomain=" + swallowUserPassDomain + ")");
+		}
+		
+		if (options == null) {
+			options = Util.BLANK_STRING;
+		}
+		
+		/*
+		 * If we don't have a credentials param, set it here
+		 */
+		if (!options.contains(CifsCredentials.CREDENTIALS + Util.EQUALS)) {
+			options += ((options.length() > 0) ? Util.COMMA : Util.BLANK_STRING) + 
+					CifsCredentials.CREDENTIALS + Util.EQUALS +
+					CifsCredentials.getUniqueCredentialsFileName();
+		}
+		
+		Map<String, String> map = new HashMap<String, String>();
+		
+		StringTokenizer tok = new StringTokenizer(options, Util.COMMA);
 		while (tok.hasMoreTokens()) {
 			String config = tok.nextToken();
-			StringTokenizer tok1 = new StringTokenizer(config, "=");
+			StringTokenizer tok1 = new StringTokenizer(config, Util.EQUALS);
 			if (tok1.countTokens() == 1) {
-				result += tok1.nextToken() + (tok.hasMoreTokens() ? "," : "");
+				map.put(tok1.nextToken(), null);
 			} else if (tok1.countTokens() == 2) {
 				String param = tok1.nextToken();
 				String value = tok1.nextToken();
 				
 				if (CifsCredentials.CREDENTIALS.equals(param)) {
-					if (!value.startsWith(CifsCredentials.CREDENTIALS_DIR)) {
-						File f = new File(value);
-						value = CifsCredentials.CREDENTIALS_DIR + "/" + f.getName();
+					value = sanitiseCredentialsFileName(value);
+					cifsCredentials.setCredentials(value);
+				} else if (CifsCredentials.USER.equals(param) || CifsCredentials.USERNAME.equals(param) ||
+						CifsCredentials.PASS.equals(param) || CifsCredentials.PASSWORD.equals(param) ||
+						CifsCredentials.DOMAIN.equals(param)) {
+					LOGGER.debug("sanitiseMountOptions(options=" + options + "): Removing '" +
+						param + Util.EQUALS + value + "'!");
+					
+					if (!swallowUserPassDomain) {
+						if (CifsCredentials.USER.equals(param) || CifsCredentials.USERNAME.equals(param)) {
+							cifsCredentials.setUsername(value);
+						} else if (CifsCredentials.PASS.equals(param) || CifsCredentials.PASSWORD.equals(param)) {
+							cifsCredentials.setPassword(value);
+						} else if (CifsCredentials.DOMAIN.equals(param)) {
+							cifsCredentials.setDomain(value);
+						}
 					}
+					
+					continue;
 				}
 				
-				result += param + "=" + value + (tok.hasMoreTokens() ? "," : "");
+				map.put(param, value);
 			}
 		}
 		
-		return result;
+		/*
+		 * Build the mount options string from the map entries.
+		 */
+		String result = Util.BLANK_STRING;
+		
+		Set<Entry<String, String>> set = map.entrySet();
+		Iterator<Entry<String, String>> it = set.iterator();
+		while (it.hasNext()) {
+			Entry<String, String> entry = it.next();
+			
+			String value = entry.getValue();
+			if (value != null) {
+				result += entry.getKey() + Util.EQUALS + value;
+			} else {
+				result += entry.getKey();
+			}
+			
+			if (it.hasNext()) {
+				result += Util.COMMA;
+			}
+		}
+		
+		options = result;
+	}
+	
+	/**
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void createOrUpdateCifsCredentials()
+			throws IOException, InterruptedException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("createOrUpdateCifsCredentials()");
+		}
+		
+		createOrUpdateCifsCredentials(null, null, null, false);
+	}
+	
+	/**
+	 * @param username
+	 * @param password
+	 * @param domain
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public void createOrUpdateCifsCredentials(String username, String password, String domain) 
+			throws IOException, InterruptedException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("createOrUpdateCifsCredentials(username=" + username + 
+					", password=" + password + ", domain=" + domain + ")");
+		}
+
+		createOrUpdateCifsCredentials(username, password, domain, true);
+	}
+	
+	/**
+	 * @param username
+	 * @param password
+	 * @param domain
+	 */
+	public void createOrUpdateCifsCredentials(String username, String password, String domain, 
+			boolean swallowUserPassDomain) throws IOException, InterruptedException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("createOrUpdateCifsCredentials(username=" + username + 
+					", password=" + password + ", domain=" + domain + 
+					", swallowUserPassDomain=" + swallowUserPassDomain + ")");
+		}
+		
+		if (cifsCredentials == null) {
+			cifsCredentials = new CifsCredentials();
+		}
+		
+		/*
+		 * make that we are using the system credentials path to store a
+		 * credentials file and remove user/pass/domain from the mount options.
+		 */
+		sanitiseMountOptions(swallowUserPassDomain);
+		
+		String credentialsFile = getCredentialsFileNameFromMountOptions();
+		cifsCredentials.setCredentials(credentialsFile);
+
+		if (username != null) {
+			cifsCredentials.setUsername(username);
+		}
+		
+		if (password != null) {
+			cifsCredentials.setPassword(password);
+		}
+		
+		if (domain != null) {
+			cifsCredentials.setDomain(domain);
+		}
+		
+		cifsCredentials.save();
 	}
 }

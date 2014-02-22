@@ -26,6 +26,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,18 +41,22 @@ import org.apache.log4j.Logger;
 public class CifsCredentials {
 
 	private final static Logger LOGGER = Logger.getLogger(CifsCredentials.class);
+
+	private final static DateFormat DF_UNIQUE = 
+			new SimpleDateFormat("yyyyMMddHHmmssSSS");
 	
-	private final static String USERNAME = "username";
-	private final static String USER = "user";
-	private final static String PASS = "pass";
-	private final static String PASSWORD = "password";
-	private final static String DOMAIN = "domain";
+	public final static String USERNAME = "username";
+	public final static String USER = "user";
+	public final static String PASS = "pass";
+	public final static String PASSWORD = "password";
+	public final static String DOMAIN = "domain";
 	
-	public final static String GUEST_USER = "guest";
+	public final static String GUEST = "guest";
+	
 	public final static String CREDENTIALS = "credentials";
 	public final static String CREDENTIALS_DIR = "/etc/credentials";
 	
-	private String credentialsFile = null;
+	//private String credentialsFile = null;
 	private Map<String, String> credentialsMap = new HashMap<String, String>();
 	
 	/**
@@ -82,7 +89,8 @@ public class CifsCredentials {
 			LOGGER.debug("CifsCredentials(credentialsFile=" + credentialsFile + ")");
 		}
 
-		this.credentialsFile = credentialsFile;
+		//this.credentialsFile = credentialsFile;
+		setCredentials(credentialsFile);
 		populateCredentials();
 	}
 
@@ -105,12 +113,13 @@ public class CifsCredentials {
 		}
 		
 		try {
-			File file = new File(credentialsFile);
+			File file = new File(getCredentials());
 			if (file.exists() && file.isFile()) {
 				if (CREDENTIALS_DIR.equals(file.getCanonicalFile().getParent())) { 
 					File tmpFile = null;		
 					try {
-						tmpFile = Util.createTempFile(CREDENTIALS + "_" + file.getName() + "_", ".txt");
+						tmpFile = Util.createTempFile(CREDENTIALS + Util.UNDERSCORE + file.getName() + 
+								Util.UNDERSCORE, Util.TXT_SUFFIX);
 						Writer writer = new FileWriter(tmpFile);
 			
 						String[] cmdLineArgs = new String[] {
@@ -160,7 +169,7 @@ public class CifsCredentials {
 			writer.write(Util.getModifiedComment());
 
 			String username = getUsername();
-			writer.write(USERNAME + Util.EQUALS + (username != null ? username : GUEST_USER) + Util.LINE_SEP );
+			writer.write(USERNAME + Util.EQUALS + (username != null ? username : GUEST) + Util.LINE_SEP );
 			
 			String password = getPassword();
 			writer.write(PASSWORD + Util.EQUALS + (password != null ? password : "") + Util.LINE_SEP );
@@ -204,23 +213,10 @@ public class CifsCredentials {
 	}
 		
 	/**
-	 * @return the credentialsFile
-	 */
-	public String getCredentialsFile() {
-		return credentialsFile;
-	}
-
-	/**
-	 * @param credentialsFile the credentialsFile to set
-	 */
-	public void setCredentialsFile(String credentialsFile) {
-		this.credentialsFile = credentialsFile;
-	}
-
-	/**
 	 * @return the username
 	 */
 	public String getUsername() {
+		
 		String username = credentialsMap.get(USERNAME);
 		if (username == null) {
 			return credentialsMap.get(USER);
@@ -232,6 +228,7 @@ public class CifsCredentials {
 	 * @param username the username to set
 	 */
 	public void setUsername(String username) {
+		
 		credentialsMap.put(USERNAME, username);
 	}
 
@@ -239,6 +236,7 @@ public class CifsCredentials {
 	 * @return the password
 	 */
 	public String getPassword() {
+		
 		String password = credentialsMap.get(PASSWORD);
 		if (password == null) {
 			return credentialsMap.get(PASS);
@@ -250,6 +248,7 @@ public class CifsCredentials {
 	 * @param password the password to set
 	 */
 	public void setPassword(String password) {
+		
 		credentialsMap.put(PASSWORD, password);
 	}
 
@@ -257,6 +256,7 @@ public class CifsCredentials {
 	 * @return the domain
 	 */
 	public String getDomain() {
+		
 		return credentialsMap.get(DOMAIN);
 	}
 
@@ -264,7 +264,24 @@ public class CifsCredentials {
 	 * @param domain the domain to set
 	 */
 	public void setDomain(String domain) {
+		
 		credentialsMap.put(DOMAIN, domain);
+	}
+	
+	/**
+	 * @return the credentials
+	 */
+	public String getCredentials() {
+		
+		return credentialsMap.get(CREDENTIALS);
+	}
+
+	/**
+	 * @param domain the credentials to set
+	 */
+	public void setCredentials(String credentials) {
+		
+		credentialsMap.put(CREDENTIALS, credentials);
 	}
 	
 	/**
@@ -273,17 +290,26 @@ public class CifsCredentials {
 	public void save() 
 			throws IOException, InterruptedException {
 		
-		File tmpFile = null;
-		try {
-			File file = new File(credentialsFile);
-			tmpFile = writeTempCredentialsProperties(file.getName());
-			createOrReplaceCredentials(tmpFile, file.getName());
-		} finally {
-			if (tmpFile != null) {
-				try {
-					tmpFile.delete();
-				} catch (Exception e) {}
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("save()");
+		}
+		
+		String credentialsFile = getCredentials();
+		if (credentialsFile != null) {
+			File tmpFile = null;
+			try {
+				File file = new File(credentialsFile);
+				tmpFile = writeTempCredentialsProperties(file.getName());
+				createOrReplaceCredentials(tmpFile, file.getName());
+			} finally {
+				if (tmpFile != null) {
+					try {
+						tmpFile.delete();
+					} catch (Exception e) {}
+				}
 			}
+		} else {
+			LOGGER.warn("Not saving " + this + ": credentials param is null!");
 		}
 	}
 	
@@ -291,6 +317,7 @@ public class CifsCredentials {
 	 * @param args
 	 */
 	public final static void main(String[] args) {
+
 		CifsCredentials credentials = new CifsCredentials("/etc/credentials/test");
 		LOGGER.warn("username: " + credentials.getUsername() + ", password: " + 
 					credentials.getPassword() + ", domain: " + credentials.getDomain());
@@ -301,7 +328,7 @@ public class CifsCredentials {
 		
 		File tmpFile = null;
 		try {
-			File file = new File(credentials.getCredentialsFile());
+			File file = new File(credentials.getCredentials());
 			if (CREDENTIALS_DIR.equals(file.getCanonicalFile().getParent())) {
 				tmpFile = credentials.writeTempCredentialsProperties(file.getName());
 				credentials.createOrReplaceCredentials(tmpFile, file.getName());
@@ -318,5 +345,42 @@ public class CifsCredentials {
 				} catch (Exception e) {}
 			}
 		}
+	}
+	
+	/**
+	 * @return
+	 */
+	private final static String getUniqueDate() {
+		
+		if (LOGGER.isTraceEnabled()) {
+			LOGGER.trace("getUniqueDate()");
+		}
+		
+		String date = null;
+		synchronized (DF_UNIQUE) {
+			date = DF_UNIQUE.format(new Date());
+		}
+		return date;
+	}
+	
+	/**
+	 * @return
+	 */
+	public final static String getUniqueCredentialsFileName() {
+
+		if (LOGGER.isTraceEnabled()) {
+			LOGGER.trace("getUniqueCredentialsFileName()");
+		}
+		
+		return CREDENTIALS_DIR + File.separator + FsType.CIFS + Util.UNDERSCORE + getUniqueDate();
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		
+		return "CifsCredentials [credentialsMap=" + credentialsMap + "]";
 	}
 }

@@ -52,9 +52,14 @@ public final class Util {
 
 	public final static String LINE_SEP = 
 			System.getProperty("line.separator");
+	
 	public final static String BLANK_STRING = "";
 	public final static String HASH = "#";
 	public final static String EQUALS = "=";
+	public final static String COMMA = ",";
+	public final static String UNDERSCORE = "_";
+	
+	public final static String TXT_SUFFIX = ".txt";
 	
 	private final static String ALSA_DEFAULT = "default:"; 
 	private final static String ALSA_SYSDEFAULT = "sysdefault:"; 
