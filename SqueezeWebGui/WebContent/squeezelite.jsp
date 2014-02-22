@@ -167,8 +167,9 @@ function displayAdvancedOptions() {
 <td align="right">
 </td>
 <td>
-    <s:checkbox name="showAdvancedOptions" id="showAdvancedOptions" onclick="javascript:displayAdvancedOptions();" />
-    <s:text name="squeezelite.label.advancedOptions" />
+	<s:checkbox name="showAdvancedOptions" id="showAdvancedOptions" 
+				onchange="javascript:displayAdvancedOptions();" />
+	<s:text name="squeezelite.label.advancedOptions" />
 </td>
 </tr>
 

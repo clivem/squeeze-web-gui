@@ -125,23 +125,22 @@ public class StorageMountAction extends StorageAction {
 		}
 	}
 	
-	/**
-	 * @return
-	 * @throws Exception
+	/* (non-Javadoc)
+	 * @see squeeze.web.StorageAction#execute()
 	 */
-	public String action() 
+	public String execute() 
 			throws Exception {
 		
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("action()");
+			LOGGER.debug("execute()");
 		}
 		
-		action_(userMountList);
-		action_(fstabUserMountList);
+		execute_(userMountList);
+		execute_(fstabUserMountList);
 				
 		String result = populate();
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("action() returns " + result);
+			LOGGER.debug("execute() returns " + result);
 		}
 		
 		return result;
@@ -152,11 +151,11 @@ public class StorageMountAction extends StorageAction {
 	 * @throws InterruptedException
 	 * @throws IOException
 	 */
-	private void action_(List<StorageMount> mountList) 
+	private void execute_(List<StorageMount> mountList) 
 			throws FileNotFoundException, InterruptedException, IOException {
 		
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("action_(mountList=" + mountList + ")");
+			LOGGER.debug("execute_(mountList=" + mountList + ")");
 		}
 		
 		if (mountList != null) {

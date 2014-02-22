@@ -51,7 +51,6 @@ function displayRemoteCifsCredentials() {
 <!-- Mounted File Systems -->
 <hr />
 <h4><s:text name="storage.header.mountedFileSystems" /></h4>
-<s:form action="Storage_populate" theme="simple">
 <table>
 
 <thead>
@@ -93,17 +92,16 @@ function displayRemoteCifsCredentials() {
 </s:iterator>
 
 <tr>
-<td colspan="4" align="right">
-	<s:submit action="Storage_populate" value="Refresh" />
+<td>
+  <s:a action="Storage_populate"><s:property value="getText('button.refresh')" /></s:a>
 </td>
 </tr>
 </table>
-</s:form>
 
 <hr />
 
 <h4><s:text name="storage.header.userControlledMounts" /></h4>
-<s:form action="StorageMount_action" theme="simple">
+<s:form action="StorageMount_execute" theme="simple">
 <table>
 <thead>
 <tr>
@@ -233,10 +231,13 @@ function displayRemoteCifsCredentials() {
 </s:iterator>
 
 <tr>
-<td colspan="4" align="right">
-	<s:submit action="StorageMount_action" key="button.submit" />
+<td>
+	<s:a action="Storage_populate"><s:property value="getText('button.refresh')" /></s:a>
+</td>
+<td colspan="3" align="right">
+	<s:submit action="StorageMount_execute" key="button.submit" />
 	<s:reset />
-	<s:submit action="Storage_populate" key="button.refresh" />
+	<!-- <s:submit action="Storage_populate" key="button.refresh" /> -->
 </td>
 </tr>
 
@@ -342,7 +343,10 @@ function displayRemoteCifsCredentials() {
 <tr>
 	<td><s:select name="remoteFsMountPoint" list="mountPoints" cssClass="size-200px" /></td>
 	<td><s:textfield name="remoteFsPartition" cssClass="size-300px" /></td>
-	<td><s:select name="remoteFsType" id="remoteFsType" onclick="javascript:displayRemoteCifsCredentials();" list="remoteFsTypes" cssClass="size-75px" /></td>
+	<td><s:select name="remoteFsType" id="remoteFsType" 
+				  list="remoteFsTypes" cssClass="size-75px" 
+				  onchange="javascript:displayRemoteCifsCredentials();" />
+	</td>
 	<td><s:textfield name="remoteFsMountOptions" cssClass="size-300px" /></td>
 	<td><s:checkbox name="remoteFsPersist" cssClass="size-75px" /></td>
 </tr>
