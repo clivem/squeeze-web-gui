@@ -33,35 +33,37 @@
 </table>
 
 <hr />
-
 <h4><s:text name="header.service" /></h4>
-<s:form action="SqueezeServer_populate" theme="simple" >
-<table>
-<tr>
-<td>
-  <s:textarea name="status" cols="100" rows="8" readonly="true" />
-</td>
-</tr>
-<tr>
-<td align="right">
-  <s:submit action="SqueezeServer_populate" key="button.refresh" />
-  <s:submit action="SqueezeServer_enableService" key="button.enable" />
-  <s:submit action="SqueezeServer_disableService" key="button.disable" />
-  <s:submit action="SqueezeServer_startService" key="button.start" />
-  <s:submit action="SqueezeServer_stopService" key="button.stop" />
-  <s:submit action="SqueezeServer_restartService" key="button.restart" />
-</td>
-</tr>
-<tr>
-<td align="right">
-  <s:submit action="SqueezeServer_enableAndStartService" key="button.enableAndStart" />
-  <s:submit action="SqueezeServer_disableAndStopService" key="button.disableAndStop" />
-</td>
-</tr>
-</table>
-</s:form>
-<hr />
 
+<table>
+
+<tr>
+	<td>
+		<s:textarea name="status" cols="100" rows="8" readonly="true" theme="simple" />
+	</td>
+</tr>
+
+<tr>
+	<td align="right">
+		<s:a action="SqueezeServer_populate"><s:property value="getText('button.refresh')" /></s:a> |
+		<s:a action="SqueezeServer_enableService"><s:property value="getText('button.enable')" /></s:a> |
+		<s:a action="SqueezeServer_disableService"><s:property value="getText('button.disable')" /></s:a> |
+		<s:a action="SqueezeServer_startService"><s:property value="getText('button.start')" /></s:a> |
+		<s:a action="SqueezeServer_stopService"><s:property value="getText('button.stop')" /></s:a> |
+		<s:a action="SqueezeServer_restartService"><s:property value="getText('button.restart')" /></s:a>
+	</td>
+</tr>
+
+<tr>
+	<td align="right">
+		<s:a action="SqueezeServer_enableAndStartService"><s:property value="getText('button.enableAndStart')" /></s:a> |
+		<s:a action="SqueezeServer_disableAndStopService"><s:property value="getText('button.disableAndStop')" /></s:a>
+	</td>
+</tr>
+
+</table>
+
+<hr />
 <h4><s:text name="header.configuration" /></h4>
 <p><a href="http://${pageContext.request.serverName}:9000/" target="blank_">
 SqueezeServer Web Interface</a>

@@ -44,36 +44,42 @@ function displayAdvancedOptions() {
 
 <hr />
 <h4><s:text name="header.service" /></h4>
-<s:form action="Squeezelite_populate" theme="simple" >
+
 <table>
+
 <tr>
-<td>
-	<s:textarea name="status" cols="100" rows="4" readonly="true" />
-</td>
+	<td>
+		<s:textarea name="status" cols="100" rows="4" readonly="true" theme="simple" />
+	</td>
 </tr>
+
 <tr>
-<td align="right">
-	<s:submit action="Squeezelite_populate" key="button.refresh" />
-	<s:submit action="Squeezelite_enableService" key="button.enable" />
-	<s:submit action="Squeezelite_disableService" key="button.disable" />
-	<s:submit action="Squeezelite_startService" key="button.start" />
-	<s:submit action="Squeezelite_stopService" key="button.stop" />
-	<s:submit action="Squeezelite_restartService" key="button.restart" />
-</td>
+	<td align="right">
+		<s:a action="Squeezelite_populate"><s:property value="getText('button.refresh')" /></s:a> |
+		<s:a action="Squeezelite_enableService"><s:property value="getText('button.enable')" /></s:a> |
+		<s:a action="Squeezelite_disableService"><s:property value="getText('button.disable')" /></s:a> |
+		<s:a action="Squeezelite_startService"><s:property value="getText('button.start')" /></s:a> |
+		<s:a action="Squeezelite_stopService"><s:property value="getText('button.stop')" /></s:a> |
+		<s:a action="Squeezelite_restartService"><s:property value="getText('button.restart')" /></s:a>
+	</td>
 </tr>
+
 <tr>
-<td align="right">
-	<s:submit action="Squeezelite_enableAndStartService" key="button.enableAndStart" />
-	<s:submit action="Squeezelite_disableAndStopService" key="button.disableAndStop" />
-</td>
+	<td align="right">
+		<s:a action="Squeezelite_enableAndStartService"><s:property value="getText('button.enableAndStart')" /></s:a> |
+		<s:a action="Squeezelite_disableAndStopService"><s:property value="getText('button.disableAndStop')" /></s:a>
+	</td>
 </tr>
+
 </table>
-</s:form>
 
 <hr />
 <h4><s:text name="header.configuration" /></h4>
+
 <s:actionerror />
+
 <s:form action="SqueezeliteSave_save" theme="simple" >
+
 <table>
 
 <tr>

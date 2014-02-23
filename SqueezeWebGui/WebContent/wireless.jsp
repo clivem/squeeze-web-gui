@@ -33,23 +33,27 @@
   </tr>
 </table>
 
+<!-- Status -->
 <hr />
 <h4><s:text name="header.status" /></h4>
-<s:form action="Wireless" theme="simple" >
-<table>
-<tr>
-<td>
-	<s:textarea name="status" cols="100" rows="7" readonly="true" />
-</td>
-</tr>
-<tr>
-<td align="right">
-	<s:submit action="Wireless_populate" key="button.refresh" />
-</td>
-</tr>
-</table>
-</s:form>
 
+<table>
+
+<tr>
+	<td>
+		<s:textarea name="status" cols="100" rows="7" readonly="true" theme="simple" />
+	</td>
+</tr>
+
+<tr>
+	<td align="right">
+		<s:a action="Wireless_populate"><s:property value="getText('button.refresh')" /></s:a>
+	</td>
+</tr>
+
+</table>
+
+<!-- Configuration -->
 <hr />
 <h4><s:text name="header.configuration" /></h4>
 <s:actionerror />

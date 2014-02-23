@@ -93,9 +93,9 @@ function displayRemoteCifsCredentials() {
 </s:iterator>
 
 <tr>
-<td>
-  <s:a action="Storage_populate"><s:property value="getText('button.refresh')" /></s:a>
-</td>
+	<td>
+		<s:a action="Storage_populate"><s:property value="getText('button.refresh')" /></s:a>
+	</td>
 </tr>
 </table>
 </s:form>
@@ -233,14 +233,13 @@ function displayRemoteCifsCredentials() {
 </s:iterator>
 
 <tr>
-<td>
-	<s:a action="Storage_populate"><s:property value="getText('button.refresh')" /></s:a>
-</td>
-<td colspan="3" align="right">
-	<s:submit action="StorageMount_execute" key="button.submit" />
-	<s:reset />
-	<!-- <s:submit action="Storage_populate" key="button.refresh" /> -->
-</td>
+	<td>
+		<s:a action="Storage_populate"><s:property value="getText('button.refresh')" /></s:a>
+	</td>
+	<td colspan="3" align="right">
+		<s:reset />
+		<s:submit action="StorageMount_execute" key="button.submit" />
+	</td>
 </tr>
 
 </table>
