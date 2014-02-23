@@ -51,6 +51,7 @@ function displayRemoteCifsCredentials() {
 <!-- Mounted File Systems -->
 <hr />
 <h4><s:text name="storage.header.mountedFileSystems" /></h4>
+<s:form action="Storage_populate" theme="simple">
 <table>
 
 <thead>
@@ -97,6 +98,7 @@ function displayRemoteCifsCredentials() {
 </td>
 </tr>
 </table>
+</s:form>
 
 <hr />
 
