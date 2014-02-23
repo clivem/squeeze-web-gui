@@ -48,14 +48,16 @@ function displayAdvancedOptions() {
 <table>
 
 <tr>
-	<td>
+	<td colspan="2">
 		<s:textarea name="status" cols="100" rows="4" readonly="true" theme="simple" />
 	</td>
 </tr>
 
 <tr>
+	<td>
+		<s:a action="Squeezelite_populate"><s:property value="getText('button.refresh')" /></s:a>
+	</td>
 	<td align="right">
-		<s:a action="Squeezelite_populate"><s:property value="getText('button.refresh')" /></s:a> |
 		<s:a action="Squeezelite_enableService"><s:property value="getText('button.enable')" /></s:a> |
 		<s:a action="Squeezelite_disableService"><s:property value="getText('button.disable')" /></s:a> |
 		<s:a action="Squeezelite_startService"><s:property value="getText('button.start')" /></s:a> |
@@ -65,7 +67,7 @@ function displayAdvancedOptions() {
 </tr>
 
 <tr>
-	<td align="right">
+	<td align="right" colspan="2">
 		<s:a action="Squeezelite_enableAndStartService"><s:property value="getText('button.enableAndStart')" /></s:a> |
 		<s:a action="Squeezelite_disableAndStopService"><s:property value="getText('button.disableAndStop')" /></s:a>
 	</td>

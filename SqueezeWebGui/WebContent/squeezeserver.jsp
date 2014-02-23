@@ -38,14 +38,16 @@
 <table>
 
 <tr>
-	<td>
+	<td colspan="2">
 		<s:textarea name="status" cols="100" rows="8" readonly="true" theme="simple" />
 	</td>
 </tr>
 
 <tr>
+	<td>
+		<s:a action="SqueezeServer_populate"><s:property value="getText('button.refresh')" /></s:a>
+	</td>
 	<td align="right">
-		<s:a action="SqueezeServer_populate"><s:property value="getText('button.refresh')" /></s:a> |
 		<s:a action="SqueezeServer_enableService"><s:property value="getText('button.enable')" /></s:a> |
 		<s:a action="SqueezeServer_disableService"><s:property value="getText('button.disable')" /></s:a> |
 		<s:a action="SqueezeServer_startService"><s:property value="getText('button.start')" /></s:a> |
@@ -55,7 +57,7 @@
 </tr>
 
 <tr>
-	<td align="right">
+	<td align="right" colspan="2">
 		<s:a action="SqueezeServer_enableAndStartService"><s:property value="getText('button.enableAndStart')" /></s:a> |
 		<s:a action="SqueezeServer_disableAndStopService"><s:property value="getText('button.disableAndStop')" /></s:a>
 	</td>

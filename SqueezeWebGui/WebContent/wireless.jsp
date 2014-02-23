@@ -46,7 +46,7 @@
 </tr>
 
 <tr>
-	<td align="right">
+	<td>
 		<s:a action="Wireless_populate"><s:property value="getText('button.refresh')" /></s:a>
 	</td>
 </tr>

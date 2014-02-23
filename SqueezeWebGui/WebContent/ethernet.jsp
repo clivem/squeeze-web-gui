@@ -45,7 +45,7 @@
 </tr>
 
 <tr>
-	<td align="right">
+	<td>
 		<s:a action="Ethernet_populate"><s:property value="getText('button.refresh')" /></s:a>
 	</td>
 </tr>
