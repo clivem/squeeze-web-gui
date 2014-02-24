@@ -76,6 +76,10 @@ br.separator {
     clear: both;
 }
 
+hr.separator {
+    clear: both;
+}
+
 a img {
     border: 0 none;
 }
@@ -242,6 +246,9 @@ legend {
 }
 .smaller {
   font-size: smaller;
+}
+.bold {
+  font-weight: bold;
 }
 .label {
   float: left;

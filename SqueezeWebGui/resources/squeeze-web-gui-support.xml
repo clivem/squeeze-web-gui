@@ -234,8 +234,8 @@
 				<param name="delaySleepInterval">100</param>
 			</interceptor-ref>
 			<result name="wait">/wait.jsp</result>
-			<result name="populate">/system.jsp</result>
-			<result name="input">/system.jsp</result>
+			<result name="populate">/system_css.jsp</result>
+			<result name="input">/system_css.jsp</result>
 			<result name="success" type="redirectAction">Configuration_populate</result>
 		</action>
 
