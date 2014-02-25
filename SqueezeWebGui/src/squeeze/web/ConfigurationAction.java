@@ -20,14 +20,10 @@
  */
 package squeeze.web;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import squeeze.web.util.Commands;
-import squeeze.web.util.ExecuteProcess;
 import squeeze.web.util.SambaConfig;
 import squeeze.web.util.SystemLocale;
 import squeeze.web.util.TimeZone;
@@ -45,21 +41,21 @@ public class ConfigurationAction extends ActionSupport {
 
 	private final static Logger LOGGER = Logger.getLogger(ConfigurationAction.class);
 	
-	private final static List<String> ZONE_LIST = TimeZone.getTimeZoneList();
-	private final static List<SystemLocale> LOCALE_LIST = SystemLocale.getSystemLocaleList();
+	protected final static List<String> ZONE_LIST = TimeZone.getTimeZoneList();
+	protected final static List<SystemLocale> LOCALE_LIST = SystemLocale.getSystemLocaleList();
 	
-	private String timeZone = null;
-	private List<String> timeZoneList = null;
+	protected String timeZone = null;
+	protected List<String> timeZoneList = null;
 
-	private String hostName = null;
-	private String fedoraVersion = null;
-	private String csosVersion = null;
+	protected String hostName = null;
+	protected String fedoraVersion = null;
+	protected String csosVersion = null;
 	
-	private String systemLocale = null;
-	private List<SystemLocale> systemLocaleList = null;
+	protected String systemLocale = null;
+	protected List<SystemLocale> systemLocaleList = null;
 	
-	private String sambaNetbiosName = null;
-	private String sambaWorkgroup = null;
+	protected String sambaNetbiosName = null;
+	protected String sambaWorkgroup = null;
 	
 	/**
 	 * 
@@ -67,6 +63,7 @@ public class ConfigurationAction extends ActionSupport {
 	public ConfigurationAction() {
 		
 		super();
+		
 		timeZoneList = ZONE_LIST;
 		systemLocaleList = LOCALE_LIST;
 		
@@ -123,102 +120,6 @@ public class ConfigurationAction extends ActionSupport {
 		}
 		
 		return result;
-	}
-
-	/**
-	 * @return
-	 * @throws Exception
-	 */
-	public String save() throws Exception {
-
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("save()");
-		}
-		
-		try {
-			if (timeZone != null && timeZone.trim().length() > 0) {
-				Util.setTimeZone(timeZone);
-			}
-		} catch (Exception e) {
-			LOGGER.warn("Caught exception setting timezone!", e);
-			throw e;
-		}
-		
-		if (hostName != null && hostName.trim().length() > 0) {
-			File file = null;
-			try {
-				file = Util.writeTempConfig("hostname", hostName.trim());
-				Util.replaceConfig(file, Commands.SCRIPT_HOSTNAME_UPDATE);
-			} catch (Exception e) {
-				LOGGER.error("Caught exception saving hostname!", e);
-				throw e;
-			} finally {
-				if (file != null) {
-					try {
-						file.delete();
-					} catch (Exception e) {}
-				}
-			}
-		}
-		
-		if (systemLocale != null && systemLocale.trim().length() > 0) {
-			File file = null;
-			try {
-				file = Util.writeTempConfig("locale", "LANG=\"" + systemLocale.trim() + "\"");
-				Util.replaceConfig(file, Commands.SCRIPT_LOCALE_UPDATE);
-			} catch (Exception e) {
-				LOGGER.error("Caught exception saving locale!", e);
-				throw e;
-			} finally {
-				if (file != null) {
-					try {
-						file.delete();
-					} catch (Exception e) {}
-				}
-			}
-		}
-		
-		SambaConfig oldSambaConfig = SambaConfig.getSambaConfig();
-		boolean sambaConfigChanged = false;
-		if (sambaNetbiosName != null && sambaNetbiosName.trim().length() > 0) {
-			sambaNetbiosName = sambaNetbiosName.trim();
-			if (!sambaNetbiosName.equals(oldSambaConfig.getNetbiosName())) {
-				// update config
-				Util.updateConfig(sambaNetbiosName, Commands.SCRIPT_SAMBA_NETBIOS_NAME_UPDATE);
-				sambaConfigChanged = true;
-			}
-		}
-		if (sambaWorkgroup != null && sambaWorkgroup.trim().length() > 0) {
-			sambaWorkgroup = sambaWorkgroup.trim();
-			if (!sambaWorkgroup.equals(oldSambaConfig.getWorkgroup())) {
-				// update config
-				Util.updateConfig(sambaWorkgroup, Commands.SCRIPT_SAMBA_WORGROUP_UPDATE);
-				sambaConfigChanged = true;
-			}
-		}
-		if (sambaConfigChanged) {
-			// restart samba
-			condRestartSamba();
-		}
-		
-		String result = SUCCESS;
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("save() returns " + result);
-		}
-		
-		return result;
-	}
-	
-	/**
-	 * @return
-	 * @throws InterruptedException
-	 * @throws IOException
-	 */
-	private int condRestartSamba() 
-			throws InterruptedException, IOException {
-		
-		return ExecuteProcess.executeCommand(
-				Util.getSystemctlCondRestartCmdLine("smb.service"));
 	}
 
 	/**

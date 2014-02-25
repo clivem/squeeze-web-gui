@@ -40,7 +40,7 @@
 		</div>
 	</div>
 
-	<!-- main -->
+	<!-- Version -->
 	<div style="clear: both;">
 		<hr />
 		<div class="config">
@@ -67,13 +67,30 @@
 			</fieldset>
 		</div>
 
-		<s:form action="Configuration_save" theme="simple">
-			<!-- Hostname -->
+		<!-- Hostname -->
+		<s:form action="ConfigurationHostname_save" theme="simple">
 			<fieldset>
 				<legend>
 					<s:text name="configuration.label.hostName" />
 				</legend>
-				<!-- hostName -->
+				<table>
+					<!-- hostName -->
+					<tr><td>
+						<span class="features simptip-position-right simptip-smooth"
+							data-tooltip="<s:property value="getText('configuration.tooltip.hostName')" />">
+							<label for="hostName" class="label">
+								<s:text name="configuration.label.hostName" />
+							</label>
+							<s:textfield id="hostName" name="hostName" cssClass="input" />
+						</span>
+					</td></tr>
+					<!-- reset/submit -->
+					<tr><td align="right">
+						<s:reset key="button.reset" />
+						<s:submit action="ConfigurationHostname_save" key="button.save" />
+					</td></tr>
+				</table>
+				<!-- 
 				<div class="entry">
 					<div class="features simptip-position-right simptip-smooth"
 						data-tooltip="<s:property value="getText('configuration.tooltip.hostName')" />">
@@ -83,71 +100,88 @@
 						<s:textfield id="hostName" name="hostName" cssClass="input" />
 					</div>
 				</div>
+				<div class="entry submit">
+					<s:reset key="button.reset" />
+					<s:submit action="ConfigurationHostname_save" key="button.save" />
+				</div>
+				-->
 			</fieldset>
-			<!-- Samba -->
+		</s:form>
+
+		<!-- Samba -->
+		<s:form action="ConfigurationSamba_save" theme="simple">
 			<fieldset>
 				<legend>
 					<s:text name="configuration.label.samba" />
 				</legend>
-				<!-- sambaNetbiosName -->
-				<div class="entry">
-					<div class="features simptip-position-right simptip-smooth"
-						data-tooltip="<s:property value="getText('configuration.tooltip.sambaNetbiosName')" />">
-						<label for="sambaNetbiosName" class="label">
-							<s:text name="configuration.label.sambaNetbiosName" />
-						</label>
-						<s:textfield id="sambaNetbiosName" name="sambaNetbiosName"
-							cssClass="input" />
-					</div>
-				</div>
-				<!-- sambaWorkgroup -->
-				<div class="entry">
-					<div class="features simptip-position-right simptip-smooth"
-						data-tooltip="<s:property value="getText('configuration.tooltip.sambaWorkgroup')" />">
-						<label for="sambaWorkgroup" class="label">
-							<s:text name="configuration.label.sambaWorkgroup" />
-						</label>
-						<s:textfield id="sambaWorkgroup" name="sambaWorkgroup"
-							cssClass="input" />
-					</div>
-				</div>
+				<table>
+					<!-- sambaNetbiosName -->
+					<tr><td>
+						<span class="features simptip-position-right simptip-smooth"
+							data-tooltip="<s:property value="getText('configuration.tooltip.sambaNetbiosName')" />">
+							<label for="sambaNetbiosName" class="label">
+								<s:text name="configuration.label.sambaNetbiosName" />
+							</label>
+							<s:textfield id="sambaNetbiosName" name="sambaNetbiosName"
+								cssClass="input" />
+						</span>
+					</td></tr>
+					<!-- sambaWorkgroup -->
+					<tr><td>
+						<span class="features simptip-position-right simptip-smooth"
+							data-tooltip="<s:property value="getText('configuration.tooltip.sambaWorkgroup')" />">
+							<label for="sambaWorkgroup" class="label">
+								<s:text name="configuration.label.sambaWorkgroup" />
+							</label>
+							<s:textfield id="sambaWorkgroup" name="sambaWorkgroup"
+								cssClass="input" />
+						</span>
+					</td></tr>
+					<!-- submit -->
+					<tr><td align="right">
+						<s:reset key="button.reset" />
+						<s:submit action="ConfigurationSamba_save" key="button.save" />
+					</td></tr>
+				</table>
 			</fieldset>
-			<!-- Location -->
+		</s:form>
+		
+		<!-- Location -->
+		<s:form action="ConfigurationLocation_save" theme="simple">		
 			<fieldset>
 				<legend>
 					<s:text name="configuration.label.location" />
 				</legend>
-				<!-- timeZone -->
-				<div class="entry">
-					<div class="features simptip-position-right simptip-smooth"
-						data-tooltip="<s:property value="getText('configuration.tooltip.timeZone')" />">
-						<label for="timeZone" class="label">
-							<s:text name="configuration.label.timeZone" />
-						</label>
-						<s:select id="timeZone" name="timeZone" list="timeZoneList"
-							cssClass="input" />
-					</div>
-				</div>
-				<!-- locale -->
-				<div class="entry">
-					<div class="features simptip-position-right simptip-smooth"
-						data-tooltip="<s:property value="getText('configuration.tooltip.locale')" />">
-						<label for="locale" class="label">
-							<s:text name="configuration.label.locale" />
-						</label>
-						<s:select id="locale" name="systemLocale" cssClass="input"
-							list="systemLocaleList" listKey="locale" listValue="description"
-							emptyOption="false" headerKey="" headerValue="None" />
-					</div>
-				</div>
-			</fieldset>
-			<!-- Submit form -->
-			<fieldset>
-				<!-- submit -->
-				<div class="entry submit">
-					<s:reset key="button.reset" />
-					<s:submit action="Configuration_save" key="button.save" />
-				</div>
+				<table>
+					<!-- timeZone -->
+					<tr><td>
+						<span class="features simptip-position-right simptip-smooth"
+							data-tooltip="<s:property value="getText('configuration.tooltip.timeZone')" />">
+							<label for="timeZone" class="label">
+								<s:text name="configuration.label.timeZone" />
+							</label>
+							<s:select id="timeZone" name="timeZone" list="timeZoneList"
+								cssClass="input" />
+						</span>
+					</td></tr>
+					<!-- locale -->
+					<tr><td>
+						<span class="features simptip-position-right simptip-smooth"
+							data-tooltip="<s:property value="getText('configuration.tooltip.locale')" />">
+							<label for="locale" class="label">
+								<s:text name="configuration.label.locale" />
+							</label>
+							<s:select id="locale" name="systemLocale" cssClass="input"
+								list="systemLocaleList" listKey="locale" listValue="description"
+								emptyOption="false" headerKey="" headerValue="None" />
+						</span>
+					</td></tr>
+					<!-- reset/submit -->
+					<tr><td align="right">
+						<s:reset key="button.reset" />
+						<s:submit action="ConfigurationLocation_save" key="button.save" />
+					</td></tr>
+				</table>
 			</fieldset>
 		</s:form>
 	</div>

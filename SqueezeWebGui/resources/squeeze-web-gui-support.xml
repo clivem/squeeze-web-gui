@@ -239,6 +239,48 @@
 			<result name="success" type="redirectAction">Configuration_populate</result>
 		</action>
 
+		<action name="ConfigurationHostname_*" method="{1}"
+			class="squeeze.web.ConfigurationHostnameAction">
+			<interceptor-ref name="defaultStack" />
+			<interceptor-ref name="execAndWait">
+				<param name="threadPriority">10</param>
+				<param name="delay">3000</param>
+				<param name="delaySleepInterval">100</param>
+			</interceptor-ref>
+			<result name="wait">/wait.jsp</result>
+			<result name="populate">/system.jsp</result>
+			<result name="input">/system.jsp</result>
+			<result name="success" type="redirectAction">Configuration_populate</result>
+		</action>
+
+		<action name="ConfigurationLocation_*" method="{1}"
+			class="squeeze.web.ConfigurationLocationAction">
+			<interceptor-ref name="defaultStack" />
+			<interceptor-ref name="execAndWait">
+				<param name="threadPriority">10</param>
+				<param name="delay">3000</param>
+				<param name="delaySleepInterval">100</param>
+			</interceptor-ref>
+			<result name="wait">/wait.jsp</result>
+			<result name="populate">/system.jsp</result>
+			<result name="input">/system.jsp</result>
+			<result name="success" type="redirectAction">Configuration_populate</result>
+		</action>
+
+		<action name="ConfigurationSamba_*" method="{1}"
+			class="squeeze.web.ConfigurationSambaAction">
+			<interceptor-ref name="defaultStack" />
+			<interceptor-ref name="execAndWait">
+				<param name="threadPriority">10</param>
+				<param name="delay">3000</param>
+				<param name="delaySleepInterval">100</param>
+			</interceptor-ref>
+			<result name="wait">/wait.jsp</result>
+			<result name="populate">/system.jsp</result>
+			<result name="input">/system.jsp</result>
+			<result name="success" type="redirectAction">Configuration_populate</result>
+		</action>
+
 		<action name="Index" class="squeeze.web.IndexAction">
 			<result name="input">/index.jsp</result>
 			<result name="success">/index.jsp</result>
