@@ -9,7 +9,7 @@
 		extends="struts-default">
 
 		<global-results>
-			<result name="error">Error.jsp</result>
+			<result name="error">error.jsp</result>
 		</global-results>
 
 		<global-exception-mappings>

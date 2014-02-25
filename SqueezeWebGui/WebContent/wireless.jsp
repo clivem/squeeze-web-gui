@@ -14,7 +14,7 @@
 
 <body>
 
-<jsp:include page="Header.jsp"/>
+<jsp:include page="header.jsp"/>
 
 <table>
   <tr>
@@ -167,7 +167,7 @@
 </ul>
 
 <hr />
-<jsp:include page="Footer.jsp"/>
+<jsp:include page="footer.jsp"/>
 
 </body>
 </html>

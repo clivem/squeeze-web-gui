@@ -13,7 +13,7 @@
 </head>
 <body>
 
-	<jsp:include page="Header.jsp" />
+	<jsp:include page="header.jsp" />
 
 	<table>
 		<tr>
@@ -255,7 +255,7 @@ to the recipe &quot;L&quot; flag for linear phase.
      target="blank_">JackOfAll</s:a>.</p>
 
 <hr />
-<jsp:include page="Footer.jsp" />
+<jsp:include page="footer.jsp" />
 
 </body>
 </html>

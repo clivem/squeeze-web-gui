@@ -12,7 +12,7 @@
 	<link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
 </head>
 <body>
-	<jsp:include page="Header.jsp" />
+	<jsp:include page="header.jsp" />
 
 	<table>
 		<tr>
@@ -28,6 +28,6 @@
 
 	<jsp:include page="faq_content.jsp" />
 
-	<jsp:include page="Footer.jsp" />
+	<jsp:include page="footer.jsp" />
 </body>
 </html>
