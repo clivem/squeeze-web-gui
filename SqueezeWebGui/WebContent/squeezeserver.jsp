@@ -48,10 +48,10 @@
 				<legend>
 					<s:text name="header.service" />
 				</legend>
-				<table>
+				<table width="100%">
 					<tr>
 						<td colspan="2">
-							<s:textarea name="status" cols="100" rows="8" readonly="true" theme="simple" />
+							<s:textarea name="status" readonly="true" theme="simple" cssClass="log" />
 						</td>
 					</tr>
 					<tr>
