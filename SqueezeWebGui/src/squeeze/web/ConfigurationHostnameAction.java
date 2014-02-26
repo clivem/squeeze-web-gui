@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 
 import squeeze.web.util.Commands;
 import squeeze.web.util.Util;
+import squeeze.web.util.Validate;
 
 /**
  * @author Clive Messer <clive.m.messer@gmail.com>
@@ -54,6 +55,17 @@ public class ConfigurationHostnameAction extends ConfigurationAction {
 	 */
 	@Override
 	public void validate() {
+		
+		if (hostName == null || hostName.trim().length() < 1 || 
+				!hostName.trim().matches(Validate.REGEX_HOST_ADDRESS)) {
+			addActionError(getText("configuration.validation.hostName.fail"));
+		}
+		
+		if (hasActionErrors()) {
+			try {
+				populate();
+			} catch (Exception e) {}
+		}
 	}
 
 	/**

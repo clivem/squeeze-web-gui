@@ -54,6 +54,20 @@ public class ConfigurationLocationAction extends ConfigurationAction {
 	 */
 	@Override
 	public void validate() {
+
+		if (timeZone == null || timeZone.trim().length() < 1) {
+			addActionError(getText("configuration.validation.timeZone.fail"));
+		}
+		
+		if (systemLocale == null || systemLocale.trim().length() < 1) {
+			addActionError(getText("configuration.validation.locale.fail"));
+		}
+		
+		if (hasActionErrors()) {
+			try {
+				populate();
+			} catch (Exception e) {}
+		}
 	}
 
 	/**

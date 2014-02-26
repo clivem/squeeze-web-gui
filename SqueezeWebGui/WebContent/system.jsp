@@ -40,9 +40,14 @@
 		</div>
 	</div>
 
-	<!-- Version -->
+	<!-- errors -->
 	<div style="clear: both;">
 		<hr />
+		<s:actionerror />
+	</div>
+
+	<!-- Version -->
+	<div>
 		<div class="config">
 			<fieldset>
 				<legend>
@@ -90,21 +95,6 @@
 						<s:submit action="ConfigurationHostname_save" key="button.save" />
 					</td></tr>
 				</table>
-				<!-- 
-				<div class="entry">
-					<div class="features simptip-position-right simptip-smooth"
-						data-tooltip="<s:property value="getText('configuration.tooltip.hostName')" />">
-						<label for="hostName" class="label">
-							<s:text name="configuration.label.hostName" />
-						</label>
-						<s:textfield id="hostName" name="hostName" cssClass="input" />
-					</div>
-				</div>
-				<div class="entry submit">
-					<s:reset key="button.reset" />
-					<s:submit action="ConfigurationHostname_save" key="button.save" />
-				</div>
-				-->
 			</fieldset>
 		</s:form>
 

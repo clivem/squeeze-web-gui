@@ -28,6 +28,7 @@ import squeeze.web.util.Commands;
 import squeeze.web.util.ExecuteProcess;
 import squeeze.web.util.SambaConfig;
 import squeeze.web.util.Util;
+import squeeze.web.util.Validate;
 
 /**
  * @author Clive Messer <clive.m.messer@gmail.com>
@@ -56,6 +57,22 @@ public class ConfigurationSambaAction extends ConfigurationAction {
 	 */
 	@Override
 	public void validate() {
+
+		if (sambaNetbiosName == null || 
+				!sambaNetbiosName.trim().matches(Validate.REGEX_ALPHA_NUMERIC_UNDERSCORE_DASH)) {
+			addActionError(getText("configuration.validation.sambaNetbiosName.fail"));
+		}
+		
+		if (sambaWorkgroup == null || 
+				!sambaWorkgroup.trim().matches(Validate.REGEX_ALPHA_NUMERIC_UNDERSCORE_DASH)) {
+			addActionError(getText("configuration.validation.sambaWorkgroup.fail"));
+		}
+		
+		if (hasActionErrors()) {
+			try {
+				populate();
+			} catch (Exception e) {}
+		}
 	}
 
 	/**
