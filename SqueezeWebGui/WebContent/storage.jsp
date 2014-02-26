@@ -305,7 +305,13 @@ function displayRemoteCifsCredentials() {
 <!-- Mount Remote File System -->
 <hr />
 <h4><s:text name="storage.header.mountRemoteFs" /></h4>
-<s:form action="StorageMountRemote_mountRemoteFs" theme="simple">
+<s:form action="StorageMountRemote_mountRemoteFs" theme="simple" onreset="javascript:doReset();">
+<!-- kludge to make sure the reset is done before we decide whether to display cifs credentials -->
+<script>
+	function doReset() {
+		setTimeout(function(){displayRemoteCifsCredentials();}, 0);
+	}
+</script>
 <table>
 <thead>
 <tr>
@@ -346,7 +352,8 @@ function displayRemoteCifsCredentials() {
 	<td><s:textfield name="remoteFsPartition" cssClass="size-300px" /></td>
 	<td><s:select name="remoteFsType" id="remoteFsType" 
 				  list="remoteFsTypes" cssClass="size-75px" 
-				  onchange="javascript:displayRemoteCifsCredentials();" />
+				  onchange="javascript:displayRemoteCifsCredentials();"  
+				  onkeyup="javascript:displayRemoteCifsCredentials();" />
 	</td>
 	<td><s:textfield name="remoteFsMountOptions" cssClass="size-300px" /></td>
 	<td><s:checkbox name="remoteFsPersist" cssClass="size-75px" /></td>
