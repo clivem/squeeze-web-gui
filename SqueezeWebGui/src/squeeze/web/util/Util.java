@@ -720,7 +720,7 @@ public final class Util {
 							String name = split[0].trim();
 							String value = split[1].trim();
 
-							trimQuotes(value);
+							value = trimQuotes(value);
 
 							properties.put(name, value);
 							if (LOGGER.isTraceEnabled()) {
