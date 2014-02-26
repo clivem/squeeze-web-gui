@@ -80,7 +80,13 @@ function displayAdvancedOptions() {
 
 <s:actionerror />
 
-<s:form action="SqueezeliteSave_save" theme="simple" >
+<s:form action="SqueezeliteSave_save" theme="simple" onreset="javascript:doReset();" >
+<!-- kludge to make sure the reset is done before we decide whether to display advanced options -->
+<script>
+	function doReset() {
+		setTimeout(function(){displayAdvancedOptions();}, 0);
+	}
+</script>
 
 <table>
 
@@ -177,7 +183,9 @@ function displayAdvancedOptions() {
 <td>
 	<s:checkbox name="showAdvancedOptions" id="showAdvancedOptions" 
 				onchange="javascript:displayAdvancedOptions();" />
-	<s:text name="squeezelite.label.advancedOptions" />
+	<label for="showAdvancedOptions">
+		<s:text name="squeezelite.label.advancedOptions" />
+	</label>
 </td>
 </tr>
 
