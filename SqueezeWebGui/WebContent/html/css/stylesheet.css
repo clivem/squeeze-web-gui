@@ -294,3 +294,6 @@ legend {
   margin: 5px;
   padding: 5px;
 }
+.full {
+  width: 100%;
+}

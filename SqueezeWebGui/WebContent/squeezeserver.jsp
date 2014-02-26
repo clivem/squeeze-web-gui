@@ -48,7 +48,7 @@
 				<legend>
 					<s:text name="header.service" />
 				</legend>
-				<table width="100%">
+				<table class="full">
 					<tr>
 						<td colspan="2">
 							<s:textarea name="status" readonly="true" theme="simple" cssClass="log" />
