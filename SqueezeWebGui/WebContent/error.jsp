@@ -14,8 +14,10 @@
 </head>
 
 <body>
+
 	<jsp:include page="header.jsp" />
 
+	<!--  title -->
 	<table>
 		<tr>
 			<td>

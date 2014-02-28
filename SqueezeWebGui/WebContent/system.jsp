@@ -20,26 +20,23 @@
 	<s:include value="header_css.jsp" />
 	
 	<!-- title -->
-	<div class="title-block">
-		<div class="title-image">
-			<img src="<s:text name="system.logo" />"
-				width="<s:text name="system.logo.width" />"
-				height="<s:text name="system.logo.height" />"
-				alt="<s:text name="system.logo.alt" />" />
-		</div>
-		<div class="title-image">
-			<s:a action="Index">
-				<img src="<s:text name="logo.small" />"
-					width="<s:text name="logo.small.width" />"
-					height="<s:text name="logo.small.height" />"
-					alt="<s:text name="brand.name" /> <s:text name="logo.small.alt" />" />
-			</s:a>
-		</div>
-		<div class="title">
-			<s:text name="configuration.header" />
-		</div>
-	</div>
-
+	<table>
+		<tr>
+			<td>
+				<img src="<s:text name="system.logo" />" 
+					width="<s:text name="system.logo.width" />" 
+					height="<s:text name="system.logo.height" />" 
+					alt="<s:text name="system.logo.alt" />" />
+			</td>
+			<td>
+				<jsp:include page="logo_small.jsp" />
+			</td>
+			<td>
+				<h2><s:text name="configuration.header" /></h2>
+			</td>
+		</tr>
+	</table>
+	
 	<!-- errors -->
 	<div style="clear: both;">
 		<hr />
@@ -47,7 +44,7 @@
 	</div>
 
 	<!-- Version -->
-	<div>
+	<div style="clear: both;">
 		<div class="config">
 			<fieldset>
 				<legend>

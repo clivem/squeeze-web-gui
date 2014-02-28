@@ -176,6 +176,12 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 				addActionError(getText("squeezelite.validation.dopOptions.fail"));
 			}
 		}
+		
+		if (hasActionErrors()) {
+			try {
+				populateServiceStatus();
+			} catch(Exception e) {}
+		}
 	}
 	
 	/**

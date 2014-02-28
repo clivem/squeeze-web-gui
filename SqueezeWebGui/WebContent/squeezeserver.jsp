@@ -20,26 +20,23 @@
 	<s:include value="header_css.jsp" />
 
 	<!-- title -->
-	<div class="title-block">
-		<div class="title-image">
-			<img src="<s:text name="squeezeserver.logo" />" 
-				width="<s:text name="squeezeserver.logo.width" />" 
-				height="<s:text name="squeezeserver.logo.height" />" 
-				alt="<s:text name="squeezeserver.logo.alt" />" />
-		</div>
-		<div class="title-image">
-			<s:a action="Index">
-				<img src="<s:text name="logo.small" />"
-					width="<s:text name="logo.small.width" />"
-					height="<s:text name="logo.small.height" />"
-					alt="<s:text name="brand.name" /> <s:text name="logo.small.alt" />" />
-			</s:a>
-		</div>
-		<div class="title">
-			<s:text name="squeezeserver.header" />
-		</div>
-	</div>
-
+	<table>
+		<tr>
+			<td>
+				<img src="<s:text name="squeezeserver.logo" />" 
+					width="<s:text name="squeezeserver.logo.width" />" 
+					height="<s:text name="squeezeserver.logo.height" />" 
+					alt="<s:text name="squeezeserver.logo.alt" />" />
+			</td>
+			<td>
+				<jsp:include page="logo_small.jsp" />
+			</td>
+			<td>
+				<h2><s:text name="squeezeserver.header" /></h2>
+			</td>
+		</tr>
+	</table>
+	
 	<!-- service -->
 	<div style="clear: both;">
 		<hr />
@@ -79,6 +76,7 @@
 
 	<!-- configuration -->
 	<div style="clear: both;">
+		<hr />
 		<div style="margin-right: 20px;">
 			<fieldset style="width: 100%;">
 				<legend>

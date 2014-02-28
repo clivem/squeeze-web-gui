@@ -4,47 +4,49 @@
  "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
+
 <head>
-  <title><s:text name="brand.name" />: <s:text name="storage.title" /></title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <link href="html/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
-  <link href="favicon.ico" rel="icon" type="image/x-icon" />
-  <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
+	<title><s:text name="brand.name" />: <s:text name="storage.title" /></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link href="html/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
+	<link href="favicon.ico" rel="icon" type="image/x-icon" />
+	<link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
 </head>
+
 <body>
 
-<script type="text/javascript">
-function displayRemoteCifsCredentials() {
-	var e = document.getElementById("remoteFsType");
-	var val = e.options[e.selectedIndex].value;
-	if (val == 'cifs') {
-		document.getElementById('remoteFsCifsCredentials').style.display = '';
-	} else {
-		document.getElementById('remoteFsCifsCredentials').style.display = 'none';
-	}
-}
-</script>  
+	<script type="text/javascript">
+		function displayRemoteCifsCredentials() {
+			var e = document.getElementById("remoteFsType");
+			var val = e.options[e.selectedIndex].value;
+			if (val == 'cifs') {
+				document.getElementById('remoteFsCifsCredentials').style.display = '';
+			} else {
+				document.getElementById('remoteFsCifsCredentials').style.display = 'none';
+			}
+		}
+	</script>  
 
-<!-- Header -->
-<jsp:include page="header.jsp"/>
+	<!-- Header -->
+	<jsp:include page="header.jsp"/>
 
-<!-- Title -->
-<table>
-  <tr>
-	<td>
-	    <img src="<s:text name="storage.logo" />" 
-			 width="<s:text name="storage.logo.width" />" 
-			 height="<s:text name="storage.logo.height" />" 
-			 alt="<s:text name="storage.logo.alt" />" />
-	</td>
-    <td>
-      <jsp:include page="logo_small.jsp" />
-    </td>
-    <td>
-      <h2><s:text name="storage.header.main" /></h2>
-    </td>
-  </tr>
-</table>
+	<!-- Title -->
+	<table>
+		<tr>
+			<td>
+				<img src="<s:text name="storage.logo" />" 
+					width="<s:text name="storage.logo.width" />" 
+					height="<s:text name="storage.logo.height" />" 
+					alt="<s:text name="storage.logo.alt" />" />
+			</td>
+			<td>
+				<jsp:include page="logo_small.jsp" />
+			</td>
+			<td>
+				<h2><s:text name="storage.header.main" /></h2>
+			</td>
+		</tr>
+	</table>
 
 <s:actionerror />
 

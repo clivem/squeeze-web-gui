@@ -20,19 +20,17 @@
 	<s:include value="header_css.jsp" />
 
 	<!-- title -->
-	<div class="title-block">
-		<div class="title-image">
-			<s:a action="Index">
-				<img src="<s:text name="logo.small" />"
-					width="<s:text name="logo.small.width" />"
-					height="<s:text name="logo.small.height" />"
-					alt="<s:text name="brand.name" /> <s:text name="logo.small.alt" />" />
-			</s:a>
-		</div>
-		<div class="title">
-			<s:text name="help.header" />
-		</div>
-	</div>
+	<table>
+		<tr>
+			<td>
+				<jsp:include page="logo_small.jsp" />
+			</td>
+			<td>
+				<h2><s:text name="help.header" /></h2>
+			</td>
+		</tr>
+	</table>
+	
 
 	<!-- main -->
 	<div style="clear: both;">
