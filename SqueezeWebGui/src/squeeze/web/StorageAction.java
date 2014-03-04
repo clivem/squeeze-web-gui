@@ -58,9 +58,11 @@ public class StorageAction extends ActionSupport {
 	protected final static List<String> LOCAL_FS_TYPES;
 	protected final static List<String> REMOTE_FS_TYPES;
 	
-	public final static String FS_STATUS_REGEX = "^.*(type\\s(" + FsType.FAT + "|" + FsType.VFAT + "|" + FsType.NTFS + 
-			"|" + FsType.NTFS3G + "|" + FsType.EXT2 + "|" + FsType.EXT3 + "|" + FsType.EXT4 + "|" + FsType.CIFS + 
-			"|" + FsType.NFS + "|" + FsType.NFS4 + ")\\s){1}.*$";
+	public final static String FS_STATUS_REGEX = "^.*(type\\s(" + 
+			FsType.FAT + "|" + FsType.VFAT + "|" + 
+			FsType.NTFS + "|" + FsType.NTFS3G + "|" + FsType.FUSEBLK + "|" +
+			FsType.EXT2 + "|" + FsType.EXT3 + "|" + FsType.EXT4 + "|" + 
+			FsType.CIFS + "|" + FsType.NFS + "|" + FsType.NFS4 + ")\\s){1}.*$";
 		
 	protected final static String LOCAL_FS_DEFAULT_MOUNT_OPTIONS = "defaults";
 	protected final static String REMOTE_FS_DEFAULT_MOUNT_OPTIONS = "defaults,_netdev";
@@ -323,7 +325,13 @@ public class StorageAction extends ActionSupport {
 								mount.setFstabEntry(true);
 								mount.setLineNo(fstabMount.getLineNo());
 								mount.setOptions(fstabMount.getOptions());
-								mount.setCifsCredentials(fstabMount.getCifsCredentials());
+								if (FsType.CIFS.equals(mount.getFsType())) {
+									mount.setCifsCredentials(fstabMount.getCifsCredentials());									
+								} else if (FsType.FUSEBLK.equals(mount.getFsType()) && 
+										FsType.NTFS3G.equals(fstabMount.getFsType())) {
+									mount.setFsType(fstabMount.getFsType());
+								}
+								
 							}
 						}
 						
