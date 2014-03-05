@@ -129,7 +129,7 @@ public class StorageMountLocalAction extends StorageAction {
 			}
 						
 			mount = new StorageMount(localFsPartition, localFsMountPoint, localFsType, localFsMountOptions, false, null);
-			mountResult = mountFs(mount);
+			mountResult = mount(mount, false);
 		}
 
 		String result = "populate";

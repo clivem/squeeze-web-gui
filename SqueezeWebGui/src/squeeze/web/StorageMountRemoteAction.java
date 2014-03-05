@@ -171,7 +171,7 @@ public class StorageMountRemoteAction extends StorageAction {
 				mount.createOrUpdateCifsCredentials(username, password, domain);
 			}
 						
-			mountResult = mountFs(mount);
+			mountResult = mount(mount, false);
 		}
 		
 		String result = "populate";

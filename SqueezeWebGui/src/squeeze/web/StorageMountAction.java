@@ -30,7 +30,6 @@ import org.apache.log4j.Logger;
 import squeeze.web.util.CifsCredentials;
 import squeeze.web.util.FsType;
 import squeeze.web.util.StorageMount;
-import squeeze.web.util.Util;
 
 /**
  * @author Clive Messer <clive.m.messer@gmail.com>
@@ -185,54 +184,11 @@ public class StorageMountAction extends StorageAction {
 					
 					persist(mount, false);
 				} else if (StorageMount.ACTION_MOUNT.equals(mount.getAction())) {
-					
-					if (LOG.isDebugEnabled()) {
-						LOG.debug("Mount: " + mount);
-					}
-					
-					// Make sure it isn't already mounted.
-					String[] cmdLineArgs = Util.createUmountCommand(mount);
-					int result = Util.umount(cmdLineArgs);
-
-					if (FsType.CIFS.equals(mount.getFsType())) {
-						mount.createOrUpdateCifsCredentials(null, null, null);
-					}
-					
-					// Mount it.
-					cmdLineArgs = Util.createMountCommand(mount);
-					result = Util.mount(cmdLineArgs);
-					if (result != 0) {
-						addActionError("Mount '" + Util.arrayToString(cmdLineArgs) + "' returned: " + result +
-								". (If successful, return code should be 0.)");
-					}					
+					mount(mount, (FsType.CIFS.equals(mount.getFsType()) ? true : false));
 				} else if (StorageMount.ACTION_UNMOUNT.equals(mount.getAction())) {
-					
-					if (LOG.isDebugEnabled()) {
-						LOG.debug("Unmount: " + mount);
-					}
-					
-					if (FsType.CIFS.equals(mount.getFsType())) {
-						mount.createOrUpdateCifsCredentials(null, null, null);
-					}
-
-					String[] cmdLineArgs = Util.createUmountCommand(mount);
-					int result = Util.umount(cmdLineArgs);
-					if (result != 0) {
-						addActionError("Unmount '" + Util.arrayToString(cmdLineArgs) + "' returned: " + result +
-								". (If successful, return code should be 0.)");
-					}
+					umount(mount);
 				} else if (StorageMount.ACTION_REMOUNT.equals(mount.getAction())) {
-					
-					if (LOG.isDebugEnabled()) {
-						LOG.warn("Remount: " + mount);
-					}
-
-					String[] cmdLineArgs = Util.createReMountCommand(mount);
-					int result = Util.remount(cmdLineArgs);
-					if (result != 0) {
-						addActionError("Remount '" + Util.arrayToString(cmdLineArgs) + "' returned: " + result +
-								". (If successful, return code should be 0.)");
-					}
+					remount(mount);
 				}
 			}
 		}		

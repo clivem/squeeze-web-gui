@@ -392,7 +392,7 @@ public class StorageMount {
 		
 		if (mounted) {
 			list.add(ACTION_UNMOUNT);
-			if (FsType.CIFS.equals(fsType) || FsType.FUSEBLK.equals(fsType)) {
+			if ((FsType.CIFS.equals(fsType) && !fstabEntry) || FsType.FUSEBLK.equals(fsType)) {
 				if (LOGGER.isDebugEnabled()) {
 					LOGGER.debug("getActionList(): Not adding remount option to action list!");
 				}

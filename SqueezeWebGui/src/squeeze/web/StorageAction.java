@@ -65,7 +65,7 @@ public class StorageAction extends ActionSupport {
 			FsType.EXT2 + "|" + FsType.EXT3 + "|" + FsType.EXT4 + "|" + 
 			FsType.CIFS + "|" + FsType.NFS + "|" + FsType.NFS4 + ")\\s){1}.*$";
 		
-	protected final static String LOCAL_FS_DEFAULT_MOUNT_OPTIONS = "defaults";
+	protected final static String LOCAL_FS_DEFAULT_MOUNT_OPTIONS = "defaults,nofail";
 	protected final static String REMOTE_FS_DEFAULT_MOUNT_OPTIONS = "defaults,_netdev";
 	
 	protected final static String[] STORAGE_DIR_LIST = new String[] {
@@ -231,7 +231,7 @@ public class StorageAction extends ActionSupport {
 	 * @return
 	 * @throws IOException
 	 * @throws InterruptedException
-	 */
+	 *
 	protected int mountFs(StorageMount mount) 
 			throws IOException, InterruptedException {
 		
@@ -262,6 +262,96 @@ public class StorageAction extends ActionSupport {
 					". (If successful, return code should be 0.)");
 		}
 
+		return result;
+	}
+	*/
+	
+	/**
+	 * @param mount
+	 * @param createOrUpdateCifsCredentials
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	protected int mount(StorageMount mount, boolean createOrUpdateCifsCredentials) 
+			throws IOException, InterruptedException {
+		
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("mount(mount=" + mount + ", createOrUpdateCifsCredentials=" + createOrUpdateCifsCredentials + ")");
+		}
+		
+		// Make sure it isn't already mounted.
+		String[] cmdLineArgs = Util.createUmountCommand(mount);
+		int result = Util.umount(cmdLineArgs);
+
+		if (createOrUpdateCifsCredentials) {
+			mount.createOrUpdateCifsCredentials(null, null, null);
+		}
+		
+		// Mount it.
+		cmdLineArgs = Util.createMountCommand(mount);
+		result = Util.mount(cmdLineArgs);
+		if (result != 0) {
+			addActionError("Mount '" + Util.arrayToString(cmdLineArgs) + "' returned: " + result +
+					". (If successful, return code should be 0.)");
+		}		
+		
+		return result;
+	}
+	
+	/**
+	 * @param mount
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	protected int umount(StorageMount mount) 
+			throws IOException, InterruptedException {
+		
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("umount(mount=" + mount + ")");
+		}
+		
+		if (FsType.CIFS.equals(mount.getFsType())) {
+			mount.createOrUpdateCifsCredentials(null, null, null);
+		}
+
+		String[] cmdLineArgs = Util.createUmountCommand(mount);
+		int result = Util.umount(cmdLineArgs);
+		if (result != 0) {
+			addActionError("Unmount '" + Util.arrayToString(cmdLineArgs) + "' returned: " + result +
+					". (If successful, return code should be 0.)");
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * @param mount
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	protected int remount(StorageMount mount) throws IOException, InterruptedException {
+		
+		if (LOG.isDebugEnabled()) {
+			LOG.warn("Remount: " + mount);
+		}
+
+		/*
+		 * ntfs-3g doesn't support remount.
+		 */
+		if (FsType.CIFS.equals(mount.getFsType())) {
+			return mount(mount, true);
+		}
+		
+		String[] cmdLineArgs = Util.createReMountCommand(mount);
+		int result = Util.remount(cmdLineArgs);
+		if (result != 0) {
+			addActionError("Remount '" + Util.arrayToString(cmdLineArgs) + "' returned: " + result +
+					". (If successful, return code should be 0.)");
+		}	
+		
 		return result;
 	}
 
