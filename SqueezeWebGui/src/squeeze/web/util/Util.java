@@ -53,12 +53,16 @@ public final class Util {
 	public final static String LINE_SEP = 
 			System.getProperty("line.separator");
 	
+	public final static String PATH_SEP =
+			System.getProperty("file.separator");
+	
 	public final static String BLANK_STRING = "";
 	public final static String HASH = "#";
 	public final static String EQUALS = "=";
 	public final static String COMMA = ",";
 	public final static String UNDERSCORE = "_";
 	public final static String SPACE = " ";
+	public final static String TAB = "\t";
 	
 	public final static String TXT_SUFFIX = ".txt";
 	
@@ -80,6 +84,8 @@ public final class Util {
 	
 	private static String CSOS_VERSION = null;
 	private static String FEDORA_VERSION = null;
+	
+	private final static String DEV_PATH = "/dev";
 	
 	/**
 	 * 
@@ -225,9 +231,6 @@ public final class Util {
 			}
 		}
 		return result;
-	}
-	
-	public final static void getBlkId() {
 	}
 	
 	/**
@@ -606,7 +609,7 @@ public final class Util {
 			 */
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-				if (!line.startsWith(" ") && !line.startsWith("\t")) {
+				if (!line.startsWith(Util.SPACE) && !line.startsWith(Util.TAB)) {
 					line = line.trim();
 					if (line.startsWith(ALSA_DEFAULT)) {
 						String tmpDev = line.substring(8);
@@ -714,18 +717,15 @@ public final class Util {
 			while ((line = br.readLine()) != null) {
 				// Remove any leading or trailing white space
 				line = line.trim();
-				if (!line.startsWith("#")) {
+				if (!line.startsWith(Util.HASH)) {
 					if (LOGGER.isTraceEnabled()) {
 						LOGGER.trace(line);
 					}
-					if (line.contains("=")) {
-						String[] split = line.split("=");
+					if (line.contains(Util.EQUALS)) {
+						String[] split = line.split(Util.EQUALS);
 						if (split != null && split.length == 2) {
 							String name = split[0].trim();
-							String value = split[1].trim();
-
-							value = trimQuotes(value);
-
+							String value = trimQuotes(split[1].trim());
 							properties.put(name, value);
 							if (LOGGER.isTraceEnabled()) {
 								LOGGER.trace("Name='" + name + "', Value='" + value + "'");
@@ -1225,12 +1225,12 @@ public final class Util {
 		
 		ArrayList<String> partitions = new ArrayList<String>();
 		
-		File f = new File("/dev");
+		File f = new File(DEV_PATH);
 		File[] files = f.listFiles();
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i]; 
 			if (!file.isDirectory() && file.getName().matches("^sd[a-z]{1}[0-9]{1}$")) {
-				partitions.add("/dev/" + files[i].getName());
+				partitions.add(DEV_PATH + PATH_SEP + files[i].getName());
 			}
 		}	
 		

@@ -75,7 +75,7 @@ public class WebConfig {
 	 */
 	private final static String getValue(String line) {
 		
-		int index = line.indexOf("=");
+		int index = line.indexOf(Util.EQUALS);
 		if (index > -1) {
 			return line.substring(index + 1).trim(); 
 		}
