@@ -206,7 +206,7 @@ public class WebConfig {
 			String tmpDir = "/tmp";
 			File f = new File(tmpDir);
 			try {
-				if (f.exists() && f.isDirectory()) {
+				if (f.exists() && f.isDirectory() && f.canWrite()) {
 					if (LOGGER.isDebugEnabled()) {
 						LOGGER.debug("Setting dir for tmp file creation: " + tmpDir);
 					}
