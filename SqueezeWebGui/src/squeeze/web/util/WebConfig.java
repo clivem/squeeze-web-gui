@@ -24,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
@@ -110,6 +111,7 @@ public class WebConfig {
 	 * @return
 	 */
 	public final static String[] getStorageDirs() {
+		
 		return STORAGE_DIRS;
 	}
 	
@@ -131,7 +133,7 @@ public class WebConfig {
 						if (value != null && value.length() > 0) {
 							File tmpDir = new File(value);
 							try {
-								if (tmpDir.exists() && tmpDir.isDirectory()) {
+								if (tmpDir.exists() && tmpDir.isDirectory() && tmpDir.canWrite()) {
 									if (LOGGER.isDebugEnabled()) {
 										LOGGER.debug("Setting dir for tmp file creation: " + tmpDir);
 									}
@@ -161,17 +163,27 @@ public class WebConfig {
 					} else if (line.startsWith(STORAGE_DIRS_NAME)) {
 						String value = getValue(line);
 						if (value.length() > 0) {
-							StringTokenizer tok = new StringTokenizer(value, ",");
+							StringTokenizer tok = new StringTokenizer(value, Util.COMMA);
 							if (tok.countTokens() > 0) {
 								ArrayList<String> storageDirList = new ArrayList<String>();
 								while (tok.hasMoreTokens()) {
-									storageDirList.add(tok.nextToken().trim());
+									File dir = new File(tok.nextToken().trim());
+									if (dir.exists() && dir.isDirectory()) {
+										storageDirList.add(dir.getCanonicalPath());
+									}
 								}
-								STORAGE_DIRS = storageDirList.toArray(new String[storageDirList.size()]);
+
+								if (storageDirList.size() > 0) {
+									// sort the list
+									Collections.sort(storageDirList, StringIgnoreCaseComparator.COMPARATOR);
+									String[] tempList = storageDirList.toArray(new String[storageDirList.size()]);
+									if (LOGGER.isDebugEnabled()) {
+										LOGGER.debug("Setting storage directories: " + Util.arrayToString(tempList) + ".");
+									}
+									STORAGE_DIRS = tempList;
+								}
 							}
-						} /* else if (value.length() > 0) {
-							STORAGE_DIRS = new String[] {value};
-						} */
+						}
 					} else {
 						LOGGER.info("Ignoring line: " + line);
 					}
@@ -187,6 +199,9 @@ public class WebConfig {
 			}
 		}
 
+		/*
+		 * If we haven't set a tmp dir, use the system default.
+		 */
 		if (TEMP_DIR == null) {
 			String tmpDir = "/tmp";
 			File f = new File(tmpDir);
