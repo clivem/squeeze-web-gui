@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import squeeze.web.util.BlkId;
 import squeeze.web.util.CifsCredentials;
 import squeeze.web.util.Commands;
 import squeeze.web.util.ExecuteProcess;
@@ -317,21 +318,19 @@ public class StorageAction extends ActionSupport {
 						it = fstabUserMountList.iterator();
 						while (it.hasNext()) {
 							StorageMount fstabMount = it.next();
-							if (mount.getSpec().equals(fstabMount.getSpec()) && 
-									mount.getMountPoint().equals(fstabMount.getMountPoint())) {
-								// remove it from what will be the un-mounted list
-								it.remove();
-								// mark the mounted entry as being in fstab
-								mount.setFstabEntry(true);
-								mount.setLineNo(fstabMount.getLineNo());
-								mount.setOptions(fstabMount.getOptions());
-								if (FsType.CIFS.equals(mount.getFsType())) {
-									mount.setCifsCredentials(fstabMount.getCifsCredentials());									
-								} else if (FsType.FUSEBLK.equals(mount.getFsType()) && 
-										FsType.NTFS3G.equals(fstabMount.getFsType())) {
-									mount.setFsType(fstabMount.getFsType());
+							if (mount.getMountPoint().equals(fstabMount.getMountPoint())) {
+								if (mount.getSpec().equals(fstabMount.getSpec())) {
+									processMount(it, mount, fstabMount);
+								} else if (fstabMount.getSpec().startsWith(BlkId.LABEL) || 
+										fstabMount.getSpec().startsWith(BlkId.UUID)) {
+									BlkId blkid = BlkId.getBlkId(mount.getSpec());
+									if (blkid != null) {
+										if (blkid.getDevice().equals(mount.getSpec())) {
+											processMount(it, mount, fstabMount);
+											mount.setSpec(fstabMount.getSpec());
+										}
+									}
 								}
-								
 							}
 						}
 						
@@ -357,6 +356,27 @@ public class StorageAction extends ActionSupport {
 			Collections.sort(systemMountList, StorageMountComparator.COMPARATOR);			
 			Collections.sort(fstabUserMountList, StorageMountComparator.COMPARATOR);			
 		}
+	}
+	
+	/**
+	 * @param it
+	 * @param mount
+	 * @param fstabMount
+	 */
+	private void processMount(Iterator<StorageMount> it, StorageMount mount, StorageMount fstabMount) {
+		
+		// remove it from what will be the un-mounted list
+		it.remove();
+		// mark the mounted entry as being in fstab
+		mount.setFstabEntry(true);
+		mount.setLineNo(fstabMount.getLineNo());
+		mount.setOptions(fstabMount.getOptions());
+		if (FsType.CIFS.equals(mount.getFsType())) {
+			mount.setCifsCredentials(fstabMount.getCifsCredentials());									
+		} else if (FsType.FUSEBLK.equals(mount.getFsType()) && 
+				FsType.NTFS3G.equals(fstabMount.getFsType())) {
+			mount.setFsType(fstabMount.getFsType());
+		}		
 	}
 	
 	/**

@@ -58,6 +58,7 @@ public final class Util {
 	public final static String EQUALS = "=";
 	public final static String COMMA = ",";
 	public final static String UNDERSCORE = "_";
+	public final static String SPACE = " ";
 	
 	public final static String TXT_SUFFIX = ".txt";
 	
@@ -224,6 +225,9 @@ public final class Util {
 			}
 		}
 		return result;
+	}
+	
+	public final static void getBlkId() {
 	}
 	
 	/**
