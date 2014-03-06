@@ -36,8 +36,8 @@ import java.util.StringTokenizer;
 import org.apache.log4j.Logger;
 
 import squeeze.web.util.Commands;
+import squeeze.web.util.NameFlag;
 import squeeze.web.util.SoxResample;
-import squeeze.web.util.SoxResampleFlag;
 import squeeze.web.util.Util;
 import squeeze.web.util.Validate;
 import squeeze.web.util.WebConfig;
@@ -132,9 +132,17 @@ public class SqueezeliteAction extends SystemctlAction {
 	protected String logFile = null;
 	protected String logLevel = null;
 	protected String priority = null;
-	protected String buffer = null;
+	
+	protected String bufferStream = null;
+	protected String bufferOutput = null;
+	
 	protected String codec = null;
-	protected String alsaParams = null;
+	
+	protected String alsaParamsBuffer = null;
+	protected String alsaParamsPeriod = null;
+	protected String alsaParamsFormat = null;
+	protected String alsaParamsMmap = null;
+	
 	protected String serverIp = null;
 	
 	protected List<String> priorityList = PRIORITY_LIST;
@@ -200,8 +208,11 @@ public class SqueezeliteAction extends SystemctlAction {
 		readSqueezeliteConfigProperties(SQUEEZELITE_CONFIG_FILE_NAME);
 		
 		name = properties.get(CFG_NAME);
+		
 		mac = properties.get(CFG_MAC);
+		
 		maxRate = properties.get(CFG_MAX_RATE);
+		
 		audioDev = properties.get(CFG_AUDIO_DEV);
 		/*
 		 * If AUDIO_DEV is set in config file, make sure it is in the list. 
@@ -212,24 +223,114 @@ public class SqueezeliteAction extends SystemctlAction {
 			
 			audioDevList.add(0, audioDev);
 		}
+		
 		logFile = properties.get(CFG_LOG_FILE);
+		
 		logLevel = properties.get(CFG_LOG_LEVEL);
+		
 		priority = properties.get(CFG_PRIORITY);
-		buffer = properties.get(CFG_BUFFER);
+		
+		String buffer = properties.get(CFG_BUFFER);
+		parseBuffer(buffer);
+		
 		codec = properties.get(CFG_CODEC);
-		alsaParams = properties.get(CFG_ALSA_PARAMS);
+		
+		String alsaParams = properties.get(CFG_ALSA_PARAMS);
+		if (alsaParams != null) {
+			parseAlsaParams(alsaParams);
+		}
+		
 		serverIp = properties.get(CFG_SERVER_IP);
 		String resampleOptions = properties.get(CFG_UPSAMPLE);
 		if (resampleOptions != null) {
 			upsample = true;
 			parseResampleOptions(resampleOptions);
 		}
+		
 		dopOptions = properties.get(CFG_DOP);
 		if (dopOptions != null) {
 			dop = true;
 		}
+		
 		options = properties.get(CFG_OPTIONS);
+		
 		visulizer = (properties.get(CFG_VISULIZER) != null);
+	}
+	
+	/**
+	 * @param buffer
+	 */
+	private void parseBuffer(String buffer) {
+		
+		if (buffer != null && buffer.trim().length() > 0) {
+
+			int count = 0;
+
+			StringTokenizer tok = new StringTokenizer(buffer, Util.COLON, true);
+			while (tok.hasMoreTokens()) {
+				String option = tok.nextToken().trim();
+				if (option.charAt(0) == Util.COLON.charAt(0)) {
+					count++;
+				} else {
+					switch (count) {
+						// stream
+						case 0:
+							bufferStream = option;
+							break;
+						// output
+						case 1:
+							bufferOutput = option;
+							break;
+						default:
+							break;
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * @param alsaParams
+	 */
+	private void parseAlsaParams(String alsaParams) {
+		
+		if (alsaParams != null && alsaParams.trim().length() > 0) {
+
+			int count = 0;
+
+			StringTokenizer tok = new StringTokenizer(alsaParams, Util.COLON, true);
+			while (tok.hasMoreTokens()) {
+				String option = tok.nextToken().trim();
+				if (option.charAt(0) == Util.COLON.charAt(0)) {
+					count++;
+				} else {
+					switch (count) {
+						// buffer
+						case 0:
+							alsaParamsBuffer = option;
+							break;
+						// period
+						case 1:
+							alsaParamsPeriod = option;
+							break;
+						// format
+						case 2:
+							alsaParamsFormat = option;
+							break;
+						// mmap
+						case 3:
+							if (Util.ONE.equals(option)) {
+								alsaParamsMmap = Util.ONE;
+							} else if (Util.ZERO.equals(option)) {
+								alsaParamsMmap = Util.ZERO;
+							}
+							break;
+						default:
+							break;
+					}
+				}
+			}
+		}
 	}
 	
 	/**
@@ -237,76 +338,79 @@ public class SqueezeliteAction extends SystemctlAction {
 	 */
 	private void parseResampleOptions(String resampleOptions) {
 		
-		int count = 0;
-
-		StringTokenizer tok = new StringTokenizer(resampleOptions, Util.COLON, true);
-		while (tok.hasMoreTokens()) {
-			String option = tok.nextToken().trim();
-			if (option.charAt(0) == Util.COLON.charAt(0)) {
-				count++;
-			} else {
-				switch (count) {
-					// recipe
-					case 0:
-						// quality
-						if (option.indexOf(SoxResample.SOXR_QQ_FLAG) > -1) {
-							resampleRecipeQuality = "" + SoxResample.SOXR_QQ_FLAG;
-						} else if (option.indexOf(SoxResample.SOXR_LQ_FLAG) > -1) {
-							resampleRecipeQuality = "" + SoxResample.SOXR_LQ_FLAG;
-						} else if (option.indexOf(SoxResample.SOXR_MQ_FLAG) > -1) {
-							resampleRecipeQuality = "" + SoxResample.SOXR_MQ_FLAG;
-						} else if (option.indexOf(SoxResample.SOXR_HQ_FLAG) > -1) {
-							resampleRecipeQuality = "" + SoxResample.SOXR_HQ_FLAG;
-						} else if (option.indexOf(SoxResample.SOXR_VHQ_FLAG) > -1) {
-							resampleRecipeQuality = "" + SoxResample.SOXR_VHQ_FLAG;
-						}
-						// filter
-						if (option.indexOf(SoxResample.SOXR_LINEAR_PHASE_FLAG) > -1) {
-							resampleRecipeFilter = "" + SoxResample.SOXR_LINEAR_PHASE_FLAG;
-						} else if (option.indexOf(SoxResample.SOXR_INTERMEDIATE_PHASE_FLAG) > -1) {
-							resampleRecipeFilter = "" + SoxResample.SOXR_INTERMEDIATE_PHASE_FLAG;
-						} else if (option.indexOf(SoxResample.SOXR_MINIMUM_PHASE_FLAG) > -1) {
-							resampleRecipeFilter = "" + SoxResample.SOXR_MINIMUM_PHASE_FLAG;
-						}
-						// steep
-						if (option.indexOf(SoxResample.SOXR_STEEP_FILTER_FLAG) > -1) {
-							resampleRecipeSteep = true;
-						}
-						// exception
-						if (option.indexOf(SoxResample.EXCEPTION_RATE_FLAG) > -1) {
-							resampleRecipeException = true;
-						}
-						// async
-						if (option.indexOf(SoxResample.ASYNC_RATE_FLAG) > -1) {
-							resampleRecipeAsync = true;
-						}
-						break;
-					// flags
-					case 1:
-						resampleFlags = option;
-						break;
-					// attenuation
-					case 2:
-						resampleAttenuation = option;
-						break;
-					// precision
-					case 3:
-						resamplePrecision = option;
-						break;
-					// passband end
-					case 4:
-						resamplePassbandEnd = option;
-						break;
-					// stopband start
-					case 5:
-						resampleStopbandStart = option;
-						break;
-					// phase response
-					case 6:
-						resamplePhaseResponse = option;
-						break;
-					default:
-						break;
+		if (resampleOptions != null && resampleOptions.trim().length() > 0) {
+		
+			int count = 0;
+	
+			StringTokenizer tok = new StringTokenizer(resampleOptions, Util.COLON, true);
+			while (tok.hasMoreTokens()) {
+				String option = tok.nextToken().trim();
+				if (option.charAt(0) == Util.COLON.charAt(0)) {
+					count++;
+				} else {
+					switch (count) {
+						// recipe
+						case 0:
+							// quality
+							if (option.indexOf(SoxResample.SOXR_QQ_FLAG) > -1) {
+								resampleRecipeQuality = "" + SoxResample.SOXR_QQ_FLAG;
+							} else if (option.indexOf(SoxResample.SOXR_LQ_FLAG) > -1) {
+								resampleRecipeQuality = "" + SoxResample.SOXR_LQ_FLAG;
+							} else if (option.indexOf(SoxResample.SOXR_MQ_FLAG) > -1) {
+								resampleRecipeQuality = "" + SoxResample.SOXR_MQ_FLAG;
+							} else if (option.indexOf(SoxResample.SOXR_HQ_FLAG) > -1) {
+								resampleRecipeQuality = "" + SoxResample.SOXR_HQ_FLAG;
+							} else if (option.indexOf(SoxResample.SOXR_VHQ_FLAG) > -1) {
+								resampleRecipeQuality = "" + SoxResample.SOXR_VHQ_FLAG;
+							}
+							// filter
+							if (option.indexOf(SoxResample.SOXR_LINEAR_PHASE_FLAG) > -1) {
+								resampleRecipeFilter = "" + SoxResample.SOXR_LINEAR_PHASE_FLAG;
+							} else if (option.indexOf(SoxResample.SOXR_INTERMEDIATE_PHASE_FLAG) > -1) {
+								resampleRecipeFilter = "" + SoxResample.SOXR_INTERMEDIATE_PHASE_FLAG;
+							} else if (option.indexOf(SoxResample.SOXR_MINIMUM_PHASE_FLAG) > -1) {
+								resampleRecipeFilter = "" + SoxResample.SOXR_MINIMUM_PHASE_FLAG;
+							}
+							// steep
+							if (option.indexOf(SoxResample.SOXR_STEEP_FILTER_FLAG) > -1) {
+								resampleRecipeSteep = true;
+							}
+							// exception
+							if (option.indexOf(SoxResample.EXCEPTION_RATE_FLAG) > -1) {
+								resampleRecipeException = true;
+							}
+							// async
+							if (option.indexOf(SoxResample.ASYNC_RATE_FLAG) > -1) {
+								resampleRecipeAsync = true;
+							}
+							break;
+						// flags
+						case 1:
+							resampleFlags = option;
+							break;
+						// attenuation
+						case 2:
+							resampleAttenuation = option;
+							break;
+						// precision
+						case 3:
+							resamplePrecision = option;
+							break;
+						// passband end
+						case 4:
+							resamplePassbandEnd = option;
+							break;
+						// stopband start
+						case 5:
+							resampleStopbandStart = option;
+							break;
+						// phase response
+						case 6:
+							resamplePhaseResponse = option;
+							break;
+						default:
+							break;
+					}
 				}
 			}
 		}
@@ -473,6 +577,15 @@ public class SqueezeliteAction extends SystemctlAction {
 		 * -b <stream>:<output>
 		 * Specify internal Stream and Output buffer sizes in Kbytes
 		 */
+		String buffer = "";
+		if (bufferStream != null && bufferStream.trim().length() > 0) {
+			buffer += bufferStream.trim();
+		}
+		
+		if (bufferOutput != null && bufferOutput.trim().length() > 0) {
+			buffer += Util.COLON + bufferOutput.trim();
+		}
+				
 		if (buffer != null && buffer.trim().length() > 0) {
 			list.add(CFG_BUFFER + "=\"" + CFG_BUFFER_OPTION + buffer.trim() + "\"");
 		}
@@ -485,6 +598,14 @@ public class SqueezeliteAction extends SystemctlAction {
 		 * f sample format (16|24|24_3|32), 
 		 * m = use mmap (0|1)
 		 */
+		String alsaParams = ((alsaParamsBuffer != null) ? alsaParamsBuffer.trim() : "") + Util.COLON +
+				((alsaParamsPeriod != null) ? alsaParamsPeriod.trim() : "") + Util.COLON + 
+				((alsaParamsFormat != null) ? alsaParamsFormat.trim() : "") + Util.COLON +
+				((alsaParamsMmap != null) ? alsaParamsMmap.trim() : "");
+		
+		// trim trailing colons
+		alsaParams = Util.trimTrailing(alsaParams, Util.COLON);
+
 		if (alsaParams != null && alsaParams.trim().length() > 0) {
 			list.add(CFG_ALSA_PARAMS + "=\"" + CFG_ALSA_PARAMS_OPTION + alsaParams.trim() + "\"");
 		} else if (tmpAlsaParams != null && tmpAlsaParams.trim().length() > 0) {
@@ -509,10 +630,9 @@ public class SqueezeliteAction extends SystemctlAction {
 					(resamplePassbandEnd != null ? resamplePassbandEnd.trim() : Util.BLANK_STRING) + Util.COLON +
 					(resampleStopbandStart != null ? resampleStopbandStart.trim() : Util.BLANK_STRING) + Util.COLON +
 					(resamplePhaseResponse != null ? resamplePhaseResponse.trim() : Util.BLANK_STRING);
+			
 			// trim trailing colons
-			while (resampleOptions.endsWith(Util.COLON)) {
-				resampleOptions = resampleOptions.substring(0, resampleOptions.length() - 1);
-			}
+			resampleOptions = Util.trimTrailing(resampleOptions, Util.COLON);
 
 			list.add(CFG_UPSAMPLE + "=\"" + 
 					((resampleOptions.length() > 0) ? 
@@ -558,6 +678,158 @@ public class SqueezeliteAction extends SystemctlAction {
 		return result;
 	}
 	
+	/**
+	 * @param configName
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	private void readSqueezeliteConfigProperties(String configName) 
+			throws FileNotFoundException, IOException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("readSqueezeliteConfigProperties(configName=" + 
+							configName + ")");
+		}
+
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new FileReader(SQUEEZELITE_CONFIG_PATH + configName));
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				// Remove any leading or trailing white space
+				line = line.trim();
+				if (!line.startsWith("#")) {
+					if (LOGGER.isTraceEnabled()) {
+						LOGGER.trace(line);
+					}
+					int index = line.indexOf('=');
+					if (index > -1) {
+						/*
+						 * split at the first occurance of '='
+						 */
+						String name = line.substring(0, index);
+						/*
+						 * remove the '='
+						 */
+						String value = line.substring(index + 1);
+
+						/*
+						 * trim Quotes from beginning and end of string
+						 */
+						value = Util.trimQuotes(value);
+						
+						/*
+						 * we don't use an arg flag for the serverIp
+						 */
+						if ((name.equals(CFG_SERVER_IP) && !value.startsWith(CFG_SERVER_IP_OPTION)) || 
+								name.equals(CFG_OPTIONS)) {
+							properties.put(name, value);
+							if (LOGGER.isTraceEnabled()) {
+								LOGGER.trace("Name='" + name + "', Value='" + value + "'");
+							}
+						} else {
+							/*
+							 * Remove the arg flag
+							 */
+							String[] splitOption = value.split(" ");
+							if (splitOption != null && splitOption.length == 2) {
+								String temp = splitOption[1].trim();
+								properties.put(name, temp);
+								if (LOGGER.isTraceEnabled()) {
+									LOGGER.trace("Name='" + name + "', Value='" + temp + "'");
+								}
+							} else if (name.equals(CFG_VISULIZER)) {
+								if (splitOption.length == 1 && splitOption[0].equals(CFG_VISULIZER_OPTION.trim())) {
+									properties.put(name, "");
+									if (LOGGER.isTraceEnabled()) {
+										LOGGER.trace("Name='" + name + "', Value='" + "" + "'");
+									}									
+								}
+							} else if (name.equals(CFG_UPSAMPLE)) {
+								if (splitOption.length == 1 && splitOption[0].equals(CFG_UPSAMPLE_OPTION.trim())) {
+									properties.put(name, "");
+									if (LOGGER.isTraceEnabled()) {
+										LOGGER.trace("Name='" + name + "', Value='" + "" + "'");
+									}									
+								}
+							} else if (name.equals(CFG_DOP)) {
+								if (splitOption.length == 1 && splitOption[0].equals(CFG_DOP_OPTION.trim())) {
+									properties.put(name, "");
+									if (LOGGER.isTraceEnabled()) {
+										LOGGER.trace("Name='" + name + "', Value='" + "" + "'");
+									}									
+								}
+							} else if (name.equals(CFG_LOG_LEVEL)) {
+								String tmp = "";
+								int optionCount = splitOption.length / 2;
+								for (int i = 0; i < optionCount; i++) {
+									tmp += splitOption[(i * 2) + 1].trim();
+									if (i + 1 < optionCount) {
+										tmp += " ";
+									}
+								}
+								properties.put(name, tmp);
+								if (LOGGER.isTraceEnabled()) {
+									LOGGER.trace("Name='" + name + "', Value='" + tmp + "'");
+								}									
+							}
+						}
+					} else {
+						if (LOGGER.isTraceEnabled()) {
+							LOGGER.warn("Ignoring line that does not contain 'name=value': " + line);
+						}
+					}
+				} else {
+					if (LOGGER.isTraceEnabled()) {
+						LOGGER.trace("Ignoring commented line: " + line);
+					}
+				}
+			}
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (Exception e) {}
+			}
+		}
+	}
+	
+	/**
+	 * @param configName
+	 * @param argList
+	 * @return
+	 * @throws IOException
+	 */
+	private File writeTempSqueezeliteProperties(String configName, List<String> argList) 
+			throws IOException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("writeTempSqueezeliteProperties(argList=" + argList + ")");
+		}
+
+		BufferedWriter bw = null;
+		try {
+			File tempFile = Util.createTempFile(configName + "_config_", ".txt");
+			bw = new BufferedWriter(new FileWriter(tempFile));
+			bw.write(Util.getModifiedComment());
+			Iterator<String> it = argList.iterator();
+			while (it.hasNext()) {
+				bw.write(it.next() + Util.LINE_SEP);
+			}
+			return tempFile;
+		} finally {
+			if (bw != null) {
+				try {
+					bw.flush();
+				} catch (Exception e) {}
+				
+				try {
+					bw.close();
+				} catch (Exception e) {}
+ 			}
+		}
+	}	
+
 	/**
 	 * @return
 	 */
@@ -673,22 +945,6 @@ public class SqueezeliteAction extends SystemctlAction {
 	/**
 	 * @return
 	 */
-	public String getBuffer() {
-		
-		return buffer;
-	}
-	
-	/**
-	 * @param buffer
-	 */
-	public void setBuffer(String buffer) {
-		
-		this.buffer = buffer;
-	}
-	
-	/**
-	 * @return
-	 */
 	public String getCodec() {
 		
 		return codec;
@@ -700,22 +956,6 @@ public class SqueezeliteAction extends SystemctlAction {
 	public void setCodec(String codec) {
 		
 		this.codec = codec;
-	}
-	
-	/**
-	 * @return
-	 */
-	public String getAlsaParams() {
-		
-		return alsaParams;
-	}
-	
-	/**
-	 * @param alsaParams
-	 */
-	public void setAlsaParams(String alsaParams) {
-		
-		this.alsaParams = alsaParams;
 	}
 	
 	/**
@@ -1007,22 +1247,6 @@ public class SqueezeliteAction extends SystemctlAction {
 	}
 
 	/**
-	 * @return the resampleQualityList
-	 */
-	public List<SoxResampleFlag> getResampleQualityList() {
-		
-		return SoxResampleFlag.getQualityList();
-	}
-
-	/**
-	 * @return the resampleFilterList
-	 */
-	public List<SoxResampleFlag> getResampleFilterList() {
-		
-		return SoxResampleFlag.getFilterList();
-	}
-
-	/**
 	 * @return the resampleRecipeSteep
 	 */
 	public boolean isResampleRecipeSteep() {
@@ -1071,154 +1295,130 @@ public class SqueezeliteAction extends SystemctlAction {
 	}
 
 	/**
-	 * @param configName
-	 * @throws FileNotFoundException
-	 * @throws IOException
+	 * @return the alsaParamsBuffer
 	 */
-	private void readSqueezeliteConfigProperties(String configName) 
-			throws FileNotFoundException, IOException {
+	public String getAlsaParamsBuffer() {
 		
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("readSqueezeliteConfigProperties(configName=" + 
-							configName + ")");
-		}
+		return alsaParamsBuffer;
+	}
 
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(SQUEEZELITE_CONFIG_PATH + configName));
-			String line = null;
-			while ((line = br.readLine()) != null) {
-				// Remove any leading or trailing white space
-				line = line.trim();
-				if (!line.startsWith("#")) {
-					if (LOGGER.isTraceEnabled()) {
-						LOGGER.trace(line);
-					}
-					int index = line.indexOf('=');
-					if (index > -1) {
-						/*
-						 * split at the first occurance of '='
-						 */
-						String name = line.substring(0, index);
-						/*
-						 * remove the '='
-						 */
-						String value = line.substring(index + 1);
+	/**
+	 * @param alsaParamsBuffer the alsaParamsBuffer to set
+	 */
+	public void setAlsaParamsBuffer(String alsaParamsBuffer) {
+		
+		this.alsaParamsBuffer = alsaParamsBuffer;
+	}
 
-						/*
-						 * trim Quotes from beginning and end of string
-						 */
-						value = Util.trimQuotes(value);
-						
-						/*
-						 * we don't use an arg flag for the serverIp
-						 */
-						if ((name.equals(CFG_SERVER_IP) && !value.startsWith(CFG_SERVER_IP_OPTION)) || 
-								name.equals(CFG_OPTIONS)) {
-							properties.put(name, value);
-							if (LOGGER.isTraceEnabled()) {
-								LOGGER.trace("Name='" + name + "', Value='" + value + "'");
-							}
-						} else {
-							/*
-							 * Remove the arg flag
-							 */
-							String[] splitOption = value.split(" ");
-							if (splitOption != null && splitOption.length == 2) {
-								String temp = splitOption[1].trim();
-								properties.put(name, temp);
-								if (LOGGER.isTraceEnabled()) {
-									LOGGER.trace("Name='" + name + "', Value='" + temp + "'");
-								}
-							} else if (name.equals(CFG_VISULIZER)) {
-								if (splitOption.length == 1 && splitOption[0].equals(CFG_VISULIZER_OPTION.trim())) {
-									properties.put(name, "");
-									if (LOGGER.isTraceEnabled()) {
-										LOGGER.trace("Name='" + name + "', Value='" + "" + "'");
-									}									
-								}
-							} else if (name.equals(CFG_UPSAMPLE)) {
-								if (splitOption.length == 1 && splitOption[0].equals(CFG_UPSAMPLE_OPTION.trim())) {
-									properties.put(name, "");
-									if (LOGGER.isTraceEnabled()) {
-										LOGGER.trace("Name='" + name + "', Value='" + "" + "'");
-									}									
-								}
-							} else if (name.equals(CFG_DOP)) {
-								if (splitOption.length == 1 && splitOption[0].equals(CFG_DOP_OPTION.trim())) {
-									properties.put(name, "");
-									if (LOGGER.isTraceEnabled()) {
-										LOGGER.trace("Name='" + name + "', Value='" + "" + "'");
-									}									
-								}
-							} else if (name.equals(CFG_LOG_LEVEL)) {
-								String tmp = "";
-								int optionCount = splitOption.length / 2;
-								for (int i = 0; i < optionCount; i++) {
-									tmp += splitOption[(i * 2) + 1].trim();
-									if (i + 1 < optionCount) {
-										tmp += " ";
-									}
-								}
-								properties.put(name, tmp);
-								if (LOGGER.isTraceEnabled()) {
-									LOGGER.trace("Name='" + name + "', Value='" + tmp + "'");
-								}									
-							}
-						}
-					} else {
-						if (LOGGER.isTraceEnabled()) {
-							LOGGER.warn("Ignoring line that does not contain 'name=value': " + line);
-						}
-					}
-				} else {
-					if (LOGGER.isTraceEnabled()) {
-						LOGGER.trace("Ignoring commented line: " + line);
-					}
-				}
-			}
-		} finally {
-			if (br != null) {
-				try {
-					br.close();
-				} catch (Exception e) {}
-			}
-		}
+	/**
+	 * @return the alsaParamsPeriod
+	 */
+	public String getAlsaParamsPeriod() {
+		
+		return alsaParamsPeriod;
+	}
+
+	/**
+	 * @param alsaParamsPeriod the alsaParamsPeriod to set
+	 */
+	public void setAlsaParamsPeriod(String alsaParamsPeriod) {
+		
+		this.alsaParamsPeriod = alsaParamsPeriod;
+	}
+
+	/**
+	 * @return the alsaParamsFormat
+	 */
+	public String getAlsaParamsFormat() {
+		
+		return alsaParamsFormat;
+	}
+
+	/**
+	 * @param alsaParamsFormat the alsaParamsFormat to set
+	 */
+	public void setAlsaParamsFormat(String alsaParamsFormat) {
+		
+		this.alsaParamsFormat = alsaParamsFormat;
+	}
+
+	/**
+	 * @return the alsaParamsMmap
+	 */
+	public String getAlsaParamsMmap() {
+		
+		return alsaParamsMmap;
+	}
+
+	/**
+	 * @param alsaParamsMmap the alsaParamsMmap to set
+	 */
+	public void setAlsaParamsMmap(String alsaParamsMmap) {
+		
+		this.alsaParamsMmap = alsaParamsMmap;
+	}
+
+	/**
+	 * @return the bufferStream
+	 */
+	public String getBufferStream() {
+		
+		return bufferStream;
+	}
+
+	/**
+	 * @param bufferStream the bufferStream to set
+	 */
+	public void setBufferStream(String bufferStream) {
+		
+		this.bufferStream = bufferStream;
+	}
+
+	/**
+	 * @return the bufferOutput
+	 */
+	public String getBufferOutput() {
+		
+		return bufferOutput;
+	}
+
+	/**
+	 * @param bufferOutput the bufferOutput to set
+	 */
+	public void setBufferOutput(String bufferOutput) {
+		
+		this.bufferOutput = bufferOutput;
+	}
+
+	/**
+	 * @return the resampleQualityList
+	 */
+	public List<NameFlag> getResampleQualityList() {
+		
+		return NameFlag.getSoxResampleQualityList();
+	}
+
+	/**
+	 * @return the resampleFilterList
+	 */
+	public List<NameFlag> getResampleFilterList() {
+		
+		return NameFlag.getSoxResampleFilterList();
 	}
 	
 	/**
-	 * @param configName
-	 * @param argList
-	 * @return
-	 * @throws IOException
+	 * @return the alsaParamsFormatList
 	 */
-	private File writeTempSqueezeliteProperties(String configName, List<String> argList) 
-			throws IOException {
+	public List<NameFlag> getAlsaParamsFormatList() {
 		
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("writeTempSqueezeliteProperties(argList=" + argList + ")");
-		}
+		return NameFlag.getAlsaParamsFormatList();
+	}	
 
-		BufferedWriter bw = null;
-		try {
-			File tempFile = Util.createTempFile(configName + "_config_", ".txt");
-			bw = new BufferedWriter(new FileWriter(tempFile));
-			bw.write(Util.getModifiedComment());
-			Iterator<String> it = argList.iterator();
-			while (it.hasNext()) {
-				bw.write(it.next() + Util.LINE_SEP);
-			}
-			return tempFile;
-		} finally {
-			if (bw != null) {
-				try {
-					bw.flush();
-				} catch (Exception e) {}
-				
-				try {
-					bw.close();
-				} catch (Exception e) {}
- 			}
-		}
+	/**
+	 * @return the alsaParamsMmapList
+	 */
+	public List<NameFlag> getAlsaParamsMmapList() {
+		
+		return NameFlag.getAlsaParamsMmapList();
 	}	
 }

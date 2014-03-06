@@ -109,9 +109,27 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 			}
 		}
 		
+		/*
 		if (buffer != null && buffer.trim().length() > 0) {
 			if (!buffer.trim().matches(Validate.SQUEEZELITE_REGEX_ALSA_BUFFER)) {
 				addActionError(getText("squeezelite.validation.buffer.fail"));		
+			}
+		}
+		*/
+		
+		if (bufferStream != null && bufferStream.trim().length() > 0) {
+			try {
+				Integer.parseInt(bufferStream.trim());
+			} catch (NumberFormatException nfe) {
+				addActionError(getText("squeezelite.validation.buffer.stream.fail"));		
+			}
+		}
+
+		if (bufferOutput != null && bufferOutput.trim().length() > 0) {
+			try {
+				Integer.parseInt(bufferOutput.trim());
+			} catch (NumberFormatException nfe) {
+				addActionError(getText("squeezelite.validation.buffer.output.fail"));		
 			}
 		}
 
@@ -145,9 +163,26 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 			}
 		}
 		
+		/*
 		if (alsaParams != null && alsaParams.trim().length() > 0) {
 			if (!alsaParams.trim().matches(Validate.SQUEEZELITE_REGEX_ALSA_PARAMS)) {
 				addActionError(getText("squeezelite.validation.alsaParams.fail"));		
+			}
+		}
+		*/
+		if (alsaParamsBuffer != null && alsaParamsBuffer.trim().length() > 0) {
+			try {
+				Integer.parseInt(alsaParamsBuffer.trim());
+			} catch (NumberFormatException nfe) {
+				addActionError(getText("squeezelite.validation.alsaParams.buffer.fail"));		
+			}
+		}
+		
+		if (alsaParamsPeriod != null && alsaParamsPeriod.trim().length() > 0) {
+			try {
+				Integer.parseInt(alsaParamsPeriod.trim());
+			} catch (NumberFormatException nfe) {
+				addActionError(getText("squeezelite.validation.alsaParams.period.fail"));		
 			}
 		}
 		

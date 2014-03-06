@@ -64,6 +64,8 @@ public final class Util {
 	public final static String SPACE = " ";
 	public final static String TAB = "\t";
 	public final static String COLON = ":";
+	public final static String ZERO = "0";
+	public final static String ONE = "1";
 	
 	public final static String TXT_SUFFIX = ".txt";
 	
@@ -1238,5 +1240,19 @@ public final class Util {
 		Collections.sort(partitions);
 		
 		return partitions;
+	}
+	
+	/**
+	 * @param text
+	 * @param trailing
+	 * @return
+	 */
+	public final static String trimTrailing(String text, String trailing) {
+		
+		while (text.endsWith(trailing)) {
+			text = text.substring(0, text.length() - 1);
+		}
+
+		return text;
 	}
 }
