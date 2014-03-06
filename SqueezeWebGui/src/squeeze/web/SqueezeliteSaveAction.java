@@ -68,24 +68,12 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 			}
 		}
 		
-		if (maxRate != null && maxRate.trim().length() > 0) {
-			/*
-			try {
-				int rate = Integer.parseInt(maxRate.trim());
-				if (rate > Validate.SQUEEZELITE_MAX_SAMPLE_RATE) {
-					addActionError(getText("squeezelite.validation.maxRate.fail"));
-				}
-			} catch (NumberFormatException nfe) {
+		if(maxRate != null && maxRate.trim().length() > 0) {
+			if (maxRate.trim().matches(Validate.SQUEEZELITE_REGEX_MAX_RATE) || 
+					maxRate.trim().matches(Validate.SQUEEZELITE_REGEX_MAX_RATE_RANGE)) {
+				// Validates OK
+			} else {
 				addActionError(getText("squeezelite.validation.maxRate.fail"));
-			}
-			*/
-			if(maxRate != null && maxRate.trim().length() > 0) {
-				if (maxRate.trim().matches(Validate.SQUEEZELITE_REGEX_MAX_RATE) || 
-						maxRate.trim().matches(Validate.SQUEEZELITE_REGEX_MAX_RATE_RANGE)) {
-					// Validates OK
-				} else {
-					addActionError(getText("squeezelite.validation.maxRate.fail"));
-				}
 			}
 		}
 		
@@ -178,19 +166,6 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 		}
 		
 		if (upsample) {
-			/*
-			if (resampleRecipe != null && resampleRecipe.trim().length() > 0) {
-				String invalidFlag = SoxResample.validateRecipe(resampleRecipe.trim()); 
-				if (invalidFlag.length() > 0) {
-					addActionError(
-							getText("squeezelite.validation.resample.recipe.fail.invalid") + 
-							": '" + invalidFlag + "'! " + 
-							getText("squeezelite.validation.resample.recipe.fail.validFlags") + 
-							": '" + SoxResample.VALID_RECIPE_FLAGS + "'");
-				}
-			}
-			*/
-			
 			if (resampleFlags != null && resampleFlags.trim().length() > 0) {
 				try {
 					Integer.parseInt(resampleFlags.trim());

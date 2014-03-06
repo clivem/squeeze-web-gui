@@ -117,20 +117,6 @@ public class SqueezeliteAction extends SystemctlAction {
 	private final static String CFG_VISULIZER = "VISULIZER";
 	private final static String CFG_VISULIZER_OPTION = "-v ";
 	
-	/*
-	private final static String CFG_UPSAMPLE_QUALITY_QUICK = "q";
-	private final static String CFG_UPSAMPLE_QUALITY_LOW = "l";
-	private final static String CFG_UPSAMPLE_QUALITY_MEDIUM = "m";
-	private final static String CFG_UPSAMPLE_QUALITY_HIGH = "h";
-	private final static String CFG_UPSAMPLE_QUALITY_VERY_HIGH = "v";
-	
-	private final static String CFG_UPSAMPLE_PHASE_LINEAR = "L";
-	private final static String CFG_UPSAMPLE_PHASE_MINIMUM = "M";
-	private final static String CFG_UPSAMPLE_PHASE_INTERMEDIATE = "I";
-	
-	private final static String CFG_UPSAMPLE_FILTER_STEEP = "s";
-	*/
-	
 	private final static List<String> PRIORITY_LIST = 
 			Util.generatePriorityList(SQUEEZELITE_MAX_RT_PRIORITY);
 	
@@ -157,9 +143,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	protected boolean defaultMac = false;
 	
 	protected boolean upsample = false;
-	//protected String upsampleOptions = null;
 	
-	//protected String resampleRecipe = null;
 	protected String resampleRecipeFilter = null;
 	protected String resampleRecipeQuality = null;
 	protected boolean resampleRecipeSteep = false;
@@ -264,37 +248,36 @@ public class SqueezeliteAction extends SystemctlAction {
 				switch (count) {
 					// recipe
 					case 0:
-						//resampleRecipe = option;
 						// quality
-						if (resampleOptions.indexOf(SoxResample.SOXR_QQ_FLAG) > -1) {
+						if (option.indexOf(SoxResample.SOXR_QQ_FLAG) > -1) {
 							resampleRecipeQuality = "" + SoxResample.SOXR_QQ_FLAG;
-						} else if (resampleOptions.indexOf(SoxResample.SOXR_LQ_FLAG) > -1) {
+						} else if (option.indexOf(SoxResample.SOXR_LQ_FLAG) > -1) {
 							resampleRecipeQuality = "" + SoxResample.SOXR_LQ_FLAG;
-						} else if (resampleOptions.indexOf(SoxResample.SOXR_MQ_FLAG) > -1) {
+						} else if (option.indexOf(SoxResample.SOXR_MQ_FLAG) > -1) {
 							resampleRecipeQuality = "" + SoxResample.SOXR_MQ_FLAG;
-						} else if (resampleOptions.indexOf(SoxResample.SOXR_HQ_FLAG) > -1) {
+						} else if (option.indexOf(SoxResample.SOXR_HQ_FLAG) > -1) {
 							resampleRecipeQuality = "" + SoxResample.SOXR_HQ_FLAG;
-						} else if (resampleOptions.indexOf(SoxResample.SOXR_VHQ_FLAG) > -1) {
+						} else if (option.indexOf(SoxResample.SOXR_VHQ_FLAG) > -1) {
 							resampleRecipeQuality = "" + SoxResample.SOXR_VHQ_FLAG;
 						}
 						// filter
-						if (resampleOptions.indexOf(SoxResample.SOXR_LINEAR_PHASE_FLAG) > -1) {
+						if (option.indexOf(SoxResample.SOXR_LINEAR_PHASE_FLAG) > -1) {
 							resampleRecipeFilter = "" + SoxResample.SOXR_LINEAR_PHASE_FLAG;
-						} else if (resampleOptions.indexOf(SoxResample.SOXR_INTERMEDIATE_PHASE_FLAG) > -1) {
+						} else if (option.indexOf(SoxResample.SOXR_INTERMEDIATE_PHASE_FLAG) > -1) {
 							resampleRecipeFilter = "" + SoxResample.SOXR_INTERMEDIATE_PHASE_FLAG;
-						} else if (resampleOptions.indexOf(SoxResample.SOXR_MINIMUM_PHASE_FLAG) > -1) {
+						} else if (option.indexOf(SoxResample.SOXR_MINIMUM_PHASE_FLAG) > -1) {
 							resampleRecipeFilter = "" + SoxResample.SOXR_MINIMUM_PHASE_FLAG;
 						}
 						// steep
-						if (resampleOptions.indexOf(SoxResample.SOXR_STEEP_FILTER_FLAG) > -1) {
+						if (option.indexOf(SoxResample.SOXR_STEEP_FILTER_FLAG) > -1) {
 							resampleRecipeSteep = true;
 						}
 						// exception
-						if (resampleOptions.indexOf(SoxResample.EXCEPTION_RATE_FLAG) > -1) {
+						if (option.indexOf(SoxResample.EXCEPTION_RATE_FLAG) > -1) {
 							resampleRecipeException = true;
 						}
 						// async
-						if (resampleOptions.indexOf(SoxResample.ASYNC_RATE_FLAG) > -1) {
+						if (option.indexOf(SoxResample.ASYNC_RATE_FLAG) > -1) {
 							resampleRecipeAsync = true;
 						}
 						break;
@@ -513,13 +496,6 @@ public class SqueezeliteAction extends SystemctlAction {
 		}
 		
 		if (upsample) {
-			/*
-			list.add(CFG_UPSAMPLE + "=\"" + 
-						((upsampleOptions != null && upsampleOptions.trim().length() > 0) ? 
-								(CFG_UPSAMPLE_OPTION + upsampleOptions.trim()) : CFG_UPSAMPLE_OPTION.trim()) + 
-						"\"");
-						*/
-			
 			String resampleRecipe = ((resampleRecipeQuality != null) ? resampleRecipeQuality : "") +
 					((resampleRecipeFilter != null) ? resampleRecipeFilter : "") +
 					((resampleRecipeSteep) ? SoxResample.SOXR_STEEP_FILTER_FLAG : "") +
@@ -823,24 +799,6 @@ public class SqueezeliteAction extends SystemctlAction {
 	}
 
 	/**
-	 * @return the upsampleOptions
-	 *
-	public String getUpsampleOptions() {
-		
-		return upsampleOptions;
-	}
-	*/
-
-	/**
-	 * @param upsampleOptions the upsampleOptions to set
-	 *
-	public void setUpsampleOptions(String upsampleOptions) {
-		
-		this.upsampleOptions = upsampleOptions;
-	}
-	*/
-
-	/**
 	 * @return the dop
 	 */
 	public boolean isDop() {
@@ -919,24 +877,6 @@ public class SqueezeliteAction extends SystemctlAction {
 		
 		this.showAdvancedOptions = showAdvancedOptions;
 	}
-
-	/**
-	 * @return the resampleRecipe
-	 *
-	public String getResampleRecipe() {
-		
-		return resampleRecipe;
-	}
-	*/
-
-	/**
-	 * @param resampleRecipe the resampleRecipe to set
-	 *
-	public void setResampleRecipe(String resampleRecipe) {
-		
-		this.resampleRecipe = resampleRecipe;
-	}
-	*/
 
 	/**
 	 * @return the resampleFlags

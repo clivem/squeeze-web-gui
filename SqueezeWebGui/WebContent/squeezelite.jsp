@@ -184,19 +184,6 @@
 								<table id="resampleOptions" 
 									<s:if test="%{upsample}">style="display:"</s:if>
 									<s:else>style="display:none"</s:else>>
-									<!-- recipe 
-									<tr>
-										<td align="right">
-											<s:text name="squeezelite.label.resample.recipe" />
-											<img src='struts/tooltip.gif'
-												title="<s:property value="getText('squeezelite.tooltip.resample.recipe')" />"
-												alt="<s:property value="getText('squeezelite.tooltip.resample.recipe')" />" />
-										</td>
-										<td>
-											<s:textfield name="resampleRecipe" cssClass="size-100px" />
-										</td>
-									</tr>
-									 -->
 									<!-- recipe quality -->
 									<tr>
 										<td align="right">
