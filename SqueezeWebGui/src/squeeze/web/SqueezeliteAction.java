@@ -31,10 +31,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 
 import squeeze.web.util.Commands;
+import squeeze.web.util.SoxResample;
+import squeeze.web.util.SoxResampleFlag;
 import squeeze.web.util.Util;
 import squeeze.web.util.Validate;
 import squeeze.web.util.WebConfig;
@@ -136,29 +139,43 @@ public class SqueezeliteAction extends SystemctlAction {
 	 */
 	protected HashMap<String, String> properties = new HashMap<String, String>();
 
-	protected String name;
-	protected String mac;
-	protected String maxRate;
-	protected String audioDev;
-	protected String logFile;
-	protected String logLevel;
-	protected String priority;
-	protected String buffer;
-	protected String codec;
-	protected String alsaParams;
-	protected String serverIp;
+	protected String name = null;
+	protected String mac = null;
+	protected String maxRate = null;
+	protected String audioDev = null;
+	protected String logFile = null;
+	protected String logLevel = null;
+	protected String priority = null;
+	protected String buffer = null;
+	protected String codec = null;
+	protected String alsaParams = null;
+	protected String serverIp = null;
 	
 	protected List<String> priorityList = PRIORITY_LIST;
 	protected List<String> audioDevList;
 	
 	protected boolean defaultMac = false;
+	
 	protected boolean upsample = false;
-	protected String upsampleOptions;
+	//protected String upsampleOptions = null;
+	
+	//protected String resampleRecipe = null;
+	protected String resampleRecipeFilter = null;
+	protected String resampleRecipeQuality = null;
+	protected boolean resampleRecipeSteep = false;
+	protected boolean resampleRecipeException = false;
+	protected boolean resampleRecipeAsync = false;
+	protected String resampleFlags = null;
+	protected String resampleAttenuation = null;
+	protected String resamplePrecision = null;
+	protected String resamplePassbandEnd = null;
+	protected String resampleStopbandStart = null;
+	protected String resamplePhaseResponse = null;
 	
 	protected boolean dop = false;
-	protected String dopOptions;
+	protected String dopOptions = null;
 	
-	protected String options;
+	protected String options = null;
 	
 	protected boolean visulizer = false;
 	
@@ -218,9 +235,10 @@ public class SqueezeliteAction extends SystemctlAction {
 		codec = properties.get(CFG_CODEC);
 		alsaParams = properties.get(CFG_ALSA_PARAMS);
 		serverIp = properties.get(CFG_SERVER_IP);
-		upsampleOptions = properties.get(CFG_UPSAMPLE);
-		if (upsampleOptions != null) {
+		String resampleOptions = properties.get(CFG_UPSAMPLE);
+		if (resampleOptions != null) {
 			upsample = true;
+			parseResampleOptions(resampleOptions);
 		}
 		dopOptions = properties.get(CFG_DOP);
 		if (dopOptions != null) {
@@ -228,6 +246,87 @@ public class SqueezeliteAction extends SystemctlAction {
 		}
 		options = properties.get(CFG_OPTIONS);
 		visulizer = (properties.get(CFG_VISULIZER) != null);
+	}
+	
+	/**
+	 * @param resampleOptions
+	 */
+	private void parseResampleOptions(String resampleOptions) {
+		
+		int count = 0;
+
+		StringTokenizer tok = new StringTokenizer(resampleOptions, Util.COLON, true);
+		while (tok.hasMoreTokens()) {
+			String option = tok.nextToken().trim();
+			if (option.charAt(0) == Util.COLON.charAt(0)) {
+				count++;
+			} else {
+				switch (count) {
+					// recipe
+					case 0:
+						//resampleRecipe = option;
+						// quality
+						if (resampleOptions.indexOf(SoxResample.SOXR_QQ_FLAG) > -1) {
+							resampleRecipeQuality = "" + SoxResample.SOXR_QQ_FLAG;
+						} else if (resampleOptions.indexOf(SoxResample.SOXR_LQ_FLAG) > -1) {
+							resampleRecipeQuality = "" + SoxResample.SOXR_LQ_FLAG;
+						} else if (resampleOptions.indexOf(SoxResample.SOXR_MQ_FLAG) > -1) {
+							resampleRecipeQuality = "" + SoxResample.SOXR_MQ_FLAG;
+						} else if (resampleOptions.indexOf(SoxResample.SOXR_HQ_FLAG) > -1) {
+							resampleRecipeQuality = "" + SoxResample.SOXR_HQ_FLAG;
+						} else if (resampleOptions.indexOf(SoxResample.SOXR_VHQ_FLAG) > -1) {
+							resampleRecipeQuality = "" + SoxResample.SOXR_VHQ_FLAG;
+						}
+						// filter
+						if (resampleOptions.indexOf(SoxResample.SOXR_LINEAR_PHASE_FLAG) > -1) {
+							resampleRecipeFilter = "" + SoxResample.SOXR_LINEAR_PHASE_FLAG;
+						} else if (resampleOptions.indexOf(SoxResample.SOXR_INTERMEDIATE_PHASE_FLAG) > -1) {
+							resampleRecipeFilter = "" + SoxResample.SOXR_INTERMEDIATE_PHASE_FLAG;
+						} else if (resampleOptions.indexOf(SoxResample.SOXR_MINIMUM_PHASE_FLAG) > -1) {
+							resampleRecipeFilter = "" + SoxResample.SOXR_MINIMUM_PHASE_FLAG;
+						}
+						// steep
+						if (resampleOptions.indexOf(SoxResample.SOXR_STEEP_FILTER_FLAG) > -1) {
+							resampleRecipeSteep = true;
+						}
+						// exception
+						if (resampleOptions.indexOf(SoxResample.EXCEPTION_RATE_FLAG) > -1) {
+							resampleRecipeException = true;
+						}
+						// async
+						if (resampleOptions.indexOf(SoxResample.ASYNC_RATE_FLAG) > -1) {
+							resampleRecipeAsync = true;
+						}
+						break;
+					// flags
+					case 1:
+						resampleFlags = option;
+						break;
+					// attenuation
+					case 2:
+						resampleAttenuation = option;
+						break;
+					// precision
+					case 3:
+						resamplePrecision = option;
+						break;
+					// passband end
+					case 4:
+						resamplePassbandEnd = option;
+						break;
+					// stopband start
+					case 5:
+						resampleStopbandStart = option;
+						break;
+					// phase response
+					case 6:
+						resamplePhaseResponse = option;
+						break;
+					default:
+						break;
+				}
+			}
+		}
 	}
 	
 	/**
@@ -414,10 +513,35 @@ public class SqueezeliteAction extends SystemctlAction {
 		}
 		
 		if (upsample) {
+			/*
 			list.add(CFG_UPSAMPLE + "=\"" + 
 						((upsampleOptions != null && upsampleOptions.trim().length() > 0) ? 
 								(CFG_UPSAMPLE_OPTION + upsampleOptions.trim()) : CFG_UPSAMPLE_OPTION.trim()) + 
 						"\"");
+						*/
+			
+			String resampleRecipe = ((resampleRecipeQuality != null) ? resampleRecipeQuality : "") +
+					((resampleRecipeFilter != null) ? resampleRecipeFilter : "") +
+					((resampleRecipeSteep) ? SoxResample.SOXR_STEEP_FILTER_FLAG : "") +
+					((resampleRecipeException) ? SoxResample.EXCEPTION_RATE_FLAG : "") +
+					((resampleRecipeAsync) ? SoxResample.ASYNC_RATE_FLAG : "");
+			
+			String resampleOptions = resampleRecipe + Util.COLON +
+					(resampleFlags != null ? resampleFlags.trim() : Util.BLANK_STRING) + Util.COLON +
+					(resampleAttenuation != null ? resampleAttenuation.trim() : Util.BLANK_STRING) + Util.COLON +
+					(resamplePrecision != null ? resamplePrecision.trim() : Util.BLANK_STRING) + Util.COLON +
+					(resamplePassbandEnd != null ? resamplePassbandEnd.trim() : Util.BLANK_STRING) + Util.COLON +
+					(resampleStopbandStart != null ? resampleStopbandStart.trim() : Util.BLANK_STRING) + Util.COLON +
+					(resamplePhaseResponse != null ? resamplePhaseResponse.trim() : Util.BLANK_STRING);
+			// trim trailing colons
+			while (resampleOptions.endsWith(Util.COLON)) {
+				resampleOptions = resampleOptions.substring(0, resampleOptions.length() - 1);
+			}
+
+			list.add(CFG_UPSAMPLE + "=\"" + 
+					((resampleOptions.length() > 0) ? 
+							(CFG_UPSAMPLE_OPTION + resampleOptions) : CFG_UPSAMPLE_OPTION.trim()) + 
+					"\"");
 		}
 		
 		if (dop) {
@@ -700,19 +824,21 @@ public class SqueezeliteAction extends SystemctlAction {
 
 	/**
 	 * @return the upsampleOptions
-	 */
+	 *
 	public String getUpsampleOptions() {
 		
 		return upsampleOptions;
 	}
+	*/
 
 	/**
 	 * @param upsampleOptions the upsampleOptions to set
-	 */
+	 *
 	public void setUpsampleOptions(String upsampleOptions) {
 		
 		this.upsampleOptions = upsampleOptions;
 	}
+	*/
 
 	/**
 	 * @return the dop
@@ -782,6 +908,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the showAdvancedOptions
 	 */
 	public boolean isShowAdvancedOptions() {
+		
 		return showAdvancedOptions;
 	}
 
@@ -789,7 +916,218 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param showAdvancedOptions the showAdvancedOptions to set
 	 */
 	public void setShowAdvancedOptions(boolean showAdvancedOptions) {
+		
 		this.showAdvancedOptions = showAdvancedOptions;
+	}
+
+	/**
+	 * @return the resampleRecipe
+	 *
+	public String getResampleRecipe() {
+		
+		return resampleRecipe;
+	}
+	*/
+
+	/**
+	 * @param resampleRecipe the resampleRecipe to set
+	 *
+	public void setResampleRecipe(String resampleRecipe) {
+		
+		this.resampleRecipe = resampleRecipe;
+	}
+	*/
+
+	/**
+	 * @return the resampleFlags
+	 */
+	public String getResampleFlags() {
+		
+		return resampleFlags;
+	}
+
+	/**
+	 * @param resampleFlags the resampleFlags to set
+	 */
+	public void setResampleFlags(String resampleFlags) {
+		
+		this.resampleFlags = resampleFlags;
+	}
+
+	/**
+	 * @return the resampleAttenuation
+	 */
+	public String getResampleAttenuation() {
+		
+		return resampleAttenuation;
+	}
+
+	/**
+	 * @param resampleAttenuation the resampleAttenuation to set
+	 */
+	public void setResampleAttenuation(String resampleAttenuation) {
+		
+		this.resampleAttenuation = resampleAttenuation;
+	}
+
+	/**
+	 * @return the resamplePrecision
+	 */
+	public String getResamplePrecision() {
+		
+		return resamplePrecision;
+	}
+
+	/**
+	 * @param resamplePrecision the resamplePrecision to set
+	 */
+	public void setResamplePrecision(String resamplePrecision) {
+		
+		this.resamplePrecision = resamplePrecision;
+	}
+
+	/**
+	 * @return the resamplePassbandEnd
+	 */
+	public String getResamplePassbandEnd() {
+		
+		return resamplePassbandEnd;
+	}
+
+	/**
+	 * @param resamplePassbandEnd the resamplePassbandEnd to set
+	 */
+	public void setResamplePassbandEnd(String resamplePassbandEnd) {
+		
+		this.resamplePassbandEnd = resamplePassbandEnd;
+	}
+
+	/**
+	 * @return the resampleStopbandStart
+	 */
+	public String getResampleStopbandStart() {
+		
+		return resampleStopbandStart;
+	}
+
+	/**
+	 * @param resampleStopbandStart the resampleStopbandStart to set
+	 */
+	public void setResampleStopbandStart(String resampleStopbandStart) {
+		
+		this.resampleStopbandStart = resampleStopbandStart;
+	}
+
+	/**
+	 * @return the resamplePhaseResponse
+	 */
+	public String getResamplePhaseResponse() {
+		
+		return resamplePhaseResponse;
+	}
+
+	/**
+	 * @param resamplePhaseResponse the resamplePhaseResponse to set
+	 */
+	public void setResamplePhaseResponse(String resamplePhaseResponse) {
+		
+		this.resamplePhaseResponse = resamplePhaseResponse;
+	}
+	
+	/**
+	 * @return the resampleRecipeFilter
+	 */
+	public String getResampleRecipeFilter() {
+		
+		return resampleRecipeFilter;
+	}
+
+	/**
+	 * @param resampleRecipeFilter the resampleRecipeFilter to set
+	 */
+	public void setResampleRecipeFilter(String resampleRecipeFilter) {
+		
+		this.resampleRecipeFilter = resampleRecipeFilter;
+	}
+
+	/**
+	 * @return the resampleRecipeQuality
+	 */
+	public String getResampleRecipeQuality() {
+		
+		return resampleRecipeQuality;
+	}
+
+	/**
+	 * @param resampleRecipeQuality the resampleRecipeQuality to set
+	 */
+	public void setResampleRecipeQuality(String resampleRecipeQuality) {
+		
+		this.resampleRecipeQuality = resampleRecipeQuality;
+	}
+
+	/**
+	 * @return the resampleQualityList
+	 */
+	public List<SoxResampleFlag> getResampleQualityList() {
+		
+		return SoxResampleFlag.getQualityList();
+	}
+
+	/**
+	 * @return the resampleFilterList
+	 */
+	public List<SoxResampleFlag> getResampleFilterList() {
+		
+		return SoxResampleFlag.getFilterList();
+	}
+
+	/**
+	 * @return the resampleRecipeSteep
+	 */
+	public boolean isResampleRecipeSteep() {
+		
+		return resampleRecipeSteep;
+	}
+
+	/**
+	 * @param resampleRecipeSteep the resampleRecipeSteep to set
+	 */
+	public void setResampleRecipeSteep(boolean resampleRecipeSteep) {
+		
+		this.resampleRecipeSteep = resampleRecipeSteep;
+	}
+
+	/**
+	 * @return the resampleRecipeException
+	 */
+	public boolean isResampleRecipeException() {
+		
+		return resampleRecipeException;
+	}
+
+	/**
+	 * @param resampleRecipeException the resampleRecipeException to set
+	 */
+	public void setResampleRecipeException(boolean resampleRecipeException) {
+		
+		this.resampleRecipeException = resampleRecipeException;
+	}
+
+	/**
+	 * @return the resampleRecipeAsync
+	 */
+	public boolean isResampleRecipeAsync() {
+		
+		return resampleRecipeAsync;
+	}
+
+	/**
+	 * @param resampleRecipeAsync the resampleRecipeAsync to set
+	 */
+	public void setResampleRecipeAsync(boolean resampleRecipeAsync) {
+		
+		this.resampleRecipeAsync = resampleRecipeAsync;
 	}
 
 	/**

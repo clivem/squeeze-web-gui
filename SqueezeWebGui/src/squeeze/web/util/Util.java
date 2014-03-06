@@ -63,6 +63,7 @@ public final class Util {
 	public final static String UNDERSCORE = "_";
 	public final static String SPACE = " ";
 	public final static String TAB = "\t";
+	public final static String COLON = ":";
 	
 	public final static String TXT_SUFFIX = ".txt";
 	

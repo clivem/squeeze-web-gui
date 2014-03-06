@@ -24,6 +24,14 @@
 				document.getElementById('advancedOptions').style.display = 'none';
 			}
 		}
+
+		function displayResampleOptions() {
+			if (document.getElementById('resampleEnabled').checked) {
+				document.getElementById('resampleOptions').style.display = '';
+			} else {
+				document.getElementById('resampleOptions').style.display = 'none';
+			}
+		}
 	</script>  
 
 	<!-- navigation header -->
@@ -99,7 +107,7 @@
 					<!-- kludge to make sure the reset is done before we decide whether to display advanced options -->
 					<script>
 						function doReset() {
-							setTimeout(function(){displayAdvancedOptions();}, 0);
+							setTimeout(function(){displayAdvancedOptions();displayResampleOptions();}, 0);
 						}
 					</script>
 					
@@ -159,16 +167,173 @@
 						</tr>
 						<!-- upsample -->
 						<tr>
-							<td align="right">
-								<s:text name="squeezelite.label.upsample" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.upsample')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.upsample')" />" />
-							</td>
+							<td />
 							<td>
-								<s:checkbox name="upsample" />
-								<s:textfield name="upsampleOptions" cssClass="size-100px" />
-								<s:a href="squeezelite_upsample.jsp">Info</s:a>
+								<s:checkbox name="upsample" id="resampleEnabled" 
+									onchange="javascript:displayResampleOptions();" />
+								<label for="resampleEnabled">
+									<s:text name="squeezelite.label.upsample" />
+									(<s:a href="squeezelite_upsample.jsp" target="_blank">Help</s:a>)								
+								</label>
+							</td>
+						</tr>
+						<!-- Resample options -->
+						<tr>
+							<td />
+							<td>
+								<table id="resampleOptions" 
+									<s:if test="%{upsample}">style="display:"</s:if>
+									<s:else>style="display:none"</s:else>>
+									<!-- recipe 
+									<tr>
+										<td align="right">
+											<s:text name="squeezelite.label.resample.recipe" />
+											<img src='struts/tooltip.gif'
+												title="<s:property value="getText('squeezelite.tooltip.resample.recipe')" />"
+												alt="<s:property value="getText('squeezelite.tooltip.resample.recipe')" />" />
+										</td>
+										<td>
+											<s:textfield name="resampleRecipe" cssClass="size-100px" />
+										</td>
+									</tr>
+									 -->
+									<!-- recipe quality -->
+									<tr>
+										<td align="right">
+											<s:text name="squeezelite.label.resample.recipe.quality" />
+											<img src='struts/tooltip.gif'
+												title="<s:property value="getText('squeezelite.tooltip.resample.recipe')" />"
+												alt="<s:property value="getText('squeezelite.tooltip.resample.recipe')" />" />
+										</td>
+										<td>
+											<s:select name="resampleRecipeQuality" list="resampleQualityList" 
+												listKey="flag" listValue="name" emptyOption="false" 
+												headerKey="" headerValue=""/>
+										</td>
+									</tr>
+									<!-- recipe filter -->
+									<tr>
+										<td align="right">
+											<s:text name="squeezelite.label.resample.recipe.filter" />
+											<img src='struts/tooltip.gif'
+												title="<s:property value="getText('squeezelite.tooltip.resample.recipe')" />"
+												alt="<s:property value="getText('squeezelite.tooltip.resample.recipe')" />" />
+										</td>
+										<td>
+											<s:select name="resampleRecipeFilter" list="resampleFilterList" 
+												listKey="flag" listValue="name" emptyOption="false" 
+												headerKey="" headerValue=""/>
+										</td>
+									</tr>
+									<!-- recipe steep -->
+									<tr>
+										<td align="right">
+											<s:text name="squeezelite.label.resample.recipe.steep" />
+											<img src='struts/tooltip.gif'
+												title="<s:property value="getText('squeezelite.tooltip.resample.recipe')" />"
+												alt="<s:property value="getText('squeezelite.tooltip.resample.recipe')" />" />
+										</td>
+										<td>
+											<s:checkbox name="resampleRecipeSteep" />
+										</td>
+									</tr>
+									<!-- recipe exception -->
+									<tr>
+										<td align="right">
+											<s:text name="squeezelite.label.resample.recipe.exception" />
+											<img src='struts/tooltip.gif'
+												title="<s:property value="getText('squeezelite.tooltip.resample.recipe')" />"
+												alt="<s:property value="getText('squeezelite.tooltip.resample.recipe')" />" />
+										</td>
+										<td>
+											<s:checkbox name="resampleRecipeException" />
+										</td>
+									</tr>
+									<!-- recipe async -->
+									<tr>
+										<td align="right">
+											<s:text name="squeezelite.label.resample.recipe.async" />
+											<img src='struts/tooltip.gif'
+												title="<s:property value="getText('squeezelite.tooltip.resample.recipe')" />"
+												alt="<s:property value="getText('squeezelite.tooltip.resample.recipe')" />" />
+										</td>
+										<td>
+											<s:checkbox name="resampleRecipeAsync" />
+										</td>
+									</tr>
+									<!-- advanced flags -->
+									<tr>
+										<td align="right">
+											<s:text name="squeezelite.label.resample.flags" />
+											<img src='struts/tooltip.gif'
+												title="<s:property value="getText('squeezelite.tooltip.resample.flags')" />"
+												alt="<s:property value="getText('squeezelite.tooltip.resample.flags')" />" />
+										</td>
+										<td>
+											<s:textfield name="resampleFlags" cssClass="size-100px" />
+										</td>
+									</tr>
+									<!-- attenuation -->
+									<tr>
+										<td align="right">
+											<s:text name="squeezelite.label.resample.attenuation" />
+											<img src='struts/tooltip.gif'
+												title="<s:property value="getText('squeezelite.tooltip.resample.attenuation')" />"
+												alt="<s:property value="getText('squeezelite.tooltip.resample.attenuation')" />" />
+										</td>
+										<td>
+											<s:textfield name="resampleAttenuation" cssClass="size-100px" />
+										</td>
+									</tr>
+									<!-- precision -->
+									<tr>
+										<td align="right">
+											<s:text name="squeezelite.label.resample.precision" />
+											<img src='struts/tooltip.gif'
+												title="<s:property value="getText('squeezelite.tooltip.resample.precision')" />"
+												alt="<s:property value="getText('squeezelite.tooltip.resample.precision')" />" />
+										</td>
+										<td>
+											<s:textfield name="resamplePrecision" cssClass="size-100px" />
+										</td>
+									</tr>
+									<!-- passband end -->
+									<tr>
+										<td align="right">
+											<s:text name="squeezelite.label.resample.passbandEnd" />
+											<img src='struts/tooltip.gif'
+												title="<s:property value="getText('squeezelite.tooltip.resample.passbandEnd')" />"
+												alt="<s:property value="getText('squeezelite.tooltip.resample.passbandEnd')" />" />
+										</td>
+										<td>
+											<s:textfield name="resamplePassbandEnd" cssClass="size-100px" />
+										</td>
+									</tr>
+									<!-- stopband start -->
+									<tr>
+										<td align="right">
+											<s:text name="squeezelite.label.resample.stopbandStart" />
+											<img src='struts/tooltip.gif'
+												title="<s:property value="getText('squeezelite.tooltip.resample.stopbandStart')" />"
+												alt="<s:property value="getText('squeezelite.tooltip.resample.stopbandStart')" />" />
+										</td>
+										<td>
+											<s:textfield name="resampleStopbandStart" cssClass="size-100px" />
+										</td>
+									</tr>
+									<!-- phase response -->
+									<tr>
+										<td align="right">
+											<s:text name="squeezelite.label.resample.phaseResponse" />
+											<img src='struts/tooltip.gif'
+												title="<s:property value="getText('squeezelite.tooltip.resample.phaseResponse')" />"
+												alt="<s:property value="getText('squeezelite.tooltip.resample.phaseResponse')" />" />
+										</td>
+										<td>
+											<s:textfield name="resamplePhaseResponse" cssClass="size-100px" />
+										</td>
+									</tr>
+								</table>
 							</td>
 						</tr>
 						<!-- dop -->

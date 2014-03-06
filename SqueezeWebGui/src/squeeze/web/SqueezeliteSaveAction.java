@@ -177,6 +177,69 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 			}
 		}
 		
+		if (upsample) {
+			/*
+			if (resampleRecipe != null && resampleRecipe.trim().length() > 0) {
+				String invalidFlag = SoxResample.validateRecipe(resampleRecipe.trim()); 
+				if (invalidFlag.length() > 0) {
+					addActionError(
+							getText("squeezelite.validation.resample.recipe.fail.invalid") + 
+							": '" + invalidFlag + "'! " + 
+							getText("squeezelite.validation.resample.recipe.fail.validFlags") + 
+							": '" + SoxResample.VALID_RECIPE_FLAGS + "'");
+				}
+			}
+			*/
+			
+			if (resampleFlags != null && resampleFlags.trim().length() > 0) {
+				try {
+					Integer.parseInt(resampleFlags.trim());
+				} catch (NumberFormatException nfe) {
+					addActionError(getText("squeezelite.validation.resample.flags.fail"));
+				}
+			}
+			
+			if (resampleAttenuation != null && resampleAttenuation.trim().length() > 0) {
+				try {
+					Double.parseDouble(resampleAttenuation.trim());
+				} catch (NumberFormatException nfe) {
+					addActionError(getText("squeezelite.validation.resample.attenuation.fail"));
+				}
+			}
+			
+			if (resamplePrecision != null && resamplePrecision.trim().length() > 0) {
+				try {
+					Integer.parseInt(resamplePrecision.trim());
+				} catch (NumberFormatException nfe) {
+					addActionError(getText("squeezelite.validation.resample.precision.fail"));
+				}
+			}
+			
+			if (resamplePassbandEnd != null && resamplePassbandEnd.trim().length() > 0) {
+				try {
+					Integer.parseInt(resamplePassbandEnd.trim());
+				} catch (NumberFormatException nfe) {
+					addActionError(getText("squeezelite.validation.resample.passbandEnd.fail"));
+				}
+			}
+
+			if (resampleStopbandStart != null && resampleStopbandStart.trim().length() > 0) {
+				try {
+					Integer.parseInt(resampleStopbandStart.trim());
+				} catch (NumberFormatException nfe) {
+					addActionError(getText("squeezelite.validation.resample.stopbandStart.fail"));
+				}
+			}
+
+			if (resamplePhaseResponse != null && resamplePhaseResponse.trim().length() > 0) {
+				try {
+					Integer.parseInt(resamplePhaseResponse.trim());
+				} catch (NumberFormatException nfe) {
+					addActionError(getText("squeezelite.validation.resample.phaseResponse.fail"));
+				}
+			}
+		}
+		
 		if (hasActionErrors()) {
 			try {
 				populateServiceStatus();
