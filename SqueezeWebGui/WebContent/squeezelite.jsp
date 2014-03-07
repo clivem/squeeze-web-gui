@@ -45,29 +45,29 @@
 
 		function displayResampleOptions() {
 			if (document.getElementById('resampleEnabled').checked) {
-				document.getElementById('resampleRecipeQuality').style.display = '';
-				document.getElementById('resampleRecipeFilter').style.display = '';
-				document.getElementById('resampleRecipeSteep').style.display = '';
-				document.getElementById('resampleRecipeException').style.display = '';
-				document.getElementById('resampleRecipeAsync').style.display = '';
-				document.getElementById('resampleRecipeFlags').style.display = '';
-				document.getElementById('resampleRecipeAttenuation').style.display = '';
-				document.getElementById('resampleRecipePrecision').style.display = '';
-				document.getElementById('resampleRecipePassbandEnd').style.display = '';
-				document.getElementById('resampleRecipeStopbandStart').style.display = '';
-				document.getElementById('resampleRecipePhaseResponse').style.display = '';
+				document.getElementById('resampleRecipeQuality_tr').style.display = '';
+				document.getElementById('resampleRecipeFilter_tr').style.display = '';
+				document.getElementById('resampleRecipeSteep_tr').style.display = '';
+				document.getElementById('resampleRecipeException_tr').style.display = '';
+				document.getElementById('resampleRecipeAsync_tr').style.display = '';
+				document.getElementById('resampleRecipeFlags_tr').style.display = '';
+				document.getElementById('resampleRecipeAttenuation_tr').style.display = '';
+				document.getElementById('resampleRecipePrecision_tr').style.display = '';
+				document.getElementById('resampleRecipePassbandEnd_tr').style.display = '';
+				document.getElementById('resampleRecipeStopbandStart_tr').style.display = '';
+				document.getElementById('resampleRecipePhaseResponse_tr').style.display = '';
 			} else {
-				document.getElementById('resampleRecipeQuality').style.display = 'none';
-				document.getElementById('resampleRecipeFilter').style.display = 'none';
-				document.getElementById('resampleRecipeSteep').style.display = 'none';
-				document.getElementById('resampleRecipeException').style.display = 'none';
-				document.getElementById('resampleRecipeAsync').style.display = 'none';
-				document.getElementById('resampleRecipeFlags').style.display = 'none';
-				document.getElementById('resampleRecipeAttenuation').style.display = 'none';
-				document.getElementById('resampleRecipePrecision').style.display = 'none';
-				document.getElementById('resampleRecipePassbandEnd').style.display = 'none';
-				document.getElementById('resampleRecipeStopbandStart').style.display = 'none';
-				document.getElementById('resampleRecipePhaseResponse').style.display = 'none';
+				document.getElementById('resampleRecipeQuality_tr').style.display = 'none';
+				document.getElementById('resampleRecipeFilter_tr').style.display = 'none';
+				document.getElementById('resampleRecipeSteep_tr').style.display = 'none';
+				document.getElementById('resampleRecipeException_tr').style.display = 'none';
+				document.getElementById('resampleRecipeAsync_tr').style.display = 'none';
+				document.getElementById('resampleRecipeFlags_tr').style.display = 'none';
+				document.getElementById('resampleRecipeAttenuation_tr').style.display = 'none';
+				document.getElementById('resampleRecipePrecision_tr').style.display = 'none';
+				document.getElementById('resampleRecipePassbandEnd_tr').style.display = 'none';
+				document.getElementById('resampleRecipeStopbandStart_tr').style.display = 'none';
+				document.getElementById('resampleRecipePhaseResponse_tr').style.display = 'none';
 			}
 		}
 
@@ -262,167 +262,189 @@
 								</label>
 							</td>
 							<td>
-								<s:checkbox name="resample" id="resampleEnabled" 
+								<s:checkbox id="resampleEnabled" name="resample" 
 									onchange="javascript:displayResampleOptions();" />
 								<s:a href="squeezelite_upsample.jsp" target="_blank">Info</s:a>
 							</td>
 						</tr>
 						<!-- resample recipe quality -->
-						<tr id="resampleRecipeQuality" 
+						<tr id="resampleRecipeQuality_tr" 
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<s:text name="squeezelite.label.resample.quality" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.resample.quality')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.resample.quality')" />" />
+								<label for="resampleRecipeQuality" style="font-style: italic;">
+									<s:text name="squeezelite.label.resample.quality" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.resample.quality')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.resample.quality')" />" />
+								</label>
 							</td>
 							<td>
-								<s:select name="resampleRecipeQuality" list="resampleQualityList" 
+								<s:select id="resampleRecipeQuality" name="resampleRecipeQuality" list="resampleQualityList" 
 									listKey="flag" listValue="name" emptyOption="false" 
 									headerKey="" headerValue="Not set"/>
 							</td>
 						</tr>
 						<!-- resample recipe filter -->
-						<tr id="resampleRecipeFilter" 
+						<tr id="resampleRecipeFilter_tr" 
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<s:text name="squeezelite.label.resample.filter" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.resample.filter')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.resample.filter')" />" />
+								<label for="resampleRecipeFilter" style="font-style: italic;">
+									<s:text name="squeezelite.label.resample.filter" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.resample.filter')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.resample.filter')" />" />
+								</label>
 							</td>
 							<td>
-								<s:select name="resampleRecipeFilter" list="resampleFilterList" 
+								<s:select id="resampleRecipeFilter" name="resampleRecipeFilter" list="resampleFilterList" 
 									listKey="flag" listValue="name" emptyOption="false" 
 									headerKey="" headerValue="Not set"/>
 							</td>
 						</tr>
 						<!-- resample recipe steep -->
-						<tr id="resampleRecipeSteep" 
+						<tr id="resampleRecipeSteep_tr" 
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<s:text name="squeezelite.label.resample.steep" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.resample.steep')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.resample.steep')" />" />
+								<label for="resampleRecipeSteep" style="font-style: italic;">
+									<s:text name="squeezelite.label.resample.steep" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.resample.steep')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.resample.steep')" />" />
+								</label>
 							</td>
 							<td>
-								<s:checkbox name="resampleRecipeSteep" />
+								<s:checkbox id="resampleRecipeSteep" name="resampleRecipeSteep" />
 							</td>
 						</tr>												
 						<!-- resample recipe exception -->
-						<tr id="resampleRecipeException" 
+						<tr id="resampleRecipeException_tr" 
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<s:text name="squeezelite.label.resample.exception" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.resample.exception')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.resample.exception')" />" />
+								<label for="resampleRecipeException" style="font-style: italic;">
+									<s:text name="squeezelite.label.resample.exception" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.resample.exception')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.resample.exception')" />" />
+								</label>
 							</td>
 							<td>
-								<s:checkbox name="resampleRecipeException" />
+								<s:checkbox id="resampleRecipeException" name="resampleRecipeException" />
 							</td>
 						</tr>
 						<!-- resample recipe async -->
-						<tr id="resampleRecipeAsync" 
+						<tr id="resampleRecipeAsync_tr" 
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<s:text name="squeezelite.label.resample.async" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.resample.async')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.resample.async')" />" />
+								<label for="resampleRecipeAsync" style="font-style: italic;">
+									<s:text name="squeezelite.label.resample.async" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.resample.async')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.resample.async')" />" />
+								</label>
 							</td>
 							<td>
-								<s:checkbox name="resampleRecipeAsync" />
+								<s:checkbox id="resampleRecipeAsync" name="resampleRecipeAsync" />
 							</td>
 						</tr>
 						<!-- resample advanced flags -->
-						<tr id="resampleRecipeFlags" 
+						<tr id="resampleRecipeFlags_tr" 
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<s:text name="squeezelite.label.resample.flags" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.resample.flags')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.resample.flags')" />" />
+								<label for="resampleFlags" style="font-style: italic;">
+									<s:text name="squeezelite.label.resample.flags" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.resample.flags')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.resample.flags')" />" />
+								</label>
 							</td>
 							<td>
-								<s:textfield name="resampleFlags" cssClass="size-100px" />
+								<s:textfield id="resampleFlags" name="resampleFlags" cssClass="size-100px" />
 							</td>
 						</tr>
 						<!-- resample attenuation -->
-						<tr id="resampleRecipeAttenuation" 
+						<tr id="resampleRecipeAttenuation_tr" 
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<s:text name="squeezelite.label.resample.attenuation" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.resample.attenuation')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.resample.attenuation')" />" />
+								<label for="resampleAttenuation" style="font-style: italic;">
+									<s:text name="squeezelite.label.resample.attenuation" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.resample.attenuation')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.resample.attenuation')" />" />
+								</label>
 							</td>
 							<td>
-								<s:textfield name="resampleAttenuation" cssClass="size-100px" />
+								<s:textfield id="resampleAttenuation" name="resampleAttenuation" cssClass="size-100px" />
 							</td>
 						</tr>
 						<!-- resample precision -->
-						<tr id="resampleRecipePrecision" 
+						<tr id="resampleRecipePrecision_tr" 
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<s:text name="squeezelite.label.resample.precision" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.resample.precision')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.resample.precision')" />" />
+								<label for="resamplePrecision" style="font-style: italic;">
+									<s:text name="squeezelite.label.resample.precision" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.resample.precision')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.resample.precision')" />" />
+								</label>
 							</td>
 							<td>
-								<s:textfield name="resamplePrecision" cssClass="size-100px" />
+								<s:textfield id="resamplePrecision" name="resamplePrecision" cssClass="size-100px" />
 							</td>
 						</tr>
 						<!-- resample passband end -->
-						<tr id="resampleRecipePassbandEnd" 
+						<tr id="resampleRecipePassbandEnd_tr" 
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<s:text name="squeezelite.label.resample.passbandEnd" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.resample.passbandEnd')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.resample.passbandEnd')" />" />
+								<label for="resamplePassbandEnd" style="font-style: italic;">
+									<s:text name="squeezelite.label.resample.passbandEnd" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.resample.passbandEnd')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.resample.passbandEnd')" />" />
+								</label>
 							</td>
 							<td>
-								<s:textfield name="resamplePassbandEnd" cssClass="size-100px" />
+								<s:textfield id="resamplePassbandEnd" name="resamplePassbandEnd" cssClass="size-100px" />
 							</td>
 						</tr>
 						<!-- resample stopband start -->
-						<tr id="resampleRecipeStopbandStart" 
+						<tr id="resampleRecipeStopbandStart_tr" 
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<s:text name="squeezelite.label.resample.stopbandStart" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.resample.stopbandStart')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.resample.stopbandStart')" />" />
+								<label for="resampleStopbandStart" style="font-style: italic;">
+									<s:text name="squeezelite.label.resample.stopbandStart" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.resample.stopbandStart')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.resample.stopbandStart')" />" />
+								</label>
 							</td>
 							<td>
-								<s:textfield name="resampleStopbandStart" cssClass="size-100px" />
+								<s:textfield id="resampleStopbandStart" name="resampleStopbandStart" cssClass="size-100px" />
 							</td>
 						</tr>
 						<!-- resample phase response -->
-						<tr id="resampleRecipePhaseResponse" 
+						<tr id="resampleRecipePhaseResponse_tr" 
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<s:text name="squeezelite.label.resample.phaseResponse" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.resample.phaseResponse')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.resample.phaseResponse')" />" />
+								<label for="resamplePhaseResponse" style="font-style: italic;">
+									<s:text name="squeezelite.label.resample.phaseResponse" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.resample.phaseResponse')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.resample.phaseResponse')" />" />
+								</label>
 							</td>
 							<td>
-								<s:textfield name="resamplePhaseResponse" cssClass="size-100px" />
+								<s:textfield id="resamplePhaseResponse" name="resamplePhaseResponse" cssClass="size-100px" />
 							</td>
 						</tr>																								
 						<!-- DoP -->
@@ -436,7 +458,7 @@
 								</label>
 							</td>
 							<td>
-								<s:checkbox name="dop" id="dopEnabled" 
+								<s:checkbox id="dopEnabled" name="dop"
 									onchange="javascript:displayDopOptions();" />
 							</td>
 						</tr>
@@ -445,25 +467,29 @@
 							<s:if test="%{dop}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<s:text name="squeezelite.label.dop.delay" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tootip.dop.delay')" />"
-									alt="<s:property value="getText('squeezelite.tootip.dop.delay')" />" />
+								<label for="dopOptions" style="font-style: italic;">
+									<s:text name="squeezelite.label.dop.delay" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tootip.dop.delay')" />"
+										alt="<s:property value="getText('squeezelite.tootip.dop.delay')" />" />
+								</label>
 							</td>
 							<td>
-								<s:textfield name="dopOptions" cssClass="size-100px" />
+								<s:textfield id="dopOptions" name="dopOptions" cssClass="size-100px" />
 							</td>
 						</tr>
 						<!-- visulizer -->
 						<tr>
 							<td align="right">
-								<s:text name="squeezelite.label.visulizer" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.visulizer')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.visulizer')" />" />
+								<label for="visulizer">
+									<s:text name="squeezelite.label.visulizer" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.visulizer')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.visulizer')" />" />
+								</label>
 							</td>
 							<td>
-								<s:checkbox name="visulizer" />
+								<s:checkbox id="visulizer" name="visulizer" />
 							</td>
 						</tr>
 
