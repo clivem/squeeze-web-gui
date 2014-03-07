@@ -201,7 +201,7 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 		}
 		
 		// validate the resample options
-		if (upsample) {
+		if (resample) {
 			
 			if (resampleFlags != null && resampleFlags.trim().length() > 0) {
 				try {

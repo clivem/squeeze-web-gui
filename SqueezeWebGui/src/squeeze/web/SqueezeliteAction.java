@@ -109,8 +109,8 @@ public class SqueezeliteAction extends SystemctlAction {
 	private final static String CFG_ALSA_PARAMS_OPTION = "-a ";
 	private final static String CFG_SERVER_IP = "SERVER_IP";
 	private final static String CFG_SERVER_IP_OPTION = "-s ";
-	private final static String CFG_UPSAMPLE = "UPSAMPLE";
-	private final static String CFG_UPSAMPLE_OPTION = "-u ";
+	private final static String CFG_RESAMPLE = "UPSAMPLE";
+	private final static String CFG_RESAMPLE_OPTION = "-u ";
 	private final static String CFG_DOP = "DOP";
 	private final static String CFG_DOP_OPTION = "-D ";
 	private final static String CFG_OPTIONS = "OPTIONS";
@@ -150,7 +150,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	
 	protected boolean defaultMac = false;
 	
-	protected boolean upsample = false;
+	protected boolean resample = false;
 	
 	protected String resampleRecipeFilter = null;
 	protected String resampleRecipeQuality = null;
@@ -241,9 +241,9 @@ public class SqueezeliteAction extends SystemctlAction {
 		}
 		
 		serverIp = properties.get(CFG_SERVER_IP);
-		String resampleOptions = properties.get(CFG_UPSAMPLE);
+		String resampleOptions = properties.get(CFG_RESAMPLE);
 		if (resampleOptions != null) {
-			upsample = true;
+			resample = true;
 			parseResampleOptions(resampleOptions);
 		}
 		
@@ -616,7 +616,7 @@ public class SqueezeliteAction extends SystemctlAction {
 			list.add(CFG_SERVER_IP + "=\"" + CFG_SERVER_IP_OPTION + serverIp.trim() + "\"");
 		}
 		
-		if (upsample) {
+		if (resample) {
 			String resampleRecipe = ((resampleRecipeQuality != null) ? resampleRecipeQuality : "") +
 					((resampleRecipeFilter != null) ? resampleRecipeFilter : "") +
 					((resampleRecipeSteep) ? SoxResample.SOXR_STEEP_FILTER_FLAG : "") +
@@ -634,9 +634,9 @@ public class SqueezeliteAction extends SystemctlAction {
 			// trim trailing colons
 			resampleOptions = Util.trimTrailing(resampleOptions, Util.COLON);
 
-			list.add(CFG_UPSAMPLE + "=\"" + 
+			list.add(CFG_RESAMPLE + "=\"" + 
 					((resampleOptions.length() > 0) ? 
-							(CFG_UPSAMPLE_OPTION + resampleOptions) : CFG_UPSAMPLE_OPTION.trim()) + 
+							(CFG_RESAMPLE_OPTION + resampleOptions) : CFG_RESAMPLE_OPTION.trim()) + 
 					"\"");
 		}
 		
@@ -745,8 +745,8 @@ public class SqueezeliteAction extends SystemctlAction {
 										LOGGER.trace("Name='" + name + "', Value='" + "" + "'");
 									}									
 								}
-							} else if (name.equals(CFG_UPSAMPLE)) {
-								if (splitOption.length == 1 && splitOption[0].equals(CFG_UPSAMPLE_OPTION.trim())) {
+							} else if (name.equals(CFG_RESAMPLE)) {
+								if (splitOption.length == 1 && splitOption[0].equals(CFG_RESAMPLE_OPTION.trim())) {
 									properties.put(name, "");
 									if (LOGGER.isTraceEnabled()) {
 										LOGGER.trace("Name='" + name + "', Value='" + "" + "'");
@@ -1023,19 +1023,19 @@ public class SqueezeliteAction extends SystemctlAction {
 	}
 
 	/**
-	 * @return the upsample
+	 * @return the resample
 	 */
-	public boolean isUpsample() {
+	public boolean isResample() {
 		
-		return upsample;
+		return resample;
 	}
 
 	/**
-	 * @param upsample the upsample to set
+	 * @param resample the resample to set
 	 */
-	public void setUpsample(boolean upsample) {
+	public void setResample(boolean resample) {
 		
-		this.upsample = upsample;
+		this.resample = resample;
 	}
 
 	/**

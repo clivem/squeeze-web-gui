@@ -255,21 +255,21 @@
 						<tr>
 							<td align="right">
 								<label for="resampleEnabled">
-									<s:text name="squeezelite.label.upsample" />
+									<s:text name="squeezelite.label.resample" />
 									<img src='struts/tooltip.gif'
-										title="<s:property value="getText('squeezelite.tooltip.upsample')" />"
-										alt="<s:property value="getText('squeezelite.tooltip.upsample')" />" />
+										title="<s:property value="getText('squeezelite.tooltip.resample')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.resample')" />" />
 								</label>
 							</td>
 							<td>
-								<s:checkbox name="upsample" id="resampleEnabled" 
+								<s:checkbox name="resample" id="resampleEnabled" 
 									onchange="javascript:displayResampleOptions();" />
 								<s:a href="squeezelite_upsample.jsp" target="_blank">Info</s:a>
 							</td>
 						</tr>
 						<!-- resample recipe quality -->
 						<tr id="resampleRecipeQuality" 
-							<s:if test="%{upsample}">style="display:"</s:if>
+							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
 								<s:text name="squeezelite.label.resample.quality" />
@@ -285,7 +285,7 @@
 						</tr>
 						<!-- resample recipe filter -->
 						<tr id="resampleRecipeFilter" 
-							<s:if test="%{upsample}">style="display:"</s:if>
+							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
 								<s:text name="squeezelite.label.resample.filter" />
@@ -301,7 +301,7 @@
 						</tr>
 						<!-- resample recipe steep -->
 						<tr id="resampleRecipeSteep" 
-							<s:if test="%{upsample}">style="display:"</s:if>
+							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
 								<s:text name="squeezelite.label.resample.steep" />
@@ -315,7 +315,7 @@
 						</tr>												
 						<!-- resample recipe exception -->
 						<tr id="resampleRecipeException" 
-							<s:if test="%{upsample}">style="display:"</s:if>
+							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
 								<s:text name="squeezelite.label.resample.exception" />
@@ -329,7 +329,7 @@
 						</tr>
 						<!-- resample recipe async -->
 						<tr id="resampleRecipeAsync" 
-							<s:if test="%{upsample}">style="display:"</s:if>
+							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
 								<s:text name="squeezelite.label.resample.async" />
@@ -343,7 +343,7 @@
 						</tr>
 						<!-- resample advanced flags -->
 						<tr id="resampleRecipeFlags" 
-							<s:if test="%{upsample}">style="display:"</s:if>
+							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
 								<s:text name="squeezelite.label.resample.flags" />
@@ -357,7 +357,7 @@
 						</tr>
 						<!-- resample attenuation -->
 						<tr id="resampleRecipeAttenuation" 
-							<s:if test="%{upsample}">style="display:"</s:if>
+							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
 								<s:text name="squeezelite.label.resample.attenuation" />
@@ -371,7 +371,7 @@
 						</tr>
 						<!-- resample precision -->
 						<tr id="resampleRecipePrecision" 
-							<s:if test="%{upsample}">style="display:"</s:if>
+							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
 								<s:text name="squeezelite.label.resample.precision" />
@@ -385,7 +385,7 @@
 						</tr>
 						<!-- resample passband end -->
 						<tr id="resampleRecipePassbandEnd" 
-							<s:if test="%{upsample}">style="display:"</s:if>
+							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
 								<s:text name="squeezelite.label.resample.passbandEnd" />
@@ -399,7 +399,7 @@
 						</tr>
 						<!-- resample stopband start -->
 						<tr id="resampleRecipeStopbandStart" 
-							<s:if test="%{upsample}">style="display:"</s:if>
+							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
 								<s:text name="squeezelite.label.resample.stopbandStart" />
@@ -413,7 +413,7 @@
 						</tr>
 						<!-- resample phase response -->
 						<tr id="resampleRecipePhaseResponse" 
-							<s:if test="%{upsample}">style="display:"</s:if>
+							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
 								<s:text name="squeezelite.label.resample.phaseResponse" />
