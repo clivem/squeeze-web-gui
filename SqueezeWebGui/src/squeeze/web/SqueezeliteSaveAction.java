@@ -200,7 +200,9 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 			}
 		}
 		
+		// validate the resample options
 		if (upsample) {
+			
 			if (resampleFlags != null && resampleFlags.trim().length() > 0) {
 				try {
 					Integer.parseInt(resampleFlags.trim());
@@ -209,41 +211,67 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 				}
 			}
 			
+			double attenuation = -1.0;
 			if (resampleAttenuation != null && resampleAttenuation.trim().length() > 0) {
 				try {
-					Double.parseDouble(resampleAttenuation.trim());
+					attenuation = Double.parseDouble(resampleAttenuation.trim());
+					if (attenuation < 0.0) {
+						addActionError(getText("squeezelite.validation.resample.attenuation.fail"));
+					}
 				} catch (NumberFormatException nfe) {
 					addActionError(getText("squeezelite.validation.resample.attenuation.fail"));
 				}
 			}
 			
+			int precision = -1;
 			if (resamplePrecision != null && resamplePrecision.trim().length() > 0) {
 				try {
-					Integer.parseInt(resamplePrecision.trim());
+					precision = Integer.parseInt(resamplePrecision.trim());
+					if (precision < 1) {
+						addActionError(getText("squeezelite.validation.resample.precision.fail"));
+					}
 				} catch (NumberFormatException nfe) {
 					addActionError(getText("squeezelite.validation.resample.precision.fail"));
 				}
 			}
 			
+			double passbandEnd = -1.0;
 			if (resamplePassbandEnd != null && resamplePassbandEnd.trim().length() > 0) {
 				try {
-					Integer.parseInt(resamplePassbandEnd.trim());
+					passbandEnd = Double.parseDouble(resamplePassbandEnd.trim());
+					if (passbandEnd < 0.0 || passbandEnd > 100.0) {
+						addActionError(getText("squeezelite.validation.resample.passbandEnd.fail"));
+					}
 				} catch (NumberFormatException nfe) {
 					addActionError(getText("squeezelite.validation.resample.passbandEnd.fail"));
 				}
 			}
 
+			double stopbandStart = -1.0;
 			if (resampleStopbandStart != null && resampleStopbandStart.trim().length() > 0) {
 				try {
-					Integer.parseInt(resampleStopbandStart.trim());
+					stopbandStart = Double.parseDouble(resampleStopbandStart.trim());
+					if (stopbandStart < 0.0 || stopbandStart > 100.0) {
+						addActionError(getText("squeezelite.validation.resample.stopbandStart.fail"));
+					}
+					// make sure stopbandStart is greater than passbandEnd, if passbandEnd has been set.
+					if (passbandEnd > -1.0) {
+						if (stopbandStart < passbandEnd) {
+							addActionError(getText("squeezelite.validation.resample.stopbandStart.fail"));
+						}
+					}
 				} catch (NumberFormatException nfe) {
 					addActionError(getText("squeezelite.validation.resample.stopbandStart.fail"));
 				}
 			}
 
+			double phaseResponse = -1.0;
 			if (resamplePhaseResponse != null && resamplePhaseResponse.trim().length() > 0) {
 				try {
-					Integer.parseInt(resamplePhaseResponse.trim());
+					phaseResponse = Double.parseDouble(resamplePhaseResponse.trim());
+					if (phaseResponse < 0.0 || phaseResponse > 100.0) {
+						addActionError(getText("squeezelite.validation.resample.phaseResponse.fail"));
+					}
 				} catch (NumberFormatException nfe) {
 					addActionError(getText("squeezelite.validation.resample.phaseResponse.fail"));
 				}
