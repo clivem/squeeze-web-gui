@@ -742,7 +742,7 @@ public final class Util {
 				
 				if (tmpFile != null) {
 					try {
-						file.delete();
+						tmpFile.delete();
 					} catch (Exception e) {}
 				}
 			}
