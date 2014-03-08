@@ -465,7 +465,7 @@ public class SqueezeliteAction extends SystemctlAction {
 		
 		if (logFile != null && logFile.trim().length() > 0) {
 			try {
-			log = Util.tail(new File(logFile));
+				log = Util.tail(new File(logFile));
 			} catch (Exception e) {
 				LOGGER.warn("Caught exception trying to read the log file!", e);
 			}

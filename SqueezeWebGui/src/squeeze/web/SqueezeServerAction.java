@@ -20,7 +20,11 @@
  */
 package squeeze.web;
 
+import java.io.File;
+
 import org.apache.log4j.Logger;
+
+import squeeze.web.util.Util;
 
 /**
  * @author Clive Messer <clive.m.messer@gmail.com>
@@ -34,6 +38,9 @@ public class SqueezeServerAction extends SystemctlAction {
 	
 	private final static String NAME = "squeezeboxserver";
 	private final static String SERVICE_NAME = NAME + ".service";
+	private final static String LOG_FILE = "/var/log/squeezeboxserver/server.log";
+	
+	protected String log = null;
 		
 	/**
 	 * 
@@ -47,6 +54,44 @@ public class SqueezeServerAction extends SystemctlAction {
 		}
 	}
 	
+	/**
+	 * @return
+	 * @throws Exception
+	 */
+	public String populate() throws Exception {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("populate()");
+		}
+
+		try {
+			populateServiceStatus();
+			populateLog();
+		} catch (Exception e) {
+			LOGGER.error("Caught exception while populating " + getServiceName() + "!", e);
+			throw e;
+		}
+ 		
+		String result = "populate";
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("populate() returns " + result);
+		}
+		
+		return result;
+	}	
+	
+	/**
+	 * 
+	 */
+	protected void populateLog() {
+		
+		try {
+			log = Util.tail(new File(LOG_FILE));
+		} catch (Exception e) {
+			LOGGER.warn("Caught exception trying to read the log file!", e);
+		}
+	}
+		
 	/* (non-Javadoc)
 	 * @see squeeze.web.SystemctlAction#getServiceName()
 	 */
@@ -54,5 +99,12 @@ public class SqueezeServerAction extends SystemctlAction {
 	public String getServiceName() {
 		
 		return SERVICE_NAME;
-	}	
+	}
+	
+	/**
+	 * @return the log
+	 */
+	public String getLog() {
+		return log;
+	}
 }
