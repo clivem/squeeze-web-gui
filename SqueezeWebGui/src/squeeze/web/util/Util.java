@@ -697,7 +697,59 @@ public final class Util {
 		list.add("hdmi:CARD=HDMI,DEV=0");		
 		return list;
 	}
-	*/	
+	*/
+	
+	/**
+	 * @param file
+	 * @return
+	 */
+	public final static String tail(File file) throws IOException, InterruptedException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("tail(file=" + file + ")");
+		}
+
+		if (file != null) {
+			
+			if (!file.exists()) {
+				return "Log file '" + file.getCanonicalPath() + "' does not exist!";
+			}
+			
+			File tmpFile = null;
+			BufferedReader reader = null;
+			try {
+				tmpFile = Util.createTempFile("tail_", ".txt");				
+				Writer writer = new FileWriter(tmpFile);
+
+				String[] cmdLineArgs = new String[] {
+						Commands.CMD_SUDO, Commands.CMD_TAIL, file.getCanonicalPath()
+				};
+				
+				ExecuteProcess.executeCommand(cmdLineArgs, writer, null);
+				reader = new BufferedReader(new FileReader(tmpFile));
+				StringBuffer buffer = new StringBuffer();
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					buffer.append(line + Util.LINE_SEP);
+				}
+				return buffer.toString();
+			} finally {
+				if (reader != null) {
+					try {
+						reader.close();
+					} catch (Exception e) {}
+				}
+				
+				if (tmpFile != null) {
+					try {
+						file.delete();
+					} catch (Exception e) {}
+				}
+			}
+		}
+		
+		return null;
+	}
 	
 	/**
 	 * @param reader

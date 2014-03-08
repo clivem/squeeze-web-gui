@@ -172,6 +172,8 @@ public class SqueezeliteAction extends SystemctlAction {
 	protected boolean visulizer = false;
 	
 	protected boolean showAdvancedOptions = false;
+	
+	protected String log = null;
 
 	/**
 	 * 
@@ -439,6 +441,10 @@ public class SqueezeliteAction extends SystemctlAction {
 			 * populate the service status
 			 */
 			populateServiceStatus();
+			/*
+			 * tail the log file
+			 */
+			populateLog();
 		} catch (Exception e) {
 			LOGGER.error("Caught exception populating " + getServiceName() + "!", e);
 			throw e;
@@ -450,6 +456,20 @@ public class SqueezeliteAction extends SystemctlAction {
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * 
+	 */
+	protected void populateLog() {
+		
+		if (logFile != null && logFile.trim().length() > 0) {
+			try {
+			log = Util.tail(new File(logFile));
+			} catch (Exception e) {
+				LOGGER.warn("Caught exception trying to read the log file!", e);
+			}
+		}		
 	}
 	
 	/**
@@ -1420,5 +1440,12 @@ public class SqueezeliteAction extends SystemctlAction {
 	public List<NameFlag> getAlsaParamsMmapList() {
 		
 		return NameFlag.getAlsaParamsMmapList();
-	}	
+	}
+	
+	/**
+	 * @return the log
+	 */
+	public String getLog() {
+		return log;
+	}
 }

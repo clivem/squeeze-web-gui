@@ -281,6 +281,7 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 		if (hasActionErrors()) {
 			try {
 				populateServiceStatus();
+				populateLog();
 			} catch(Exception e) {}
 		}
 	}

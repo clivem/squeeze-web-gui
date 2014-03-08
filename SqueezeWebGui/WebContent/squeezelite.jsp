@@ -138,6 +138,30 @@
 		</div>
 	</div>
 	
+	<!-- log -->
+	<div style="clear: both;">
+		<hr />
+		<div style="margin-right: 20px;">
+			<fieldset style="width: 100%;">
+				<legend>
+					<s:text name="header.log" />
+				</legend>
+				<table class="full">
+					<tr>
+						<td colspan="2">
+							<s:textarea name="log" readonly="true" theme="simple" cssClass="log" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<s:a action="Squeezelite_populate"><s:property value="getText('button.refresh')" /></s:a>
+						</td>
+					</tr>
+				</table>
+			</fieldset>
+		</div>
+	</div>
+
 	<!-- configuration -->
 	<div style="clear: both;">
 		<hr />

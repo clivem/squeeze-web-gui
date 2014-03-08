@@ -53,6 +53,7 @@ public class Commands {
 	public final static String CMD_CAT = "cat";
 	public final static String CMD_UMOUNT = "umount";
 	public final static String CMD_BLKID = "blkid";
+	public final static String CMD_TAIL = "tail";
 	
 	public final static String SHUTDOWN_FORCE = "-f";
 	public final static String UMOUNT_FORCE = "-f";
