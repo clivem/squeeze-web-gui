@@ -23,4 +23,5 @@ tomcat ALL = NOPASSWD:\
  /usr/sbin/wpa_cli,\
  /usr/bin/mount,\
  /usr/bin/umount,\
- /usr/sbin/blkid
+ /usr/sbin/blkid,\
+ /usr/bin/tail
