@@ -364,18 +364,26 @@ public class StorageMount {
 			LOGGER.debug("createStorageMount(lineOfMountOutput=" + lineOfMountOutput + ")");
 		}
 
-		Matcher matcher = null;
-		synchronized (MOUNT_LIST_PATTERN) {
-			matcher = MOUNT_LIST_PATTERN.matcher(lineOfMountOutput);
-		}
-		
+		Matcher matcher = createMountListPatternMatcher(lineOfMountOutput);
 		if (matcher.matches()) {
 			return new StorageMount(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4), true, null);
 		} else {
-			LOGGER.warn("createStorageMount(line=" + lineOfMountOutput + "): Invalid!");
+			LOGGER.warn("createStorageMount(lineOfMountOutput=" + lineOfMountOutput + "): Invalid! " +
+					"Does not match pattern!");
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * @param lineOfMountOutput
+	 * @return
+	 */
+	private final static Matcher createMountListPatternMatcher(String lineOfMountOutput) {
+		
+		synchronized (MOUNT_LIST_PATTERN) {
+			return MOUNT_LIST_PATTERN.matcher(lineOfMountOutput);
+		}
 	}
 	
 	/**
