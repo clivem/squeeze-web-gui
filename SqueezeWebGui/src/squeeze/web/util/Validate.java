@@ -53,9 +53,11 @@ public class Validate {
 	public final static String SQUEEZELITE_REGEX_ALSA_BUFFER = "^([0-9]+):([0-9]+)$";
 
 	// single rate or comma separated list
-	public final static String SQUEEZELITE_REGEX_MAX_RATE = "^([0-9]+)((,[0-9]+)*)$";
+	public final static String SQUEEZELITE_REGEX_MAX_RATE = "^([0-9]+)(,([0-9]+))*(:([0-9]+))?$";
 	// range. eg. 44100-192000
-	public final static String SQUEEZELITE_REGEX_MAX_RATE_RANGE = "^([0-9]+)-([0-9]+)$";
+	public final static String SQUEEZELITE_REGEX_MAX_RATE_RANGE = "^([0-9]+)-([0-9]+)(:([0-9]+))?$";
+	// :100 - time between sample rate changes
+	public final static String SQUEEZELITE_REGEX_MAX_RATE_TIME_BTWN_CHANGE = "^(:([0-9]+)){1}$";
 
 	public final static int SQUEEZELITE_MAX_SAMPLE_RATE = 384000;
 	

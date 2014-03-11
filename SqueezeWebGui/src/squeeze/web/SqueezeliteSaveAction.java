@@ -70,7 +70,8 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 		
 		if(maxRate != null && maxRate.trim().length() > 0) {
 			if (maxRate.trim().matches(Validate.SQUEEZELITE_REGEX_MAX_RATE) || 
-					maxRate.trim().matches(Validate.SQUEEZELITE_REGEX_MAX_RATE_RANGE)) {
+					maxRate.trim().matches(Validate.SQUEEZELITE_REGEX_MAX_RATE_RANGE) ||
+					maxRate.trim().matches(Validate.SQUEEZELITE_REGEX_MAX_RATE_TIME_BTWN_CHANGE)) {
 				// Validates OK
 			} else {
 				addActionError(getText("squeezelite.validation.maxRate.fail"));
