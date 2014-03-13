@@ -703,7 +703,7 @@ public final class Util {
 	 * @param file
 	 * @return
 	 */
-	public final static String tail(File file) throws IOException, InterruptedException {
+	public final static String tail(File file, int lines) throws IOException, InterruptedException {
 		
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("tail(file=" + file + ")");
@@ -722,7 +722,7 @@ public final class Util {
 				Writer writer = new FileWriter(tmpFile);
 
 				String[] cmdLineArgs = new String[] {
-						Commands.CMD_SUDO, Commands.CMD_TAIL, file.getCanonicalPath()
+						Commands.CMD_SUDO, Commands.CMD_TAIL, "-n " + lines, file.getCanonicalPath()
 				};
 				
 				ExecuteProcess.executeCommand(cmdLineArgs, writer, null);

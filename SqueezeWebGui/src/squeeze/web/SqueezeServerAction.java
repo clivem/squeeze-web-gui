@@ -86,7 +86,7 @@ public class SqueezeServerAction extends SystemctlAction {
 	protected void populateLog() {
 		
 		try {
-			log = Util.tail(new File(LOG_FILE));
+			log = Util.tail(new File(LOG_FILE), 10);
 		} catch (Exception e) {
 			LOGGER.warn("Caught exception trying to read the log file!", e);
 		}

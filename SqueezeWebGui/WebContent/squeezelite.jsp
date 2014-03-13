@@ -120,18 +120,30 @@
 				<legend>
 					<s:text name="header.log" />
 				</legend>
-				<table class="full">
-					<tr>
-						<td colspan="2">
-							<s:textarea name="log" readonly="true" theme="simple" cssClass="log" />
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<s:a action="Squeezelite_populate"><s:property value="getText('button.refresh')" /></s:a>
-						</td>
-					</tr>
-				</table>
+				<s:form action="Squeezelite_populate" theme="simple">
+					<table class="full">
+						<tr>
+							<td colspan="2">
+								<textarea readonly="readonly" class="log"><s:property value="%{log}" /></textarea>
+								<!-- 
+								 <s:textarea name="log" cssClass="log" readonly="true" />
+								 -->
+							</td> 
+						</tr>
+						<tr>
+							<td colspan="2">
+								<label for="logLines">
+									<s:text name="label.logLines" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('tooltip.logLines')" />"
+										alt="<s:property value="getText('tooltip.logLines')" />" />
+								</label>
+								<s:textfield id="loglines" name="logLines" cssClass="size-75px" />
+								<s:submit key="button.refresh" action="Squeezelite_populate" />
+							</td>
+						</tr>
+					</table>
+				</s:form>
 			</fieldset>
 		</div>
 	</div>
@@ -158,7 +170,6 @@
 					<s:iterator value="audioDevList" status="stat">
 						<s:hidden name="audioDevList[%{#stat.index}]" value="%{audioDevList[#stat.index]}" />
 					</s:iterator>
-					
 					<table>
 						<!-- name -->
 						<tr>

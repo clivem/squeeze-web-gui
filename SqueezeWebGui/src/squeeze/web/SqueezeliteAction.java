@@ -60,6 +60,8 @@ public class SqueezeliteAction extends SystemctlAction {
 	private final static String SQUEEZELITE_SERVICE_DEFAULT_LOG_FILE = 
 			"/var/log/squeezelite/squeezelite.log";
 	
+	private final static int DEFAULT_NUMBER_OF_LOG_LINES = 10;
+	
 	private final static String SQUEEZELITE_SERVICE_DEFAULT_NAME = 
 			"SqueezeliteWAND";
 
@@ -172,6 +174,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	protected boolean visulizer = false;
 	
 	protected String log = null;
+	protected String logLines = String.valueOf(DEFAULT_NUMBER_OF_LOG_LINES);
 
 	/**
 	 * 
@@ -463,7 +466,11 @@ public class SqueezeliteAction extends SystemctlAction {
 		
 		if (logFile != null && logFile.trim().length() > 0) {
 			try {
-				log = Util.tail(new File(logFile));
+				int lines = DEFAULT_NUMBER_OF_LOG_LINES;
+				try {
+					lines = Integer.parseInt(logLines);
+				} catch (NumberFormatException nfe) {}
+				log = Util.tail(new File(logFile), lines);
 			} catch (Exception e) {
 				LOGGER.warn("Caught exception trying to read the log file!", e);
 			}
@@ -1429,5 +1436,26 @@ public class SqueezeliteAction extends SystemctlAction {
 	 */
 	public String getLog() {
 		return log;
+	}
+
+	/**
+	 * @return log the log to set
+	 */
+	public void setLog(String log) {
+		this.log = log;
+	}
+
+	/**
+	 * @return the logLines
+	 */
+	public String getLogLines() {
+		return logLines;
+	}
+	
+	/**
+	 * @param logLines the logLines to set
+	 */
+	public void setLogLines(String logLines) {
+		this.logLines = logLines;
 	}
 }
