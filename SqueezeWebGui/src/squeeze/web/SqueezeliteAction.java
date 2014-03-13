@@ -1440,10 +1440,11 @@ public class SqueezeliteAction extends SystemctlAction {
 
 	/**
 	 * @return log the log to set
-	 */
+	 *
 	public void setLog(String log) {
 		this.log = log;
 	}
+	*/
 
 	/**
 	 * @return the logLines
