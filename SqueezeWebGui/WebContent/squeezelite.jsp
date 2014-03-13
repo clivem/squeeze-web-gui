@@ -17,32 +17,6 @@
 <body>
 
 	<script type="text/javascript">
-		function displayAdvancedOptions() {
-			if (document.getElementById('showAdvancedOptions').checked) {
-				document.getElementById('advancedMac').style.display = '';
-				document.getElementById('advancedDefaultMac').style.display = '';
-				document.getElementById('advancedLogFile').style.display = '';
-				document.getElementById('advancedLogLevel').style.display = '';
-				document.getElementById('advancedPriority').style.display = '';
-				document.getElementById('advancedBufferStream').style.display = '';
-				document.getElementById('advancedBufferOutput').style.display = '';
-				document.getElementById('advancedCodec').style.display = '';
-				document.getElementById('advancedOptions').style.display = '';
-				document.getElementById('advancedServerIp').style.display = '';
-			} else {
-				document.getElementById('advancedMac').style.display = 'none';
-				document.getElementById('advancedDefaultMac').style.display = 'none';
-				document.getElementById('advancedLogFile').style.display = 'none';
-				document.getElementById('advancedLogLevel').style.display = 'none';
-				document.getElementById('advancedPriority').style.display = 'none';
-				document.getElementById('advancedBufferStream').style.display = 'none';
-				document.getElementById('advancedBufferOutput').style.display = 'none';
-				document.getElementById('advancedCodec').style.display = 'none';
-				document.getElementById('advancedOptions').style.display = 'none';
-				document.getElementById('advancedServerIp').style.display = 'none';
-			}
-		}
-
 		function displayResampleOptions() {
 			if (document.getElementById('resampleEnabled').checked) {
 				document.getElementById('resampleRecipeQuality_tr').style.display = '';
@@ -174,10 +148,9 @@
 				<s:actionerror />
 				
 				<s:form action="SqueezeliteSave_save" theme="simple" onreset="javascript:doReset();">
-					<!-- kludge to make sure the reset is done before we decide whether to display advanced options -->
 					<script>
 						function doReset() {
-							setTimeout(function(){displayAdvancedOptions();displayResampleOptions();displayDopOptions();}, 0);
+							setTimeout(function(){displayResampleOptions();displayDopOptions();}, 0);
 						}
 					</script>
 					
@@ -517,7 +490,7 @@
 							</td>
 						</tr>
 
-						<!-- show advanced options -->
+						<!-- show advanced options
 						<tr>
 							<td align="right">
 							</td>
@@ -529,10 +502,9 @@
 								</label>
 							</td>
 						</tr>
+						 -->
 						<!-- Start: Advanced Options -->
-						<tr id="advancedMac" 
-							<s:if test="%{showAdvancedOptions}">style="display:"</s:if>
-							<s:else>style="display:none"</s:else>>
+						<tr>
 							<td align="right">
 								<s:text name="squeezelite.label.mac" />
 								<img src='struts/tooltip.gif'
@@ -543,18 +515,14 @@
 								<s:textfield name="mac" cssClass="size-300px" />
 							</td>
 						</tr>
-						<tr id="advancedDefaultMac" 
-							<s:if test="%{showAdvancedOptions}">style="display:"</s:if>
-							<s:else>style="display:none"</s:else>>
+						<tr>
 							<td />
 							<td>
 								<s:checkbox name="defaultMac" />
 								<s:text name="squeezelite.label.mac.default" />
 							</td>
 						</tr>
-						<tr id="advancedLogFile" 
-							<s:if test="%{showAdvancedOptions}">style="display:"</s:if>
-							<s:else>style="display:none"</s:else>>
+						<tr>
 							<td align="right">
 								<s:text name="squeezelite.label.logFile" />
 								<img src='struts/tooltip.gif'
@@ -565,9 +533,7 @@
 								<s:textfield name="logFile" cssClass="size-300px" />
 							</td>
 						</tr>
-						<tr id="advancedLogLevel" 
-							<s:if test="%{showAdvancedOptions}">style="display:"</s:if>
-							<s:else>style="display:none"</s:else>>
+						<tr>
 							<td align="right">
 								<s:text name="squeezelite.label.logLevel" />
 								<img src='struts/tooltip.gif'
@@ -578,9 +544,7 @@
 								<s:textfield name="logLevel" cssClass="size-300px" />
 							</td>
 						</tr>
-						<tr id="advancedPriority" 
-							<s:if test="%{showAdvancedOptions}">style="display:"</s:if>
-							<s:else>style="display:none"</s:else>>
+						<tr>
 							<td align="right">
 								<s:text name="squeezelite.label.priority" />
 								<img src='struts/tooltip.gif'
@@ -592,9 +556,7 @@
 							</td>
 						</tr>
 						<!-- 
-						<tr id="advancedBuffer" 
-							<s:if test="%{showAdvancedOptions}">style="display:"</s:if>
-							<s:else>style="display:none"</s:else>>
+						<tr>
 							<td align="right">
 								<s:text name="squeezelite.label.buffer" />
 								<img src='struts/tooltip.gif'
@@ -606,9 +568,7 @@
 							</td>
 						</tr>
 						 -->
-						<tr id="advancedBufferStream" 
-							<s:if test="%{showAdvancedOptions}">style="display:"</s:if>
-							<s:else>style="display:none"</s:else>>
+						<tr>
 							<td align="right">
 								<s:text name="squeezelite.label.buffer.stream" />
 								<img src='struts/tooltip.gif'
@@ -619,9 +579,7 @@
 								<s:textfield name="bufferStream" cssClass="size-300px" />
 							</td>
 						</tr>
-						<tr id="advancedBufferOutput" 
-							<s:if test="%{showAdvancedOptions}">style="display:"</s:if>
-							<s:else>style="display:none"</s:else>>
+						<tr>
 							<td align="right">
 								<s:text name="squeezelite.label.buffer.output" />
 								<img src='struts/tooltip.gif'
@@ -632,9 +590,7 @@
 								<s:textfield name="bufferOutput" cssClass="size-300px" />
 							</td>
 						</tr>
-						<tr id="advancedCodec" 
-							<s:if test="%{showAdvancedOptions}">style="display:"</s:if>
-							<s:else>style="display:none"</s:else>>
+						<tr>
 							<td align="right">
 								<s:text name="squeezelite.label.codec" />
 								<img src='struts/tooltip.gif'
@@ -645,9 +601,7 @@
 								<s:textfield name="codec" cssClass="size-300px" />
 							</td>
 						</tr>
-						<tr id="advancedOptions" 
-							<s:if test="%{showAdvancedOptions}">style="display:"</s:if>
-							<s:else>style="display:none"</s:else>>
+						<tr>
 							<td align="right">
 								<s:text name="squeezelite.label.options" />
 								<img src='struts/tooltip.gif'
@@ -658,9 +612,7 @@
 								<s:textfield name="options" cssClass="size-300px" />
 							</td>
 						</tr>
-						<tr id="advancedServerIp" 
-							<s:if test="%{showAdvancedOptions}">style="display:"</s:if>
-							<s:else>style="display:none"</s:else>>
+						<tr>
 							<td align="right">
 								<s:text name="squeezelite.label.serverIp" />
 								<img src='struts/tooltip.gif'

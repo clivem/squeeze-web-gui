@@ -171,8 +171,6 @@ public class SqueezeliteAction extends SystemctlAction {
 	
 	protected boolean visulizer = false;
 	
-	protected boolean showAdvancedOptions = false;
-	
 	protected String log = null;
 
 	/**
@@ -1120,22 +1118,6 @@ public class SqueezeliteAction extends SystemctlAction {
 	public void setVisulizer(boolean visulizer) {
 		
 		this.visulizer = visulizer;
-	}
-
-	/**
-	 * @return the showAdvancedOptions
-	 */
-	public boolean isShowAdvancedOptions() {
-		
-		return showAdvancedOptions;
-	}
-
-	/**
-	 * @param showAdvancedOptions the showAdvancedOptions to set
-	 */
-	public void setShowAdvancedOptions(boolean showAdvancedOptions) {
-		
-		this.showAdvancedOptions = showAdvancedOptions;
 	}
 
 	/**
