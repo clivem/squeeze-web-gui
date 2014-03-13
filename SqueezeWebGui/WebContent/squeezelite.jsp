@@ -125,9 +125,6 @@
 						<tr>
 							<td colspan="2">
 								<textarea readonly="readonly" class="log"><s:property value="%{log}" /></textarea>
-								<!-- 
-								 <s:textarea name="log" cssClass="log" readonly="true" />
-								 -->
 							</td> 
 						</tr>
 						<tr>
@@ -500,20 +497,6 @@
 								<s:checkbox id="visulizer" name="visulizer" />
 							</td>
 						</tr>
-
-						<!-- show advanced options
-						<tr>
-							<td align="right">
-							</td>
-							<td>
-								<s:checkbox name="showAdvancedOptions" id="showAdvancedOptions" 
-									onchange="javascript:displayAdvancedOptions();" />
-								<label for="showAdvancedOptions">
-									<s:text name="squeezelite.label.advancedOptions" />
-								</label>
-							</td>
-						</tr>
-						 -->
 						<!-- Start: Advanced Options -->
 						<tr>
 							<td align="right">
@@ -566,19 +549,6 @@
 								<s:select name="priority" list="priorityList" />
 							</td>
 						</tr>
-						<!-- 
-						<tr>
-							<td align="right">
-								<s:text name="squeezelite.label.buffer" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.buffer')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.buffer')" />" />
-							</td>
-							<td>
-								<s:textfield name="buffer" cssClass="size-300px" />
-							</td>
-						</tr>
-						 -->
 						<tr>
 							<td align="right">
 								<s:text name="squeezelite.label.buffer.stream" />
