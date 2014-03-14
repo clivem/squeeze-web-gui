@@ -89,6 +89,16 @@ public class SqueezeliteAction extends SystemctlAction {
 	//private final static String WANDBOARD_HDMI_AUDIO_DEVICE_3_12_6 = 
 	//		"";
 	
+	public final static String LOG_NAME_ALL = "all";
+	public final static String LOG_NAME_SLIMPROTO = "slimproto";
+	public final static String LOG_NAME_STREAM = "stream";
+	public final static String LOG_NAME_DECODE = "decode";
+	public final static String LOG_NAME_OUTPUT = "output";
+	
+	public final static String LOG_LEVEL_SDEBUG = "sdebug";
+	public final static String LOG_LEVEL_DEBUG = "debug";
+	public final static String LOG_LEVEL_INFO = "info";
+	
 	private final static String CFG_NAME = "NAME";
 	private final static String CFG_NAME_OPTION = "-n ";
 	private final static String CFG_MAC = "MAC";
@@ -131,8 +141,15 @@ public class SqueezeliteAction extends SystemctlAction {
 	protected String mac = null;
 	protected String maxRate = null;
 	protected String audioDev = null;
+	
 	protected String logFile = null;
-	protected String logLevel = null;
+	// protected String logLevel = null;
+	protected String logLevelAll = null;
+	protected String logLevelSlimproto = null;
+	protected String logLevelStream = null;
+	protected String logLevelDecode = null;
+	protected String logLevelOutput = null;
+	
 	protected String priority = null;
 	
 	protected String bufferStream = null;
@@ -229,7 +246,12 @@ public class SqueezeliteAction extends SystemctlAction {
 		
 		logFile = properties.get(CFG_LOG_FILE);
 		
-		logLevel = properties.get(CFG_LOG_LEVEL);
+		// logLevel = properties.get(CFG_LOG_LEVEL);
+		logLevelAll = properties.get(CFG_LOG_LEVEL + Util.UNDERSCORE + LOG_NAME_ALL);
+		logLevelSlimproto = properties.get(CFG_LOG_LEVEL + Util.UNDERSCORE + LOG_NAME_SLIMPROTO);
+		logLevelStream = properties.get(CFG_LOG_LEVEL + Util.UNDERSCORE + LOG_NAME_STREAM);
+		logLevelDecode = properties.get(CFG_LOG_LEVEL + Util.UNDERSCORE + LOG_NAME_DECODE);
+		logLevelOutput = properties.get(CFG_LOG_LEVEL + Util.UNDERSCORE + LOG_NAME_OUTPUT);
 		
 		priority = properties.get(CFG_PRIORITY);
 		
@@ -565,10 +587,9 @@ public class SqueezeliteAction extends SystemctlAction {
 		 * logs: all|slimproto|stream|decode|output, 
 		 * level: info|debug|sdebug
 		 */
+		/*
 		if (logLevel != null && logLevel.trim().length() > 0) {
-			/*
-			 * might be multiple args, separated by spaces
-			 */
+			// might be multiple args, separated by spaces
 			String[] levelList = logLevel.trim().split(" ");
 			if (levelList.length > 0) {
 				String temp = CFG_LOG_LEVEL + "=\"";
@@ -581,6 +602,54 @@ public class SqueezeliteAction extends SystemctlAction {
 				temp += "\"";
 				list.add(temp);
 			}
+		}
+		*/
+		
+		int logLevelCount = 0;
+		String logLevel = CFG_LOG_LEVEL + "=\"";
+		
+		// all
+		if (logLevelAll != null && logLevelAll.length() > 0) {
+			logLevel += CFG_LOG_LEVEL_OPTION + LOG_NAME_ALL + Util.EQUALS + logLevelAll;
+			logLevelCount++;
+		}
+		// slimproto
+		if (logLevelSlimproto != null && logLevelSlimproto.length() > 0) {
+			if (logLevelCount > 0) {
+				logLevel += Util.SPACE;
+			}
+			logLevel += CFG_LOG_LEVEL_OPTION + LOG_NAME_SLIMPROTO + Util.EQUALS + logLevelSlimproto;
+			logLevelCount++;
+		}
+		// stream
+		if (logLevelStream != null && logLevelStream.length() > 0) {
+			if (logLevelCount > 0) {
+				logLevel += Util.SPACE;
+			}
+			logLevel += CFG_LOG_LEVEL_OPTION + LOG_NAME_STREAM + Util.EQUALS + logLevelStream;
+			logLevelCount++;
+		}
+		// decode
+		if (logLevelDecode != null && logLevelDecode.length() > 0) {
+			if (logLevelCount > 0) {
+				logLevel += Util.SPACE;
+			}
+			logLevel += CFG_LOG_LEVEL_OPTION + LOG_NAME_DECODE + Util.EQUALS + logLevelDecode;
+			logLevelCount++;
+		}
+		// output
+		if (logLevelOutput != null && logLevelOutput.length() > 0) {
+			if (logLevelCount > 0) {
+				logLevel += Util.SPACE;
+			}
+			logLevel += CFG_LOG_LEVEL_OPTION + LOG_NAME_OUTPUT + Util.EQUALS + logLevelOutput;
+			logLevelCount++;
+		}
+
+		logLevel += "\"";
+		
+		if (logLevelCount > 0) {
+			list.add(logLevel);
 		}
 		
 		/*
@@ -787,6 +856,7 @@ public class SqueezeliteAction extends SystemctlAction {
 									}									
 								}
 							} else if (name.equals(CFG_LOG_LEVEL)) {
+								/*
 								String tmp = "";
 								int optionCount = splitOption.length / 2;
 								for (int i = 0; i < optionCount; i++) {
@@ -798,7 +868,23 @@ public class SqueezeliteAction extends SystemctlAction {
 								properties.put(name, tmp);
 								if (LOGGER.isTraceEnabled()) {
 									LOGGER.trace("Name='" + name + "', Value='" + tmp + "'");
-								}									
+								}
+								*/									
+								int optionCount = splitOption.length / 2;
+								for (int i = 0; i < optionCount; i++) {
+									String tmp = splitOption[(i * 2) + 1].trim();
+									StringTokenizer logTok = new StringTokenizer(tmp, Util.EQUALS);
+									if (logTok.countTokens() == 2) {
+										String logName = logTok.nextToken();
+										String logLevel = logTok.nextToken();
+										String mapLogName = CFG_LOG_LEVEL + Util.UNDERSCORE + logName;
+										properties.put(mapLogName, logLevel);
+										if (LOGGER.isTraceEnabled()) {
+											LOGGER.trace("Name='" + mapLogName + 
+													"', Value='" + logLevel + "'");
+										}
+									}
+								}
 							}
 						}
 					} else {
@@ -940,17 +1026,17 @@ public class SqueezeliteAction extends SystemctlAction {
 	/**
 	 * @return
 	 */
-	public String getLogLevel() {
+	public String getLogLevelAll() {
 		
-		return logLevel;
+		return logLevelAll;
 	}
 	
 	/**
-	 * @param logLevel
+	 * @param logLevelAll
 	 */
-	public void setLogLevel(String logLevel) {
+	public void setLogLevelAll(String logLevelAll) {
 		
-		this.logLevel = logLevel;
+		this.logLevelAll = logLevelAll;
 	}
 	
 	/**
@@ -1400,6 +1486,91 @@ public class SqueezeliteAction extends SystemctlAction {
 		
 		this.bufferOutput = bufferOutput;
 	}
+	
+	/**
+	 * @return the log
+	 */
+	public String getLog() {
+		return log;
+	}
+
+	/**
+	 * @return log the log to set
+	 *
+	public void setLog(String log) {
+		this.log = log;
+	}
+	*/
+
+	/**
+	 * @return the logLines
+	 */
+	public String getLogLines() {
+		return logLines;
+	}
+	
+	/**
+	 * @param logLines the logLines to set
+	 */
+	public void setLogLines(String logLines) {
+		this.logLines = logLines;
+	}
+
+	/**
+	 * @return the logLevelSlimproto
+	 */
+	public String getLogLevelSlimproto() {
+		return logLevelSlimproto;
+	}
+
+	/**
+	 * @param logLevelSlimproto the logLevelSlimproto to set
+	 */
+	public void setLogLevelSlimproto(String logLevelSlimproto) {
+		this.logLevelSlimproto = logLevelSlimproto;
+	}
+
+	/**
+	 * @return the logLevelStream
+	 */
+	public String getLogLevelStream() {
+		return logLevelStream;
+	}
+
+	/**
+	 * @param logLevelStream the logLevelStream to set
+	 */
+	public void setLogLevelStream(String logLevelStream) {
+		this.logLevelStream = logLevelStream;
+	}
+
+	/**
+	 * @return the logLevelDecode
+	 */
+	public String getLogLevelDecode() {
+		return logLevelDecode;
+	}
+
+	/**
+	 * @param logLevelDecode the logLevelDecode to set
+	 */
+	public void setLogLevelDecode(String logLevelDecode) {
+		this.logLevelDecode = logLevelDecode;
+	}
+
+	/**
+	 * @return the logLevelOutput
+	 */
+	public String getLogLevelOutput() {
+		return logLevelOutput;
+	}
+
+	/**
+	 * @param logLevelOutput the logLevelOutput to set
+	 */
+	public void setLogLevelOutput(String logLevelOutput) {
+		this.logLevelOutput = logLevelOutput;
+	}
 
 	/**
 	 * @return the resampleQualityList
@@ -1434,31 +1605,10 @@ public class SqueezeliteAction extends SystemctlAction {
 	}
 	
 	/**
-	 * @return the log
+	 * @return the logLevelList
 	 */
-	public String getLog() {
-		return log;
-	}
-
-	/**
-	 * @return log the log to set
-	 *
-	public void setLog(String log) {
-		this.log = log;
-	}
-	*/
-
-	/**
-	 * @return the logLines
-	 */
-	public String getLogLines() {
-		return logLines;
-	}
-	
-	/**
-	 * @param logLines the logLines to set
-	 */
-	public void setLogLines(String logLines) {
-		this.logLines = logLines;
+	public List<NameFlag> getLogLevelList() {
+		
+		return NameFlag.getLogLevelList();
 	}
 }

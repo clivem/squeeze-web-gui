@@ -192,15 +192,89 @@
 								<s:textfield name="logFile" cssClass="size-300px" />
 							</td>
 						</tr>
+						<!-- log level all -->
 						<tr>
 							<td align="right">
 								<s:text name="squeezelite.label.logLevel" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.logLevel')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.logLevel')" />" />
+								<label for="logLevelAll" style="font-style: italic;">
+									<s:text name="squeezelite.label.logLevel.all" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.logLevel')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.logLevel')" />" />
+								</label>
 							</td>
 							<td>
-								<s:textfield name="logLevel" cssClass="size-300px" />
+								<s:select id="logLevelAll" name="logLevelAll" list="logLevelList" 
+									listKey="flag" listValue="name" emptyOption="false" 
+									headerKey="" headerValue="Not set"/>
+							</td>
+						</tr>
+						<!-- log level slimproto -->
+						<tr>
+							<td align="right">
+								<s:text name="squeezelite.label.logLevel" />
+								<label for="logLevelSlimproto" style="font-style: italic;">
+									<s:text name="squeezelite.label.logLevel.slimproto" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.logLevel')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.logLevel')" />" />
+								</label>
+							</td>
+							<td>
+								<s:select id="logLevelSlimproto" name="logLevelSlimproto" list="logLevelList" 
+									listKey="flag" listValue="name" emptyOption="false" 
+									headerKey="" headerValue="Not set"/>
+							</td>
+						</tr>
+						<!-- log level stream -->
+						<tr>
+							<td align="right">
+								<s:text name="squeezelite.label.logLevel" />
+								<label for="logLevelStream" style="font-style: italic;">
+									<s:text name="squeezelite.label.logLevel.stream" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.logLevel')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.logLevel')" />" />
+								</label>
+							</td>
+							<td>
+								<s:select id="logLevelStream" name="logLevelStream" list="logLevelList" 
+									listKey="flag" listValue="name" emptyOption="false" 
+									headerKey="" headerValue="Not set"/>
+							</td>
+						</tr>
+						<!-- log level decode -->
+						<tr>
+							<td align="right">
+								<s:text name="squeezelite.label.logLevel" />
+								<label for="logLevelDecode" style="font-style: italic;">
+									<s:text name="squeezelite.label.logLevel.decode" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.logLevel')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.logLevel')" />" />
+								</label>
+							</td>
+							<td>
+								<s:select id="logLevelDecode" name="logLevelDecode" list="logLevelList" 
+									listKey="flag" listValue="name" emptyOption="false" 
+									headerKey="" headerValue="Not set"/>
+							</td>
+						</tr>
+						<!-- log level output -->
+						<tr>
+							<td align="right">
+								<s:text name="squeezelite.label.logLevel" />
+								<label for="logLevelOutput" style="font-style: italic;">
+									<s:text name="squeezelite.label.logLevel.output" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.logLevel')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.logLevel')" />" />
+								</label>
+							</td>
+							<td>
+								<s:select id="logLevelOutput" name="logLevelOutput" list="logLevelList" 
+									listKey="flag" listValue="name" emptyOption="false" 
+									headerKey="" headerValue="Not set"/>
 							</td>
 						</tr>
 						<tr>

@@ -23,6 +23,8 @@ package squeeze.web.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import squeeze.web.SqueezeliteAction;
+
 /**
  * @author Clive Messer <clive.m.messer@gmail.com>
  *
@@ -35,6 +37,8 @@ public class NameFlag {
 	private final static List<NameFlag> ALSA_PARAMS_FORMAT_LIST;
 	private final static List<NameFlag> ALSA_PARAMS_MMAP_LIST;
 	
+	private final static List<NameFlag> LOG_LEVEL_LIST;
+
 	private String name;
 	private String flag;
 	
@@ -61,6 +65,11 @@ public class NameFlag {
 		ALSA_PARAMS_MMAP_LIST = new ArrayList<NameFlag>();
 		ALSA_PARAMS_MMAP_LIST.add(new NameFlag("Disable", Util.ZERO));
 		ALSA_PARAMS_MMAP_LIST.add(new NameFlag("Enable", Util.ONE));
+		
+		LOG_LEVEL_LIST = new ArrayList<NameFlag>();
+		LOG_LEVEL_LIST.add(new NameFlag("Info", SqueezeliteAction.LOG_LEVEL_INFO));
+		LOG_LEVEL_LIST.add(new NameFlag("Debug", SqueezeliteAction.LOG_LEVEL_DEBUG));
+		LOG_LEVEL_LIST.add(new NameFlag("Trace", SqueezeliteAction.LOG_LEVEL_SDEBUG));
 	}
 	
 	/**
@@ -145,5 +154,13 @@ public class NameFlag {
 	public final static List<NameFlag> getAlsaParamsMmapList() {
 		
 		return ALSA_PARAMS_MMAP_LIST;
+	}
+
+	/**
+	 * @return the logLevelList
+	 */
+	public final static List<NameFlag> getLogLevelList() {
+		
+		return LOG_LEVEL_LIST;
 	}
 }

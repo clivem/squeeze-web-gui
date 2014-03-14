@@ -78,6 +78,7 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 			}
 		}
 		
+		/*
 		if (logLevel != null && logLevel.trim().length() > 0) {
 			
 			String [] tempList = logLevel.trim().split(" ");
@@ -109,6 +110,7 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 				}
 			}
 		}
+		*/
 		
 		/*
 		if (buffer != null && buffer.trim().length() > 0) {
@@ -344,7 +346,7 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 	/**
 	 * @param name
 	 * @return
-	 */
+	 *
 	private final static boolean validateLogName(final String name) {
 		
 		if (LOGGER.isTraceEnabled()) {
@@ -353,11 +355,12 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 		
 		return Util.contains(Validate.SQUEEZELITE_LOG_NAMES, name);
 	}
+	*/
 
 	/**
 	 * @param level
 	 * @return
-	 */
+	 *
 	private final static boolean validateLogLevel(final String level) {
 		
 		if (LOGGER.isTraceEnabled()) {
@@ -366,6 +369,7 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 		
 		return Util.contains(Validate.SQUEEZELITE_LOG_LEVELS, level);
 	}
+	*/
 	
 	/**
 	 * @param codec

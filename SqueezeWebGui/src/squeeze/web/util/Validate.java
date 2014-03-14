@@ -20,6 +20,8 @@
  */
 package squeeze.web.util;
 
+import squeeze.web.SqueezeliteAction;
+
 /**
  * @author Clive Messer <clive.m.messer@gmail.com>
  *
@@ -60,10 +62,20 @@ public class Validate {
 	public final static String SQUEEZELITE_REGEX_MAX_RATE_TIME_BTWN_CHANGE = "^(:([0-9]+)){1}$";
 
 	public final static int SQUEEZELITE_MAX_SAMPLE_RATE = 384000;
+
+	public final static String[] SQUEEZELITE_LOG_NAMES = {
+		SqueezeliteAction.LOG_NAME_ALL, 
+		SqueezeliteAction.LOG_NAME_SLIMPROTO, 
+		SqueezeliteAction.LOG_NAME_STREAM, 
+		SqueezeliteAction.LOG_NAME_DECODE, 
+		SqueezeliteAction.LOG_NAME_OUTPUT
+	};
 	
-	public final static String[] SQUEEZELITE_LOG_NAMES = {"all", "slimproto", "stream", "decode", "output"};
-	
-	public final static String[] SQUEEZELITE_LOG_LEVELS = {"info", "debug", "sdebug"};
+	public final static String[] SQUEEZELITE_LOG_LEVELS = {
+		SqueezeliteAction.LOG_LEVEL_INFO, 
+		SqueezeliteAction.LOG_LEVEL_DEBUG, 
+		SqueezeliteAction.LOG_LEVEL_SDEBUG
+	};
 	
 	public final static String[] SQUEEZELITE_CODECS = {"flac", "pcm", "mp3", "ogg", "aac", "mad", "mpg"};
 	
