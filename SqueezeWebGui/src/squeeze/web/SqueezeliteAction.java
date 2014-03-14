@@ -469,7 +469,9 @@ public class SqueezeliteAction extends SystemctlAction {
 				int lines = DEFAULT_NUMBER_OF_LOG_LINES;
 				try {
 					lines = Integer.parseInt(logLines);
-				} catch (NumberFormatException nfe) {}
+				} catch (NumberFormatException nfe) {
+					logLines = String.valueOf(DEFAULT_NUMBER_OF_LOG_LINES);
+				}
 				log = Util.tail(new File(logFile), lines);
 			} catch (Exception e) {
 				LOGGER.warn("Caught exception trying to read the log file!", e);
