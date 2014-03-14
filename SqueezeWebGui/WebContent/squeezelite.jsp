@@ -167,6 +167,7 @@
 					<s:iterator value="audioDevList" status="stat">
 						<s:hidden name="audioDevList[%{#stat.index}]" value="%{audioDevList[#stat.index]}" />
 					</s:iterator>
+
 					<table>
 						<!-- name -->
 						<tr>
@@ -179,6 +180,61 @@
 							<td>
 								<s:textfield name="name" cssClass="size-300px" />
 							</td>      
+						</tr>
+						<tr>
+							<td align="right">
+								<s:text name="squeezelite.label.logFile" />
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.logFile')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.logFile')" />" />
+							</td>
+							<td>
+								<s:textfield name="logFile" cssClass="size-300px" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right">
+								<s:text name="squeezelite.label.logLevel" />
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.logLevel')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.logLevel')" />" />
+							</td>
+							<td>
+								<s:textfield name="logLevel" cssClass="size-300px" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right">
+								<s:text name="squeezelite.label.buffer.stream" />
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.buffer.stream')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.buffer.stream')" />" />
+							</td>
+							<td>
+								<s:textfield name="bufferStream" cssClass="size-300px" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right">
+								<s:text name="squeezelite.label.buffer.output" />
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.buffer.output')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.buffer.output')" />" />
+							</td>
+							<td>
+								<s:textfield name="bufferOutput" cssClass="size-300px" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right">
+								<s:text name="squeezelite.label.priority" />
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.priority')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.priority')" />" />
+							</td>
+							<td>
+								<s:select name="priority" list="priorityList" />
+							</td>
 						</tr>
 						<!-- audio device -->
 						<tr>
@@ -254,6 +310,17 @@
 							</td>
 							<td>
 								<s:textfield name="maxRate" cssClass="size-300px" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right">
+								<s:text name="squeezelite.label.codec" />
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.codec')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.codec')" />" />
+							</td>
+							<td>
+								<s:textfield name="codec" cssClass="size-300px" />
 							</td>
 						</tr>
 						<!-- resample -->
@@ -500,97 +567,24 @@
 						<!-- Start: Advanced Options -->
 						<tr>
 							<td align="right">
-								<s:text name="squeezelite.label.mac" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.mac')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.mac')" />" />
+								<label for="mac">
+									<s:text name="squeezelite.label.mac" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.mac')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.mac')" />" />
+								</label>
 							</td>
 							<td>
-								<s:textfield name="mac" cssClass="size-300px" />
+								<s:textfield id="mac" name="mac" cssClass="size-300px" />
 							</td>
 						</tr>
 						<tr>
 							<td />
 							<td>
-								<s:checkbox name="defaultMac" />
-								<s:text name="squeezelite.label.mac.default" />
-							</td>
-						</tr>
-						<tr>
-							<td align="right">
-								<s:text name="squeezelite.label.logFile" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.logFile')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.logFile')" />" />
-							</td>
-							<td>
-								<s:textfield name="logFile" cssClass="size-300px" />
-							</td>
-						</tr>
-						<tr>
-							<td align="right">
-								<s:text name="squeezelite.label.logLevel" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.logLevel')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.logLevel')" />" />
-							</td>
-							<td>
-								<s:textfield name="logLevel" cssClass="size-300px" />
-							</td>
-						</tr>
-						<tr>
-							<td align="right">
-								<s:text name="squeezelite.label.priority" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.priority')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.priority')" />" />
-							</td>
-							<td>
-								<s:select name="priority" list="priorityList" />
-							</td>
-						</tr>
-						<tr>
-							<td align="right">
-								<s:text name="squeezelite.label.buffer.stream" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.buffer.stream')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.buffer.stream')" />" />
-							</td>
-							<td>
-								<s:textfield name="bufferStream" cssClass="size-300px" />
-							</td>
-						</tr>
-						<tr>
-							<td align="right">
-								<s:text name="squeezelite.label.buffer.output" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.buffer.output')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.buffer.output')" />" />
-							</td>
-							<td>
-								<s:textfield name="bufferOutput" cssClass="size-300px" />
-							</td>
-						</tr>
-						<tr>
-							<td align="right">
-								<s:text name="squeezelite.label.codec" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.codec')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.codec')" />" />
-							</td>
-							<td>
-								<s:textfield name="codec" cssClass="size-300px" />
-							</td>
-						</tr>
-						<tr>
-							<td align="right">
-								<s:text name="squeezelite.label.options" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.options')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.options')" />" />
-							</td>
-							<td>
-								<s:textfield name="options" cssClass="size-300px" />
+								<s:checkbox id="defaultMac" name="defaultMac" />
+								<label for="defaultMac">
+									<s:text name="squeezelite.label.mac.default" />
+								</label>
 							</td>
 						</tr>
 						<tr>
@@ -602,6 +596,17 @@
 							</td>
 							<td>
 								<s:textfield name="serverIp" cssClass="size-300px" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right">
+								<s:text name="squeezelite.label.options" />
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.options')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.options')" />" />
+							</td>
+							<td>
+								<s:textfield name="options" cssClass="size-300px" />
 							</td>
 						</tr>
 
@@ -623,7 +628,7 @@
 							<tr>
 							<td colspan="2" align="right">
 								<s:submit action="SqueezeliteSave_saveAndRestart" 
-								key="button.saveAndConditionallyRestart" />
+									key="button.saveAndConditionallyRestart" />
 							</td>
 						</tr>
 					</table>
