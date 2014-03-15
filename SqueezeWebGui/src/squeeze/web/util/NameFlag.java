@@ -45,16 +45,24 @@ public class NameFlag {
 	static {
 		
 		SOXR_QUALITY_LIST = new ArrayList<NameFlag>();	
-		SOXR_QUALITY_LIST.add(new NameFlag("Cubic", "" + SoxResample.SOXR_QQ_FLAG));
-		SOXR_QUALITY_LIST.add(new NameFlag("Low", "" + SoxResample.SOXR_LQ_FLAG));
-		SOXR_QUALITY_LIST.add(new NameFlag("Medium", "" + SoxResample.SOXR_MQ_FLAG));
-		SOXR_QUALITY_LIST.add(new NameFlag("High", "" + SoxResample.SOXR_HQ_FLAG));
-		SOXR_QUALITY_LIST.add(new NameFlag("Very High", "" + SoxResample.SOXR_VHQ_FLAG));
+		SOXR_QUALITY_LIST.add(new NameFlag("Quick (cubic interpolation)", 
+				String.valueOf(SoxResample.SOXR_QQ_FLAG)));
+		SOXR_QUALITY_LIST.add(new NameFlag("Low (16 bit with larger rolloff)", 
+				String.valueOf(SoxResample.SOXR_LQ_FLAG)));
+		SOXR_QUALITY_LIST.add(new NameFlag("Medium (16 bit with medium rolloff)", 
+				String.valueOf(SoxResample.SOXR_MQ_FLAG)));
+		SOXR_QUALITY_LIST.add(new NameFlag("High (20 bit)", 
+				String.valueOf(SoxResample.SOXR_HQ_FLAG)));
+		SOXR_QUALITY_LIST.add(new NameFlag("Very High (28 bit)", 
+				String.valueOf(SoxResample.SOXR_VHQ_FLAG)));
 	
 		SOXR_FILTER_LIST = new ArrayList<NameFlag>();
-		SOXR_FILTER_LIST.add(new NameFlag("Linear", "" + SoxResample.SOXR_LINEAR_PHASE_FLAG));
-		SOXR_FILTER_LIST.add(new NameFlag("Intermediate", "" + SoxResample.SOXR_INTERMEDIATE_PHASE_FLAG));
-		SOXR_FILTER_LIST.add(new NameFlag("Minimum Phase", "" + SoxResample.SOXR_MINIMUM_PHASE_FLAG));
+		SOXR_FILTER_LIST.add(new NameFlag("Linear Phase", 
+				String.valueOf(SoxResample.SOXR_LINEAR_PHASE_FLAG)));
+		SOXR_FILTER_LIST.add(new NameFlag("Intermediate Phase",  
+				String.valueOf(SoxResample.SOXR_INTERMEDIATE_PHASE_FLAG)));
+		SOXR_FILTER_LIST.add(new NameFlag("Minimum Phase", 
+				String.valueOf(SoxResample.SOXR_MINIMUM_PHASE_FLAG)));
 		
 		ALSA_PARAMS_FORMAT_LIST = new ArrayList<NameFlag>();
 		ALSA_PARAMS_FORMAT_LIST.add(new NameFlag("16 bit", "16"));

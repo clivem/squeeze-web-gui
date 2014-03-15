@@ -413,6 +413,38 @@
 								<s:a href="squeezelite_upsample.jsp" target="_blank">Info</s:a>
 							</td>
 						</tr>
+						<!-- resample recipe exception -->
+						<tr id="resampleRecipeException_tr" 
+							<s:if test="%{resample}">style="display:"</s:if>
+							<s:else>style="display:none"</s:else>>
+							<td align="right">
+								<label for="resampleRecipeException" style="font-style: italic;">
+									<s:text name="squeezelite.label.resample.exception" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.resample.exception')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.resample.exception')" />" />
+								</label>
+							</td>
+							<td>
+								<s:checkbox id="resampleRecipeException" name="resampleRecipeException" />
+							</td>
+						</tr>
+						<!-- resample recipe async -->
+						<tr id="resampleRecipeAsync_tr" 
+							<s:if test="%{resample}">style="display:"</s:if>
+							<s:else>style="display:none"</s:else>>
+							<td align="right">
+								<label for="resampleRecipeAsync" style="font-style: italic;">
+									<s:text name="squeezelite.label.resample.async" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.resample.async')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.resample.async')" />" />
+								</label>
+							</td>
+							<td>
+								<s:checkbox id="resampleRecipeAsync" name="resampleRecipeAsync" />
+							</td>
+						</tr>
 						<!-- resample recipe quality -->
 						<tr id="resampleRecipeQuality_tr" 
 							<s:if test="%{resample}">style="display:"</s:if>
@@ -465,38 +497,6 @@
 								<s:checkbox id="resampleRecipeSteep" name="resampleRecipeSteep" />
 							</td>
 						</tr>												
-						<!-- resample recipe exception -->
-						<tr id="resampleRecipeException_tr" 
-							<s:if test="%{resample}">style="display:"</s:if>
-							<s:else>style="display:none"</s:else>>
-							<td align="right">
-								<label for="resampleRecipeException" style="font-style: italic;">
-									<s:text name="squeezelite.label.resample.exception" />
-									<img src='struts/tooltip.gif'
-										title="<s:property value="getText('squeezelite.tooltip.resample.exception')" />"
-										alt="<s:property value="getText('squeezelite.tooltip.resample.exception')" />" />
-								</label>
-							</td>
-							<td>
-								<s:checkbox id="resampleRecipeException" name="resampleRecipeException" />
-							</td>
-						</tr>
-						<!-- resample recipe async -->
-						<tr id="resampleRecipeAsync_tr" 
-							<s:if test="%{resample}">style="display:"</s:if>
-							<s:else>style="display:none"</s:else>>
-							<td align="right">
-								<label for="resampleRecipeAsync" style="font-style: italic;">
-									<s:text name="squeezelite.label.resample.async" />
-									<img src='struts/tooltip.gif'
-										title="<s:property value="getText('squeezelite.tooltip.resample.async')" />"
-										alt="<s:property value="getText('squeezelite.tooltip.resample.async')" />" />
-								</label>
-							</td>
-							<td>
-								<s:checkbox id="resampleRecipeAsync" name="resampleRecipeAsync" />
-							</td>
-						</tr>
 						<!-- resample advanced flags -->
 						<tr id="resampleRecipeFlags_tr" 
 							<s:if test="%{resample}">style="display:"</s:if>
