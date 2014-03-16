@@ -90,7 +90,8 @@ public class Validate {
 		SqueezeliteAction.CODEC_OGG,
 		SqueezeliteAction.CODEC_AAC,
 		SqueezeliteAction.CODEC_ALAC,
-		SqueezeliteAction.CODEC_WMA
+		SqueezeliteAction.CODEC_WMA,
+		SqueezeliteAction.CODEC_DSD
 	};
 	*/
 		

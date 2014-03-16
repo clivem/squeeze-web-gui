@@ -559,6 +559,20 @@
 								<s:checkbox id="codecAlac" name="codecAlac" />
 							</td>
 						</tr>
+						<!-- codec dsd -->
+						<tr>
+							<td align="right">
+								<label for="codecDsd" style="font-style: italic; color: green;">
+									<s:text name="squeezelite.label.codec.dsd" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.codec.dsd')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.codec.dsd')" />" />
+								</label>
+							</td>
+							<td>
+								<s:checkbox id="codecDsd" name="codecDsd" />
+							</td>
+						</tr>
 						<!-- blank -->
 						<tr>
 							<td>&nbsp;</td>

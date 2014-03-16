@@ -113,6 +113,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	public final static String CODEC_AAC = "aac";
 	public final static String CODEC_WMA = "wma";
 	public final static String CODEC_ALAC = "alac";
+	public final static String CODEC_DSD = "dsd";
 	
 	private final static String CFG_NAME = "NAME";
 	private final static String CFG_NAME_OPTION = "-n ";
@@ -188,6 +189,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	protected boolean codecAac = false;
 	protected boolean codecWma = false;
 	protected boolean codecAlac = false;
+	protected boolean codecDsd = false;
 	
 	protected String alsaParamsBuffer = null;
 	protected String alsaParamsPeriod = null;
@@ -306,6 +308,7 @@ public class SqueezeliteAction extends SystemctlAction {
 		codecAac = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_AAC) != null);
 		codecWma = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_WMA) != null);
 		codecAlac = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_ALAC) != null);
+		codecDsd = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_DSD) != null);
 		
 		String alsaParams = properties.get(CFG_ALSA_PARAMS);
 		if (alsaParams != null) {
@@ -785,6 +788,14 @@ public class SqueezeliteAction extends SystemctlAction {
 				codec += Util.COMMA;
 			}
 			codec += CODEC_ALAC;
+			codecCount++;
+		}
+		
+		if (codecDsd) {
+			if (codecCount > 0) {
+				codec += Util.COMMA;
+			}
+			codec += CODEC_DSD;
 			codecCount++;
 		}
 		
@@ -1654,6 +1665,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the log
 	 */
 	public String getLog() {
+		
 		return log;
 	}
 
@@ -1661,6 +1673,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return log the log to set
 	 *
 	public void setLog(String log) {
+	
 		this.log = log;
 	}
 	*/
@@ -1669,6 +1682,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the logLines
 	 */
 	public String getLogLines() {
+		
 		return logLines;
 	}
 	
@@ -1676,6 +1690,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param logLines the logLines to set
 	 */
 	public void setLogLines(String logLines) {
+		
 		this.logLines = logLines;
 	}
 
@@ -1683,6 +1698,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the logLevelSlimproto
 	 */
 	public String getLogLevelSlimproto() {
+		
 		return logLevelSlimproto;
 	}
 
@@ -1690,6 +1706,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param logLevelSlimproto the logLevelSlimproto to set
 	 */
 	public void setLogLevelSlimproto(String logLevelSlimproto) {
+		
 		this.logLevelSlimproto = logLevelSlimproto;
 	}
 
@@ -1697,6 +1714,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the logLevelStream
 	 */
 	public String getLogLevelStream() {
+		
 		return logLevelStream;
 	}
 
@@ -1704,6 +1722,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param logLevelStream the logLevelStream to set
 	 */
 	public void setLogLevelStream(String logLevelStream) {
+		
 		this.logLevelStream = logLevelStream;
 	}
 
@@ -1711,6 +1730,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the logLevelDecode
 	 */
 	public String getLogLevelDecode() {
+		
 		return logLevelDecode;
 	}
 
@@ -1718,6 +1738,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param logLevelDecode the logLevelDecode to set
 	 */
 	public void setLogLevelDecode(String logLevelDecode) {
+		
 		this.logLevelDecode = logLevelDecode;
 	}
 
@@ -1725,6 +1746,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the logLevelOutput
 	 */
 	public String getLogLevelOutput() {
+		
 		return logLevelOutput;
 	}
 
@@ -1732,6 +1754,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param logLevelOutput the logLevelOutput to set
 	 */
 	public void setLogLevelOutput(String logLevelOutput) {
+		
 		this.logLevelOutput = logLevelOutput;
 	}
 
@@ -1739,6 +1762,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the codecMp3
 	 */
 	public String getCodecMp3() {
+		
 		return codecMp3;
 	}
 
@@ -1746,6 +1770,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param codecMp3 the codecMp3 to set
 	 */
 	public void setCodecMp3(String codecMp3) {
+		
 		this.codecMp3 = codecMp3;
 	}
 
@@ -1753,6 +1778,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the codecFlac
 	 */
 	public boolean isCodecFlac() {
+		
 		return codecFlac;
 	}
 
@@ -1760,6 +1786,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param codecFlac the codecFlac to set
 	 */
 	public void setCodecFlac(boolean codecFlac) {
+		
 		this.codecFlac = codecFlac;
 	}
 
@@ -1767,6 +1794,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the codecPcm
 	 */
 	public boolean isCodecPcm() {
+		
 		return codecPcm;
 	}
 
@@ -1774,6 +1802,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param codecPcm the codecPcm to set
 	 */
 	public void setCodecPcm(boolean codecPcm) {
+		
 		this.codecPcm = codecPcm;
 	}
 
@@ -1781,6 +1810,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the codecOgg
 	 */
 	public boolean isCodecOgg() {
+		
 		return codecOgg;
 	}
 
@@ -1788,6 +1818,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param codecOgg the codecOgg to set
 	 */
 	public void setCodecOgg(boolean codecOgg) {
+		
 		this.codecOgg = codecOgg;
 	}
 
@@ -1795,6 +1826,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the codecAac
 	 */
 	public boolean isCodecAac() {
+		
 		return codecAac;
 	}
 
@@ -1802,6 +1834,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param codecAac the codecAac to set
 	 */
 	public void setCodecAac(boolean codecAac) {
+		
 		this.codecAac = codecAac;
 	}
 
@@ -1809,6 +1842,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the codecWma
 	 */
 	public boolean isCodecWma() {
+		
 		return codecWma;
 	}
 
@@ -1816,6 +1850,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param codecWma the codecWma to set
 	 */
 	public void setCodecWma(boolean codecWma) {
+		
 		this.codecWma = codecWma;
 	}
 
@@ -1823,13 +1858,39 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the codecAlac
 	 */
 	public boolean isCodecAlac() {
+		
 		return codecAlac;
+	}
+
+	/**
+	 * @param codecAlac the codecAlac to set
+	 */
+	public void setCodecAlac(boolean codecAlac) {
+		
+		this.codecAlac = codecAlac;
+	}
+
+	/**
+	 * @return the codecDsd
+	 */
+	public boolean isCodecDsd() {
+		
+		return codecDsd;
+	}
+
+	/**
+	 * @param codecDsd the codecDsd to set
+	 */
+	public void setCodecDsd(boolean codecDsd) {
+		
+		this.codecDsd = codecDsd;
 	}
 
 	/**
 	 * @return the mac1
 	 */
 	public String getMac1() {
+		
 		return mac1;
 	}
 
@@ -1837,6 +1898,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param mac1 the mac1 to set
 	 */
 	public void setMac1(String mac1) {
+		
 		this.mac1 = mac1;
 	}
 
@@ -1844,6 +1906,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the mac2
 	 */
 	public String getMac2() {
+		
 		return mac2;
 	}
 
@@ -1851,6 +1914,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param mac2 the mac2 to set
 	 */
 	public void setMac2(String mac2) {
+		
 		this.mac2 = mac2;
 	}
 
@@ -1858,6 +1922,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the mac3
 	 */
 	public String getMac3() {
+		
 		return mac3;
 	}
 
@@ -1865,6 +1930,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param mac3 the mac3 to set
 	 */
 	public void setMac3(String mac3) {
+		
 		this.mac3 = mac3;
 	}
 
@@ -1872,6 +1938,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the mac4
 	 */
 	public String getMac4() {
+		
 		return mac4;
 	}
 
@@ -1879,6 +1946,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param mac4 the mac4 to set
 	 */
 	public void setMac4(String mac4) {
+		
 		this.mac4 = mac4;
 	}
 
@@ -1886,6 +1954,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the mac5
 	 */
 	public String getMac5() {
+		
 		return mac5;
 	}
 
@@ -1893,6 +1962,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param mac5 the mac5 to set
 	 */
 	public void setMac5(String mac5) {
+		
 		this.mac5 = mac5;
 	}
 
@@ -1900,6 +1970,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the mac6
 	 */
 	public String getMac6() {
+		
 		return mac6;
 	}
 
@@ -1907,14 +1978,8 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param mac6 the mac6 to set
 	 */
 	public void setMac6(String mac6) {
+		
 		this.mac6 = mac6;
-	}
-
-	/**
-	 * @param codecAlac the codecAlac to set
-	 */
-	public void setCodecAlac(boolean codecAlac) {
-		this.codecAlac = codecAlac;
 	}
 
 	/**
