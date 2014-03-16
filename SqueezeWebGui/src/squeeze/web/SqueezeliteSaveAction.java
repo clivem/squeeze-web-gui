@@ -22,6 +22,7 @@ package squeeze.web;
 
 import org.apache.log4j.Logger;
 
+import squeeze.web.util.Util;
 import squeeze.web.util.Validate;
 
 /**
@@ -61,12 +62,40 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 			}
 		}
 		
+		/*
 		if (mac != null && mac.trim().length() > 0) {
 			if (!mac.trim().matches(Validate.REGEX_MAC_ADDRESS)) {
 				addActionError(getText("squeezelite.validation.mac.fail"));
 			}
 		}
-		
+		*/
+
+		if((mac1 == null || mac1.trim().length() < 1) && 
+				(mac2 == null || mac2.trim().length() < 1) &&
+				(mac3 == null || mac3.trim().length() < 1) &&
+				(mac4 == null || mac4.trim().length() < 1) &&
+				(mac5 == null || mac5.trim().length() < 1) &&
+				(mac6 == null || mac6.trim().length() < 1)) {
+			/*
+			 * Don't set mac.
+			 */
+		} else {
+			/* 
+			 * Set mac.
+			 */
+			if (mac1 == null || mac1.trim().length() < 2 || mac2 == null || mac2.trim().length() < 2 || 
+					mac3 == null || mac3.trim().length() < 2 || mac4 == null || mac4.trim().length() < 2 || 
+					mac5 == null || mac5.trim().length() < 2 || mac6 == null || mac6.trim().length() < 2) {
+				addActionError(getText("squeezelite.validation.mac.fail"));
+			} else {
+				String mac = mac1.trim() + Util.COLON + mac2.trim() + Util.COLON + mac3.trim() + Util.COLON + 
+						mac4.trim() + Util.COLON + mac5.trim() + Util.COLON + mac6.trim();
+				if (!mac.matches(Validate.REGEX_MAC_ADDRESS)) {
+					addActionError(getText("squeezelite.validation.mac.fail"));
+				}
+			}
+		}
+				
 		if(maxRate != null && maxRate.trim().length() > 0) {
 			if (maxRate.trim().matches(Validate.SQUEEZELITE_REGEX_MAX_RATE) || 
 					maxRate.trim().matches(Validate.SQUEEZELITE_REGEX_MAX_RATE_RANGE) ||

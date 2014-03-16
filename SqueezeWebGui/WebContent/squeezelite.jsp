@@ -835,7 +835,12 @@
 								</label>
 							</td>
 							<td>
-								<s:textfield id="mac" name="mac" cssClass="size-300px" />
+								<s:textfield id="mac1" name="mac1" maxlength="2" size="2" />
+								<s:textfield id="mac2" name="mac2" maxlength="2" size="2" />
+								<s:textfield id="mac3" name="mac3" maxlength="2" size="2" />
+								<s:textfield id="mac4" name="mac4" maxlength="2" size="2" />
+								<s:textfield id="mac5" name="mac5" maxlength="2" size="2" />
+								<s:textfield id="mac6" name="mac6" maxlength="2" size="2" />
 							</td>
 						</tr>
 						<tr>

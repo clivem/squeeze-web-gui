@@ -153,7 +153,16 @@ public class SqueezeliteAction extends SystemctlAction {
 	protected HashMap<String, String> properties = new HashMap<String, String>();
 
 	protected String name = null;
-	protected String mac = null;
+	
+	//protected String mac = null;
+	
+	protected String mac1 = null;
+	protected String mac2 = null;
+	protected String mac3 = null;
+	protected String mac4 = null;
+	protected String mac5 = null;
+	protected String mac6 = null;
+	
 	protected String maxRate = null;
 	protected String audioDev = null;
 	
@@ -252,7 +261,15 @@ public class SqueezeliteAction extends SystemctlAction {
 		
 		name = properties.get(CFG_NAME);
 		
-		mac = properties.get(CFG_MAC);
+		String mac = properties.get(CFG_MAC);
+		if (mac != null && mac.trim().matches(Validate.REGEX_MAC_ADDRESS)) {
+			mac1 = mac.substring(0, 2);
+			mac2 = mac.substring(3, 5);
+			mac3 = mac.substring(6, 8);
+			mac4 = mac.substring(9, 11);
+			mac5 = mac.substring(12, 14);
+			mac6 = mac.substring(15, 17);
+		}
 		
 		maxRate = properties.get(CFG_MAX_RATE);
 		
@@ -557,20 +574,41 @@ public class SqueezeliteAction extends SystemctlAction {
 		/*
 		 * If mac has not populated by the user and default mac cb is populated, 
 		 * get the mac of the default wired network interface
-		 */
+		 *
 		if ((mac == null || mac.trim().length() < Validate.MAC_STRING_LENGTH) && defaultMac) {
 			String tmpMac = Util.getMacAddress(WebConfig.getWiredInterfaceName());
 			if (tmpMac != null && tmpMac.matches(Validate.REGEX_MAC_ADDRESS)) {
 				mac = tmpMac;
 			}
-		} 
+		}
+		*/
+
+		String mac = null;
+		if (mac1 != null && mac2 != null && mac3 != null && mac4 != null && mac5 != null && mac6 != null) {
+			String tmpMac = mac1.trim() + Util.COLON + mac2.trim() + Util.COLON + mac3.trim() + Util.COLON + 
+					mac4.trim() + Util.COLON + mac5.trim() + Util.COLON + mac6.trim();
+			if (tmpMac.matches(Validate.REGEX_MAC_ADDRESS)) {
+				mac = tmpMac;
+			}
+		}
 		
+		/*
+		 * If it hasn't been explicitly set but the defaultMac option has been checked, use the MAC
+		 * of the wired interface.
+		 */
+		if (mac == null && defaultMac) {
+			String tmpMac = Util.getMacAddress(WebConfig.getWiredInterfaceName());
+			if (tmpMac != null && tmpMac.matches(Validate.REGEX_MAC_ADDRESS)) {
+				mac = tmpMac;
+			}
+		}
+
 		/*
 		 * -m <mac addr>
 		 * Set mac address, format: ab:cd:ef:12:34:56
 		 */
-		if (mac != null && mac.trim().length() == Validate.MAC_STRING_LENGTH) {
-			list.add(CFG_MAC + "=\"" + CFG_MAC_OPTION + mac.trim() + "\"");
+		if (mac != null) {
+			list.add(CFG_MAC + "=\"" + CFG_MAC_OPTION + mac + "\"");
 		}
 		
 		/*
@@ -1082,19 +1120,21 @@ public class SqueezeliteAction extends SystemctlAction {
 	
 	/**
 	 * @return
-	 */
+	 *
 	public String getMac() {
 		
 		return mac;
 	}
+	*/
 	
 	/**
 	 * @param mac
-	 */
+	 *
 	public void setMac(String mac) {
 		
 		this.mac = mac;
 	}
+	*/
 	
 	/**
 	 * @return
@@ -1784,6 +1824,90 @@ public class SqueezeliteAction extends SystemctlAction {
 	 */
 	public boolean isCodecAlac() {
 		return codecAlac;
+	}
+
+	/**
+	 * @return the mac1
+	 */
+	public String getMac1() {
+		return mac1;
+	}
+
+	/**
+	 * @param mac1 the mac1 to set
+	 */
+	public void setMac1(String mac1) {
+		this.mac1 = mac1;
+	}
+
+	/**
+	 * @return the mac2
+	 */
+	public String getMac2() {
+		return mac2;
+	}
+
+	/**
+	 * @param mac2 the mac2 to set
+	 */
+	public void setMac2(String mac2) {
+		this.mac2 = mac2;
+	}
+
+	/**
+	 * @return the mac3
+	 */
+	public String getMac3() {
+		return mac3;
+	}
+
+	/**
+	 * @param mac3 the mac3 to set
+	 */
+	public void setMac3(String mac3) {
+		this.mac3 = mac3;
+	}
+
+	/**
+	 * @return the mac4
+	 */
+	public String getMac4() {
+		return mac4;
+	}
+
+	/**
+	 * @param mac4 the mac4 to set
+	 */
+	public void setMac4(String mac4) {
+		this.mac4 = mac4;
+	}
+
+	/**
+	 * @return the mac5
+	 */
+	public String getMac5() {
+		return mac5;
+	}
+
+	/**
+	 * @param mac5 the mac5 to set
+	 */
+	public void setMac5(String mac5) {
+		this.mac5 = mac5;
+	}
+
+	/**
+	 * @return the mac6
+	 */
+	public String getMac6() {
+		return mac6;
+	}
+
+	/**
+	 * @param mac6 the mac6 to set
+	 */
+	public void setMac6(String mac6) {
+		this.mac6 = mac6;
 	}
 
 	/**
