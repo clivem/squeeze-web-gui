@@ -22,7 +22,6 @@ package squeeze.web;
 
 import org.apache.log4j.Logger;
 
-import squeeze.web.util.Util;
 import squeeze.web.util.Validate;
 
 /**
@@ -152,6 +151,7 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 		}
 		*/
 		
+		/*
 		if (codec != null && codec.trim().length() > 0) {
 			String[] tempList = codec.trim().split(",");
 			for (int i = 0; i < tempList.length; i++) {
@@ -165,6 +165,7 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 				}
 			}
 		}
+		*/
 		
 		/*
 		if (alsaParams != null && alsaParams.trim().length() > 0) {
@@ -374,7 +375,7 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 	/**
 	 * @param codec
 	 * @return
-	 */
+	 *
 	private final static boolean validateCodec(final String codec) {
 		
 		if (LOGGER.isTraceEnabled()) {
@@ -383,4 +384,5 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 		
 		return Util.contains(Validate.SQUEEZELITE_CODECS, codec);
 	}
+	*/
 }

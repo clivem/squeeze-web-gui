@@ -77,8 +77,18 @@ public class Validate {
 		SqueezeliteAction.LOG_LEVEL_SDEBUG
 	};
 	
-	public final static String[] SQUEEZELITE_CODECS = {"flac", "pcm", "mp3", "ogg", "aac", "mad", "mpg"};
-	
+	public final static String[] SQUEEZELITE_CODECS = {
+		SqueezeliteAction.CODEC_MP3,
+		SqueezeliteAction.CODEC_MP3_MAD,
+		SqueezeliteAction.CODEC_MP3_MPG,
+		SqueezeliteAction.CODEC_FLAC,
+		SqueezeliteAction.CODEC_PCM,
+		SqueezeliteAction.CODEC_OGG,
+		SqueezeliteAction.CODEC_AAC,
+		SqueezeliteAction.CODEC_ALAC,
+		SqueezeliteAction.CODEC_WMA
+	};
+		
 	/**
 	 * 
 	 */

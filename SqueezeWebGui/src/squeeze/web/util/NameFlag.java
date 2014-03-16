@@ -39,6 +39,8 @@ public class NameFlag {
 	
 	private final static List<NameFlag> LOG_LEVEL_LIST;
 
+	private final static List<NameFlag> MP3_LIST;
+
 	private String name;
 	private String flag;
 	
@@ -65,10 +67,14 @@ public class NameFlag {
 				String.valueOf(SoxResample.SOXR_MINIMUM_PHASE_FLAG)));
 		
 		ALSA_PARAMS_FORMAT_LIST = new ArrayList<NameFlag>();
-		ALSA_PARAMS_FORMAT_LIST.add(new NameFlag("16 bit", "16"));
-		ALSA_PARAMS_FORMAT_LIST.add(new NameFlag("24 bit (3 bytes)", "24_3"));
-		ALSA_PARAMS_FORMAT_LIST.add(new NameFlag("24 bit (4 bytes)", "24"));
-		ALSA_PARAMS_FORMAT_LIST.add(new NameFlag("32 bit", "32"));
+		ALSA_PARAMS_FORMAT_LIST.add(new NameFlag("16 bit (16)", 
+				SqueezeliteAction.ALSA_PARAMS_FORMAT_16));
+		ALSA_PARAMS_FORMAT_LIST.add(new NameFlag("24 bit (3 bytes - 24_3)", 
+				SqueezeliteAction.ALSA_PARAMS_FORMAT_24_3));
+		ALSA_PARAMS_FORMAT_LIST.add(new NameFlag("24 bit (4 bytes - 24)", 
+				SqueezeliteAction.ALSA_PARAMS_FORMAT_24));
+		ALSA_PARAMS_FORMAT_LIST.add(new NameFlag("32 bit (32)", 
+				SqueezeliteAction.ALSA_PARAMS_FORMAT_32));
 
 		ALSA_PARAMS_MMAP_LIST = new ArrayList<NameFlag>();
 		ALSA_PARAMS_MMAP_LIST.add(new NameFlag("Disable", Util.ZERO));
@@ -78,6 +84,11 @@ public class NameFlag {
 		LOG_LEVEL_LIST.add(new NameFlag("Info", SqueezeliteAction.LOG_LEVEL_INFO));
 		LOG_LEVEL_LIST.add(new NameFlag("Debug", SqueezeliteAction.LOG_LEVEL_DEBUG));
 		LOG_LEVEL_LIST.add(new NameFlag("Trace", SqueezeliteAction.LOG_LEVEL_SDEBUG));
+		
+		MP3_LIST = new ArrayList<NameFlag>();
+		MP3_LIST.add(new NameFlag("Enable", SqueezeliteAction.CODEC_MP3));
+		MP3_LIST.add(new NameFlag("Use libmad to decode mp3", SqueezeliteAction.CODEC_MP3_MAD));
+		MP3_LIST.add(new NameFlag("Use libmpg123 to decode mp3", SqueezeliteAction.CODEC_MP3_MPG));
 	}
 	
 	/**
@@ -170,5 +181,13 @@ public class NameFlag {
 	public final static List<NameFlag> getLogLevelList() {
 		
 		return LOG_LEVEL_LIST;
+	}
+
+	/**
+	 * @return the mp3List
+	 */
+	public final static List<NameFlag> getMp3List() {
+		
+		return MP3_LIST;
 	}
 }

@@ -99,6 +99,21 @@ public class SqueezeliteAction extends SystemctlAction {
 	public final static String LOG_LEVEL_DEBUG = "debug";
 	public final static String LOG_LEVEL_INFO = "info";
 	
+	public final static String ALSA_PARAMS_FORMAT_16 = "16";
+	public final static String ALSA_PARAMS_FORMAT_24_3 = "24_3";
+	public final static String ALSA_PARAMS_FORMAT_24 = "24";
+	public final static String ALSA_PARAMS_FORMAT_32 = "32";
+	
+	public final static String CODEC_MP3 = "mp3";
+	public final static String CODEC_MP3_MAD = "mad";
+	public final static String CODEC_MP3_MPG = "mpg";
+	public final static String CODEC_FLAC = "flac";
+	public final static String CODEC_PCM = "pcm";
+	public final static String CODEC_OGG = "ogg";
+	public final static String CODEC_AAC = "aac";
+	public final static String CODEC_WMA = "wma";
+	public final static String CODEC_ALAC = "alac";
+	
 	private final static String CFG_NAME = "NAME";
 	private final static String CFG_NAME_OPTION = "-n ";
 	private final static String CFG_MAC = "MAC";
@@ -155,7 +170,15 @@ public class SqueezeliteAction extends SystemctlAction {
 	protected String bufferStream = null;
 	protected String bufferOutput = null;
 	
-	protected String codec = null;
+	//protected String codec = null;
+	
+	protected String codecMp3 = null;
+	protected boolean codecFlac = false;
+	protected boolean codecPcm = false;
+	protected boolean codecOgg = false;
+	protected boolean codecAac = false;
+	protected boolean codecWma = false;
+	protected boolean codecAlac = false;
 	
 	protected String alsaParamsBuffer = null;
 	protected String alsaParamsPeriod = null;
@@ -258,7 +281,14 @@ public class SqueezeliteAction extends SystemctlAction {
 		String buffer = properties.get(CFG_BUFFER);
 		parseBuffer(buffer);
 		
-		codec = properties.get(CFG_CODEC);
+		//codec = properties.get(CFG_CODEC);
+		codecMp3 = properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_MP3);
+		codecFlac = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_FLAC) != null);
+		codecPcm = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_PCM) != null);
+		codecOgg = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_OGG) != null);
+		codecAac = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_AAC) != null);
+		codecWma = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_WMA) != null);
+		codecAlac = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_ALAC) != null);
 		
 		String alsaParams = properties.get(CFG_ALSA_PARAMS);
 		if (alsaParams != null) {
@@ -645,10 +675,9 @@ public class SqueezeliteAction extends SystemctlAction {
 			logLevel += CFG_LOG_LEVEL_OPTION + LOG_NAME_OUTPUT + Util.EQUALS + logLevelOutput;
 			logLevelCount++;
 		}
-
-		logLevel += "\"";
 		
 		if (logLevelCount > 0) {
+			logLevel += "\"";
 			list.add(logLevel);
 		}
 		
@@ -656,9 +685,74 @@ public class SqueezeliteAction extends SystemctlAction {
 		 * -c <codec1>,<codec2>
 		 * Restrict codecs those specified, otherwise loads all available codecs; 
 		 * known codecs: flac,pcm,mp3,ogg,aac (mad,mpg for specific mp3 codec)
-		 */
+		 *
 		if (codec != null && codec.trim().length() > 0) {
 			list.add(CFG_CODEC + "=\"" + CFG_CODEC_OPTION + codec.trim() + "\"");
+		}
+		*/
+		
+		int codecCount = 0;
+		String codec = CFG_CODEC + "=\"" + CFG_CODEC_OPTION;
+				
+		if (codecMp3 != null && codecMp3.trim().length() > 0) {
+			if (codecCount > 0) {
+				codec += Util.COMMA;
+			}
+			codec += codecMp3.trim();
+			codecCount++;
+		}
+		
+		if (codecFlac) {
+			if (codecCount > 0) {
+				codec += Util.COMMA;
+			}
+			codec += CODEC_FLAC;
+			codecCount++;
+		}
+		
+		if (codecPcm) {
+			if (codecCount > 0) {
+				codec += Util.COMMA;
+			}
+			codec += CODEC_PCM;
+			codecCount++;
+		}
+		
+		if (codecOgg) {
+			if (codecCount > 0) {
+				codec += Util.COMMA;
+			}
+			codec += CODEC_OGG;
+			codecCount++;
+		}
+		
+		if (codecAac) {
+			if (codecCount > 0) {
+				codec += Util.COMMA;
+			}
+			codec += CODEC_AAC;
+			codecCount++;
+		}
+		
+		if (codecWma) {
+			if (codecCount > 0) {
+				codec += Util.COMMA;
+			}
+			codec += CODEC_WMA;
+			codecCount++;
+		}
+		
+		if (codecAlac) {
+			if (codecCount > 0) {
+				codec += Util.COMMA;
+			}
+			codec += CODEC_ALAC;
+			codecCount++;
+		}
+		
+		if (codecCount > 0) {
+			codec += "\"";
+			list.add(codec);
 		}
 		
 		/*
@@ -827,12 +921,18 @@ public class SqueezeliteAction extends SystemctlAction {
 							/*
 							 * Remove the arg flag
 							 */
-							String[] splitOption = value.split(" ");
+							String[] splitOption = value.split(Util.SPACE);
 							if (splitOption != null && splitOption.length == 2) {
-								String temp = splitOption[1].trim();
-								properties.put(name, temp);
-								if (LOGGER.isTraceEnabled()) {
-									LOGGER.trace("Name='" + name + "', Value='" + temp + "'");
+								if (name.equals(CFG_LOG_LEVEL)) {
+									parseLogLevel(splitOption[1].trim());
+								} else if (name.equals(CFG_CODEC)) {
+									parseCodecs(splitOption[1].trim());
+								} else {
+									String temp = splitOption[1].trim();
+									properties.put(name, temp);
+									if (LOGGER.isTraceEnabled()) {
+										LOGGER.trace("Name='" + name + "', Value='" + temp + "'");
+									}
 								}
 							} else if (name.equals(CFG_VISULIZER)) {
 								if (splitOption.length == 1 && splitOption[0].equals(CFG_VISULIZER_OPTION.trim())) {
@@ -856,33 +956,11 @@ public class SqueezeliteAction extends SystemctlAction {
 									}									
 								}
 							} else if (name.equals(CFG_LOG_LEVEL)) {
-								/*
-								String tmp = "";
-								int optionCount = splitOption.length / 2;
-								for (int i = 0; i < optionCount; i++) {
-									tmp += splitOption[(i * 2) + 1].trim();
-									if (i + 1 < optionCount) {
-										tmp += " ";
-									}
-								}
-								properties.put(name, tmp);
-								if (LOGGER.isTraceEnabled()) {
-									LOGGER.trace("Name='" + name + "', Value='" + tmp + "'");
-								}
-								*/									
-								int optionCount = splitOption.length / 2;
-								for (int i = 0; i < optionCount; i++) {
-									String tmp = splitOption[(i * 2) + 1].trim();
-									StringTokenizer logTok = new StringTokenizer(tmp, Util.EQUALS);
-									if (logTok.countTokens() == 2) {
-										String logName = logTok.nextToken();
-										String logLevel = logTok.nextToken();
-										String mapLogName = CFG_LOG_LEVEL + Util.UNDERSCORE + logName;
-										properties.put(mapLogName, logLevel);
-										if (LOGGER.isTraceEnabled()) {
-											LOGGER.trace("Name='" + mapLogName + 
-													"', Value='" + logLevel + "'");
-										}
+								if (splitOption.length > 2) {
+									int optionCount = splitOption.length / 2;
+									for (int i = 0; i < optionCount; i++) {
+										String tmp = splitOption[(i * 2) + 1].trim();
+										parseLogLevel(tmp);
 									}
 								}
 							}
@@ -903,6 +981,49 @@ public class SqueezeliteAction extends SystemctlAction {
 				try {
 					br.close();
 				} catch (Exception e) {}
+			}
+		}
+	}
+	
+	/**
+	 * @param logOption
+	 */
+	private final void parseLogLevel(String logOption) {
+		
+		if (logOption != null) {
+			StringTokenizer tok = new StringTokenizer(logOption, Util.EQUALS);
+			if (tok.countTokens() == 2) {
+				String logName = tok.nextToken();
+				String logLevel = tok.nextToken();
+				String mapLogName = CFG_LOG_LEVEL + Util.UNDERSCORE + logName;
+				properties.put(mapLogName, logLevel);
+				if (LOGGER.isTraceEnabled()) {
+					LOGGER.trace("Name='" + mapLogName + 
+							"', Value='" + logLevel + "'");
+				}
+			}
+		}
+	}
+	
+	/**
+	 * @param codecs
+	 */
+	private final void parseCodecs(String codecs) {
+		
+		if (codecs != null) {
+			StringTokenizer tok = new StringTokenizer(codecs, Util.COMMA);
+			while (tok.hasMoreTokens()) {
+				String name = tok.nextToken();
+				String value = name;
+				if (CODEC_MP3_MAD.equals(name) || CODEC_MP3_MPG.equals(name)) {
+					name = CODEC_MP3;
+				}
+				name = CFG_CODEC + Util.UNDERSCORE + name;
+				properties.put(name, value);
+				if (LOGGER.isTraceEnabled()) {
+					LOGGER.trace("Name='" + name + 
+							"', Value='" + value + "'");
+				}
 			}
 		}
 	}
@@ -1057,19 +1178,21 @@ public class SqueezeliteAction extends SystemctlAction {
 	
 	/**
 	 * @return
-	 */
+	 *
 	public String getCodec() {
 		
 		return codec;
 	}
+	*/
 	
 	/**
 	 * @param codec
-	 */
+	 *
 	public void setCodec(String codec) {
 		
 		this.codec = codec;
 	}
+	*/
 	
 	/**
 	 * @return
@@ -1573,6 +1696,104 @@ public class SqueezeliteAction extends SystemctlAction {
 	}
 
 	/**
+	 * @return the codecMp3
+	 */
+	public String getCodecMp3() {
+		return codecMp3;
+	}
+
+	/**
+	 * @param codecMp3 the codecMp3 to set
+	 */
+	public void setCodecMp3(String codecMp3) {
+		this.codecMp3 = codecMp3;
+	}
+
+	/**
+	 * @return the codecFlac
+	 */
+	public boolean isCodecFlac() {
+		return codecFlac;
+	}
+
+	/**
+	 * @param codecFlac the codecFlac to set
+	 */
+	public void setCodecFlac(boolean codecFlac) {
+		this.codecFlac = codecFlac;
+	}
+
+	/**
+	 * @return the codecPcm
+	 */
+	public boolean isCodecPcm() {
+		return codecPcm;
+	}
+
+	/**
+	 * @param codecPcm the codecPcm to set
+	 */
+	public void setCodecPcm(boolean codecPcm) {
+		this.codecPcm = codecPcm;
+	}
+
+	/**
+	 * @return the codecOgg
+	 */
+	public boolean isCodecOgg() {
+		return codecOgg;
+	}
+
+	/**
+	 * @param codecOgg the codecOgg to set
+	 */
+	public void setCodecOgg(boolean codecOgg) {
+		this.codecOgg = codecOgg;
+	}
+
+	/**
+	 * @return the codecAac
+	 */
+	public boolean isCodecAac() {
+		return codecAac;
+	}
+
+	/**
+	 * @param codecAac the codecAac to set
+	 */
+	public void setCodecAac(boolean codecAac) {
+		this.codecAac = codecAac;
+	}
+
+	/**
+	 * @return the codecWma
+	 */
+	public boolean isCodecWma() {
+		return codecWma;
+	}
+
+	/**
+	 * @param codecWma the codecWma to set
+	 */
+	public void setCodecWma(boolean codecWma) {
+		this.codecWma = codecWma;
+	}
+
+	/**
+	 * @return the codecAlac
+	 */
+	public boolean isCodecAlac() {
+		return codecAlac;
+	}
+
+	/**
+	 * @param codecAlac the codecAlac to set
+	 */
+	public void setCodecAlac(boolean codecAlac) {
+		this.codecAlac = codecAlac;
+	}
+
+	/**
 	 * @return the resampleQualityList
 	 */
 	public List<NameFlag> getResampleQualityList() {
@@ -1610,5 +1831,13 @@ public class SqueezeliteAction extends SystemctlAction {
 	public List<NameFlag> getLogLevelList() {
 		
 		return NameFlag.getLogLevelList();
+	}
+
+	/**
+	 * @return the mp3List
+	 */
+	public List<NameFlag> getMp3List() {
+		
+		return NameFlag.getMp3List();
 	}
 }

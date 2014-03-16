@@ -190,6 +190,7 @@
 								<s:textfield name="name" cssClass="size-300px" />
 							</td>      
 						</tr>
+						<!-- log file -->
 						<tr>
 							<td align="right">
 								<s:text name="squeezelite.label.logFile" />
@@ -201,11 +202,25 @@
 								<s:textfield name="logFile" cssClass="size-300px" />
 							</td>
 						</tr>
+						<!-- blank -->
+						<tr>
+							<td>&nbsp;</td>
+						</tr>
+						<!-- log level header -->
+						<tr>
+							<td align="right">
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.logLevel')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.logLevel')" />" />
+							</td>
+							<td>
+								<s:text name="squeezelite.label.logLevel" />
+							</td>
+						</tr>
 						<!-- log level all -->
 						<tr>
 							<td align="right">
-								<s:text name="squeezelite.label.logLevel" />
-								<label for="logLevelAll" style="font-style: italic;">
+								<label for="logLevelAll" style="font-style: italic; color: green;">
 									<s:text name="squeezelite.label.logLevel.all" />
 									<img src='struts/tooltip.gif'
 										title="<s:property value="getText('squeezelite.tooltip.logLevel')" />"
@@ -221,8 +236,7 @@
 						<!-- log level slimproto -->
 						<tr>
 							<td align="right">
-								<s:text name="squeezelite.label.logLevel" />
-								<label for="logLevelSlimproto" style="font-style: italic;">
+								<label for="logLevelSlimproto" style="font-style: italic; color: green;">
 									<s:text name="squeezelite.label.logLevel.slimproto" />
 									<img src='struts/tooltip.gif'
 										title="<s:property value="getText('squeezelite.tooltip.logLevel')" />"
@@ -238,8 +252,7 @@
 						<!-- log level stream -->
 						<tr>
 							<td align="right">
-								<s:text name="squeezelite.label.logLevel" />
-								<label for="logLevelStream" style="font-style: italic;">
+								<label for="logLevelStream" style="font-style: italic; color: green;">
 									<s:text name="squeezelite.label.logLevel.stream" />
 									<img src='struts/tooltip.gif'
 										title="<s:property value="getText('squeezelite.tooltip.logLevel')" />"
@@ -255,8 +268,7 @@
 						<!-- log level decode -->
 						<tr>
 							<td align="right">
-								<s:text name="squeezelite.label.logLevel" />
-								<label for="logLevelDecode" style="font-style: italic;">
+								<label for="logLevelDecode" style="font-style: italic; color: green;">
 									<s:text name="squeezelite.label.logLevel.decode" />
 									<img src='struts/tooltip.gif'
 										title="<s:property value="getText('squeezelite.tooltip.logLevel')" />"
@@ -272,8 +284,7 @@
 						<!-- log level output -->
 						<tr>
 							<td align="right">
-								<s:text name="squeezelite.label.logLevel" />
-								<label for="logLevelOutput" style="font-style: italic;">
+								<label for="logLevelOutput" style="font-style: italic; color: green;">
 									<s:text name="squeezelite.label.logLevel.output" />
 									<img src='struts/tooltip.gif'
 										title="<s:property value="getText('squeezelite.tooltip.logLevel')" />"
@@ -286,38 +297,52 @@
 									headerKey="" headerValue="Not set"/>
 							</td>
 						</tr>
+						<!-- blank -->
+						<tr>
+							<td>&nbsp;</td>
+						</tr>
+						<!-- buffer header -->
 						<tr>
 							<td align="right">
-								<s:text name="squeezelite.label.buffer.stream" />
 								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.buffer.stream')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.buffer.stream')" />" />
+									title="<s:property value="getText('squeezelite.tooltip.buffer')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.buffer')" />" />
 							</td>
 							<td>
-								<s:textfield name="bufferStream" cssClass="size-300px" />
+								<s:text name="squeezelite.label.buffer" />
 							</td>
 						</tr>
+						<!-- buffer stream -->
 						<tr>
 							<td align="right">
-								<s:text name="squeezelite.label.buffer.output" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.buffer.output')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.buffer.output')" />" />
+								<label for="bufferStream" style="font-style: italic; color: green;">
+									<s:text name="squeezelite.label.buffer.stream" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.buffer.stream')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.buffer.stream')" />" />
+								</label>
 							</td>
 							<td>
-								<s:textfield name="bufferOutput" cssClass="size-300px" />
+								<s:textfield id="bufferStream" name="bufferStream" cssClass="size-300px" />
 							</td>
 						</tr>
+						<!-- buffer output -->
 						<tr>
 							<td align="right">
-								<s:text name="squeezelite.label.priority" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.priority')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.priority')" />" />
+								<label for="bufferOutput" style="font-style: italic; color: green;">
+									<s:text name="squeezelite.label.buffer.output" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.buffer.output')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.buffer.output')" />" />
+								</label>
 							</td>
 							<td>
-								<s:select name="priority" list="priorityList" />
+								<s:textfield id="bufferOutput" name="bufferOutput" cssClass="size-300px" />
 							</td>
+						</tr>
+						<!-- blank -->
+						<tr>
+							<td>&nbsp;</td>
 						</tr>
 						<!-- audio device -->
 						<tr>
@@ -331,58 +356,6 @@
 								<s:select name="audioDev" list="audioDevList" />
 							</td>
 						</tr>
-						<!-- alsa params buffer size -->
-						<tr>
-							<td align="right">
-								<s:text name="squeezelite.label.alsaParams.buffer" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.alsaParams.buffer')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.alsaParams.buffer')" />" />
-							</td>
-							<td>
-								<s:textfield name="alsaParamsBuffer" cssClass="size-100px" />
-							</td>
-						</tr>
-						<!-- alsa params period count -->
-						<tr>
-							<td align="right">
-								<s:text name="squeezelite.label.alsaParams.period" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.alsaParams.period')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.alsaParams.period')" />" />
-							</td>
-							<td>
-								<s:textfield name="alsaParamsPeriod" cssClass="size-100px" />
-							</td>
-						</tr>
-						<!-- alsa params format -->
-						<tr>
-							<td align="right">
-								<s:text name="squeezelite.label.alsaParams.format" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.alsaParams.format')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.alsaParams.format')" />" />
-							</td>
-							<td>
-								<s:select name="alsaParamsFormat" list="alsaParamsFormatList" 
-									listKey="flag" listValue="name" emptyOption="false" 
-									headerKey="" headerValue="Not set" />
-							</td>
-						</tr>
-						<!-- alsa params mmap -->
-						<tr>
-							<td align="right">
-								<s:text name="squeezelite.label.alsaParams.mmap" />
-								<img src='struts/tooltip.gif'
-									title="<s:property value="getText('squeezelite.tooltip.alsaParams.mmap')" />"
-									alt="<s:property value="getText('squeezelite.tooltip.alsaParams.mmap')" />" />
-							</td>
-							<td>
-								<s:select name="alsaParamsMmap" list="alsaParamsMmapList" 
-									listKey="flag" listValue="name" emptyOption="false" 
-									headerKey="" headerValue="Not set" />
-							</td>
-						</tr>
 						<!-- max rate -->
 						<tr>
 							<td align="right">
@@ -392,34 +365,218 @@
 									alt="<s:property value="getText('squeezelite.tooltip.maxRate')" />" />
 							</td>
 							<td>
-								<s:textfield name="maxRate" cssClass="size-300px" />
+								<s:textfield id="maxRate" name="maxRate" cssClass="size-300px" />
 							</td>
 						</tr>
+						<!-- blank -->
+						<tr>
+							<td>&nbsp;</td>
+						</tr>
+						<!-- alsa params header -->
 						<tr>
 							<td align="right">
-								<s:text name="squeezelite.label.codec" />
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.alsaParams')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.alsaParams')" />" />
+							</td>
+							<td>
+								<s:text name="squeezelite.label.alsaParams" />
+							</td>
+							
+						</tr>
+						<!-- alsa params buffer size -->
+						<tr>
+							<td align="right">
+								<label for="alsaParamsBuffer" style="font-style: italic; color: green;">
+									<s:text name="squeezelite.label.alsaParams.buffer" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.alsaParams.buffer')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.alsaParams.buffer')" />" />
+								</label>
+							</td>
+							<td>
+								<s:textfield id="alsaParamsBuffer" name="alsaParamsBuffer" cssClass="size-100px" />
+							</td>
+						</tr>
+						<!-- alsa params period count -->
+						<tr>
+							<td align="right">
+								<label for="alsaParamsPeriod" style="font-style: italic; color: green;">
+									<s:text name="squeezelite.label.alsaParams.period" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.alsaParams.period')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.alsaParams.period')" />" />
+								</label>
+							</td>
+							<td>
+								<s:textfield id="alsaParamsPeriod" name="alsaParamsPeriod" cssClass="size-100px" />
+							</td>
+						</tr>
+						<!-- alsa params format -->
+						<tr>
+							<td align="right">
+								<label for="alsaParamsFormat" style="font-style: italic; color: green;">
+									<s:text name="squeezelite.label.alsaParams.format" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.alsaParams.format')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.alsaParams.format')" />" />
+								</label>
+							</td>
+							<td>
+								<s:select id="alsaParamsFormat" name="alsaParamsFormat" list="alsaParamsFormatList" 
+									listKey="flag" listValue="name" emptyOption="false" 
+									headerKey="" headerValue="Not set" />
+							</td>
+						</tr>
+						<!-- alsa params mmap -->
+						<tr>
+							<td align="right">
+								<label for="alsaParamsMmap" style="font-style: italic; color: green;">
+									<s:text name="squeezelite.label.alsaParams.mmap" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.alsaParams.mmap')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.alsaParams.mmap')" />" />
+								</label>
+							</td>
+							<td>
+								<s:select id="alsaParamsMmap" name="alsaParamsMmap" list="alsaParamsMmapList" 
+									listKey="flag" listValue="name" emptyOption="false" 
+									headerKey="" headerValue="Not set" />
+							</td>
+						</tr>
+						<!-- blank -->
+						<tr>
+							<td>&nbsp;</td>
+						</tr>
+						<!-- codec -->
+						<tr>
+							<td align="right">
 								<img src='struts/tooltip.gif'
 									title="<s:property value="getText('squeezelite.tooltip.codec')" />"
 									alt="<s:property value="getText('squeezelite.tooltip.codec')" />" />
 							</td>
 							<td>
-								<s:textfield name="codec" cssClass="size-300px" />
+								<s:text name="squeezelite.label.codec" />
 							</td>
+						</tr>
+						<!-- codec mp3 -->
+						<tr>
+							<td align="right">
+								<label for="codecMp3" style="font-style: italic; color: green;">
+									<s:text name="squeezelite.label.codec.mp3" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.codec.mp3')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.codec.mp3')" />" />
+								</label>
+							</td>
+							<td>
+								<s:select id="codecMp3" name="codecMp3" list="mp3List" 
+									listKey="flag" listValue="name" emptyOption="false" 
+									headerKey="" headerValue="Not set"/>
+							</td>
+						</tr>
+						<!-- codec flac -->
+						<tr>
+							<td align="right">
+								<label for="codecFlac" style="font-style: italic; color: green;">
+									<s:text name="squeezelite.label.codec.flac" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.codec.flac')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.codec.flac')" />" />
+								</label>
+							</td>
+							<td>
+								<s:checkbox id="codecFlac" name="codecFlac" />
+							</td>
+						</tr>
+						<!-- codec pcm -->
+						<tr>
+							<td align="right">
+								<label for="codecPcm" style="font-style: italic; color: green;">
+									<s:text name="squeezelite.label.codec.pcm" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.codec.pcm')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.codec.pcm')" />" />
+								</label>
+							</td>
+							<td>
+								<s:checkbox id="codecPcm" name="codecPcm" />
+							</td>
+						</tr>
+						<!-- codec ogg -->
+						<tr>
+							<td align="right">
+								<label for="codecOgg" style="font-style: italic; color: green;">
+									<s:text name="squeezelite.label.codec.ogg" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.codec.ogg')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.codec.ogg')" />" />
+								</label>
+							</td>
+							<td>
+								<s:checkbox id="codecOgg" name="codecOgg" />
+							</td>
+						</tr>
+						<!-- codec aac -->
+						<tr>
+							<td align="right">
+								<label for="codecAac" style="font-style: italic; color: green;">
+									<s:text name="squeezelite.label.codec.aac" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.codec.aac')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.codec.aac')" />" />
+								</label>
+							</td>
+							<td>
+								<s:checkbox id="codecAac" name="codecAac" />
+							</td>
+						</tr>
+						<!-- codec wma -->
+						<tr>
+							<td align="right">
+								<label for="codecWma" style="font-style: italic; color: green;">
+									<s:text name="squeezelite.label.codec.wma" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.codec.wma')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.codec.wma')" />" />
+								</label>
+							</td>
+							<td>
+								<s:checkbox id="codecWma" name="codecWma" />
+							</td>
+						</tr>
+						<!-- codec alac -->
+						<tr>
+							<td align="right">
+								<label for="codecAlac" style="font-style: italic; color: green;">
+									<s:text name="squeezelite.label.codec.alac" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.codec.alac')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.codec.alac')" />" />
+								</label>
+							</td>
+							<td>
+								<s:checkbox id="codecAlac" name="codecAlac" />
+							</td>
+						</tr>
+						<!-- blank -->
+						<tr>
+							<td>&nbsp;</td>
 						</tr>
 						<!-- resample -->
 						<tr>
 							<td align="right">
-								<label for="resampleEnabled">
-									<s:text name="squeezelite.label.resample" />
-									<img src='struts/tooltip.gif'
-										title="<s:property value="getText('squeezelite.tooltip.resample')" />"
-										alt="<s:property value="getText('squeezelite.tooltip.resample')" />" />
-								</label>
+								<s:a href="squeezelite_upsample.jsp" target="_blank">More Info</s:a>
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.resample')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.resample')" />" />
 							</td>
 							<td>
 								<s:checkbox id="resampleEnabled" name="resample" 
 									onchange="javascript:displayResampleOptions();" />
-								<s:a href="squeezelite_upsample.jsp" target="_blank">Info</s:a>
+								<label for="resampleEnabled">
+									<s:text name="squeezelite.label.resample" />
+								</label>
 							</td>
 						</tr>
 						<!-- resample recipe exception -->
@@ -427,7 +584,7 @@
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<label for="resampleRecipeException" style="font-style: italic;">
+								<label for="resampleRecipeException" style="font-style: italic; color: green;">
 									<s:text name="squeezelite.label.resample.exception" />
 									<img src='struts/tooltip.gif'
 										title="<s:property value="getText('squeezelite.tooltip.resample.exception')" />"
@@ -443,7 +600,7 @@
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<label for="resampleRecipeAsync" style="font-style: italic;">
+								<label for="resampleRecipeAsync" style="font-style: italic; color: green;">
 									<s:text name="squeezelite.label.resample.async" />
 									<img src='struts/tooltip.gif'
 										title="<s:property value="getText('squeezelite.tooltip.resample.async')" />"
@@ -459,7 +616,7 @@
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<label for="resampleRecipeQuality" style="font-style: italic;">
+								<label for="resampleRecipeQuality" style="font-style: italic; color: green;">
 									<s:text name="squeezelite.label.resample.quality" />
 									<img src='struts/tooltip.gif'
 										title="<s:property value="getText('squeezelite.tooltip.resample.quality')" />"
@@ -477,7 +634,7 @@
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<label for="resampleRecipeFilter" style="font-style: italic;">
+								<label for="resampleRecipeFilter" style="font-style: italic; color: green;">
 									<s:text name="squeezelite.label.resample.filter" />
 									<img src='struts/tooltip.gif'
 										title="<s:property value="getText('squeezelite.tooltip.resample.filter')" />"
@@ -495,7 +652,7 @@
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<label for="resampleRecipeSteep" style="font-style: italic;">
+								<label for="resampleRecipeSteep" style="font-style: italic; color: green;">
 									<s:text name="squeezelite.label.resample.steep" />
 									<img src='struts/tooltip.gif'
 										title="<s:property value="getText('squeezelite.tooltip.resample.steep')" />"
@@ -511,7 +668,7 @@
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<label for="resampleFlags" style="font-style: italic;">
+								<label for="resampleFlags" style="font-style: italic; color: green;">
 									<s:text name="squeezelite.label.resample.flags" />
 									<img src='struts/tooltip.gif'
 										title="<s:property value="getText('squeezelite.tooltip.resample.flags')" />"
@@ -527,7 +684,7 @@
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<label for="resampleAttenuation" style="font-style: italic;">
+								<label for="resampleAttenuation" style="font-style: italic; color: green;">
 									<s:text name="squeezelite.label.resample.attenuation" />
 									<img src='struts/tooltip.gif'
 										title="<s:property value="getText('squeezelite.tooltip.resample.attenuation')" />"
@@ -543,7 +700,7 @@
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<label for="resamplePrecision" style="font-style: italic;">
+								<label for="resamplePrecision" style="font-style: italic; color: green;">
 									<s:text name="squeezelite.label.resample.precision" />
 									<img src='struts/tooltip.gif'
 										title="<s:property value="getText('squeezelite.tooltip.resample.precision')" />"
@@ -559,7 +716,7 @@
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<label for="resamplePassbandEnd" style="font-style: italic;">
+								<label for="resamplePassbandEnd" style="font-style: italic; color: green;">
 									<s:text name="squeezelite.label.resample.passbandEnd" />
 									<img src='struts/tooltip.gif'
 										title="<s:property value="getText('squeezelite.tooltip.resample.passbandEnd')" />"
@@ -575,7 +732,7 @@
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<label for="resampleStopbandStart" style="font-style: italic;">
+								<label for="resampleStopbandStart" style="font-style: italic; color: green;">
 									<s:text name="squeezelite.label.resample.stopbandStart" />
 									<img src='struts/tooltip.gif'
 										title="<s:property value="getText('squeezelite.tooltip.resample.stopbandStart')" />"
@@ -591,7 +748,7 @@
 							<s:if test="%{resample}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<label for="resamplePhaseResponse" style="font-style: italic;">
+								<label for="resamplePhaseResponse" style="font-style: italic; color: green;">
 									<s:text name="squeezelite.label.resample.phaseResponse" />
 									<img src='struts/tooltip.gif'
 										title="<s:property value="getText('squeezelite.tooltip.resample.phaseResponse')" />"
@@ -602,19 +759,23 @@
 								<s:textfield id="resamplePhaseResponse" name="resamplePhaseResponse" cssClass="size-100px" />
 							</td>
 						</tr>																								
+						<!-- blank -->
+						<tr>
+							<td>&nbsp;</td>
+						</tr>
 						<!-- DoP -->
 						<tr>
 							<td align="right">
-								<label for="dopEnabled">
-									<s:text name="squeezelite.label.dop" />
-									<img src='struts/tooltip.gif'
-										title="<s:property value="getText('squeezelite.tooltip.dop')" />"
-										alt="<s:property value="getText('squeezelite.tooltip.dop')" />" />
-								</label>
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.dop')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.dop')" />" />
 							</td>
 							<td>
 								<s:checkbox id="dopEnabled" name="dop"
 									onchange="javascript:displayDopOptions();" />
+								<label for="dopEnabled">
+									<s:text name="squeezelite.label.dop" />
+								</label>
 							</td>
 						</tr>
 						<!-- DoP options -->
@@ -622,7 +783,7 @@
 							<s:if test="%{dop}">style="display:"</s:if>
 							<s:else>style="display:none"</s:else>>
 							<td align="right">
-								<label for="dopOptions" style="font-style: italic;">
+								<label for="dopOptions" style="font-style: italic; color: green;">
 									<s:text name="squeezelite.label.dop.delay" />
 									<img src='struts/tooltip.gif'
 										title="<s:property value="getText('squeezelite.tootip.dop.delay')" />"
@@ -632,6 +793,10 @@
 							<td>
 								<s:textfield id="dopOptions" name="dopOptions" cssClass="size-100px" />
 							</td>
+						</tr>
+						<!-- blank -->
+						<tr>
+							<td>&nbsp;</td>
 						</tr>
 						<!-- visulizer -->
 						<tr>
@@ -647,7 +812,19 @@
 								<s:checkbox id="visulizer" name="visulizer" />
 							</td>
 						</tr>
-						<!-- Start: Advanced Options -->
+						<!-- priority -->
+						<tr>
+							<td align="right">
+								<s:text name="squeezelite.label.priority" />
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.priority')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.priority')" />" />
+							</td>
+							<td>
+								<s:select name="priority" list="priorityList" />
+							</td>
+						</tr>
+						<!-- mac -->
 						<tr>
 							<td align="right">
 								<label for="mac">
@@ -670,6 +847,7 @@
 								</label>
 							</td>
 						</tr>
+						<!-- server ip -->
 						<tr>
 							<td align="right">
 								<s:text name="squeezelite.label.serverIp" />
@@ -681,6 +859,7 @@
 								<s:textfield name="serverIp" cssClass="size-300px" />
 							</td>
 						</tr>
+						<!-- other options -->
 						<tr>
 							<td align="right">
 								<s:text name="squeezelite.label.options" />
