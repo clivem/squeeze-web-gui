@@ -14,7 +14,7 @@
 	<link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
 </head>
 
-<body>
+<body onload="javascript:scrollLog();">
 
 	<script type="text/javascript">
 		function displayResampleOptions() {
@@ -51,6 +51,20 @@
 			} else {
 				document.getElementById('dopOptions').style.display = 'none';
 			}
+		}
+		
+		function scrollLog() {
+			setTimeout(function() {
+				var textArea = document.getElementById('log');
+				textArea.scrollTop = textArea.scrollHeight;
+			}, 0);
+		}
+
+		function doReset() {
+			setTimeout(function() {
+				displayResampleOptions();
+				displayDopOptions();
+			}, 0);
 		}
 	</script>  
 
@@ -124,7 +138,7 @@
 					<table class="full">
 						<tr>
 							<td colspan="2">
-								<textarea readonly="readonly" class="log"><s:property value="%{log}" /></textarea>
+								<textarea id="log" readonly="readonly" class="log"><s:property value="%{log}" /></textarea>
 							</td> 
 						</tr>
 						<tr>
@@ -157,12 +171,7 @@
 				<s:actionerror />
 				
 				<s:form action="SqueezeliteSave_save" theme="simple" onreset="javascript:doReset();">
-					<script>
-						function doReset() {
-							setTimeout(function(){displayResampleOptions();displayDopOptions();}, 0);
-						}
-					</script>
-					
+
 					<!-- hidden store the audioDevList -->
 					<s:iterator value="audioDevList" status="stat">
 						<s:hidden name="audioDevList[%{#stat.index}]" value="%{audioDevList[#stat.index]}" />
