@@ -110,10 +110,15 @@ public abstract class InterfaceAction extends ActionSupport {
 	public final static String DUMMY_ESSID = "YOUR_ESSID_HERE";
 	public final static String DUMMY_WPA_PSK = "YOUR_PSK_HERE";
 	public final static String ESSID_SELECT_OTHER = "User Specified (below):";
-	
-	public final static String ONBOOT_TRUE = "yes";
-	public final static String ONBOOT_FALSE = "no";
-	
+		
+	//public final static String ONBOOT_TRUE = "yes";
+	//private final static String TRUE = "true";
+	private final static String YES = "yes";
+
+	//public final static String ONBOOT_FALSE = "no";
+	private final static String FALSE = "false";
+	private final static String NO = "no";
+		
 	protected SortedMap<String, String> interfaceProperties = 
 			new TreeMap<String, String>(StringIgnoreCaseComparator.COMPARATOR);
 	protected SortedMap<String, String> keysProperties = 
@@ -849,7 +854,7 @@ public abstract class InterfaceAction extends ActionSupport {
 			interfaceProperties.remove(CFG_DOMAIN);
 		}
 		
-		interfaceProperties.put(CFG_ONBOOT, (onBoot) ? ONBOOT_TRUE : ONBOOT_FALSE);
+		interfaceProperties.put(CFG_ONBOOT, (onBoot) ? YES : NO);
 	}
 
 	/**
@@ -902,7 +907,7 @@ public abstract class InterfaceAction extends ActionSupport {
 		dns3 = interfaceProperties.get(CFG_DNS3);
 		domain = interfaceProperties.get(CFG_DOMAIN);
 		String tmp = interfaceProperties.get(CFG_ONBOOT);
-		if (tmp != null && tmp.equals("no")) {
+		if (tmp != null && (NO.equals(tmp) || FALSE.equals(tmp))) {
 			onBoot = false;
 		} else {
 			onBoot = true;
