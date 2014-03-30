@@ -9,4 +9,6 @@ if [ -e "$1" ]; then
   fi
   # replace current config
   cp "$1" "$REGDOMAIN"
+  # notify the change
+  /usr/sbin/setregdomain
 fi
