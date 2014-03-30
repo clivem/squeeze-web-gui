@@ -41,6 +41,7 @@ public class Commands {
 	public final static String SCRIPT_FSTAB_UPDATE = "sp-fstabUpdate";
 	public final static String SCRIPT_CREDENTIALS_READ = "sp-credentialsRead";
 	public final static String SCRIPT_CREDENTIALS_UPDATE = "sp-credentialsUpdate";
+	public final static String SCRIPT_REG_DOMAIN_UPDATE = "sp-wirelessRegDomainUpdate";
 	
 	public final static String CMD_SUDO = "sudo";
 	public final static String CMD_NOHUP = "nohup";

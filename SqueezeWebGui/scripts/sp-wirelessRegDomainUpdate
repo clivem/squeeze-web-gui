@@ -1,0 +1,12 @@
+#!/bin/bash
+
+REGDOMAIN=/etc/sysconfig/regdomain
+
+if [ -e "$1" ]; then
+  # back up current config, if it exists
+  if [ -e "$REGDOMAIN" ]; then
+    cp "$REGDOMAIN" "$REGDOMAIN".bak
+  fi
+  # replace current config
+  cp "$1" "$REGDOMAIN"
+fi

@@ -1987,7 +1987,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 */
 	public List<NameFlag> getResampleQualityList() {
 		
-		return NameFlag.getSoxResampleQualityList();
+		return NameFlag.SOXR_QUALITY_LIST;
 	}
 
 	/**
@@ -1995,7 +1995,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 */
 	public List<NameFlag> getResampleFilterList() {
 		
-		return NameFlag.getSoxResampleFilterList();
+		return NameFlag.SOXR_FILTER_LIST;
 	}
 	
 	/**
@@ -2003,7 +2003,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 */
 	public List<NameFlag> getAlsaParamsFormatList() {
 		
-		return NameFlag.getAlsaParamsFormatList();
+		return NameFlag.ALSA_PARAMS_FORMAT_LIST;
 	}	
 
 	/**
@@ -2011,7 +2011,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 */
 	public List<NameFlag> getAlsaParamsMmapList() {
 		
-		return NameFlag.getAlsaParamsMmapList();
+		return NameFlag.ALSA_PARAMS_MMAP_LIST;
 	}
 	
 	/**
@@ -2019,7 +2019,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 */
 	public List<NameFlag> getLogLevelList() {
 		
-		return NameFlag.getLogLevelList();
+		return NameFlag.LOG_LEVEL_LIST;
 	}
 
 	/**
@@ -2027,6 +2027,6 @@ public class SqueezeliteAction extends SystemctlAction {
 	 */
 	public List<NameFlag> getMp3List() {
 		
-		return NameFlag.getMp3List();
+		return NameFlag.MP3_LIST;
 	}
 }

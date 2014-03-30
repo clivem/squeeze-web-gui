@@ -20,8 +20,11 @@
  */
 package squeeze.web;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 
+import squeeze.web.util.NameFlag;
 import squeeze.web.util.WebConfig;
 
 /**
@@ -56,5 +59,13 @@ public class WirelessAction extends InterfaceAction {
 		
 		//return INTERFACE_NAME;
 		return WebConfig.getWirelessInterfaceName();
+	}
+	
+	/**
+	 * @return
+	 */
+	public List<NameFlag> getWirelessRegDomainList() {
+		
+		return NameFlag.WIRELESS_REG_DOMAIN_LIST;
 	}
 }

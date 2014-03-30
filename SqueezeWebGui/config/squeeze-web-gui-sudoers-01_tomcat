@@ -15,6 +15,7 @@ tomcat ALL = NOPASSWD:\
  /usr/sbin/sp-fstabUpdate,\
  /usr/sbin/sp-credentialsRead,\
  /usr/sbin/sp-credentialsUpdate,\
+ /usr/sbin/sp-wirelessRegDomainUpdate, \
  /usr/bin/systemctl,\
  /usr/bin/aplay,\
  /usr/sbin/ifconfig,\

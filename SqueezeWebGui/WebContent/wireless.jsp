@@ -91,6 +91,20 @@
 			
 			<tr>
 				<td align="right">
+					<s:text name="interface.label.wirelessRegDomain" />
+					<img src='struts/tooltip.gif'
+						title="<s:property value="getText('interface.tooltip.wirelessRegDomain')" />"
+						alt="<s:property value="getText('interface.tooltip.wirelessRegDomain')" />" />
+				</td>
+				<td>
+					<s:select id="wirelessRegDomain" name="wirelessRegDomain" list="wirelessRegDomainList" 
+						listKey="flag" listValue="name" emptyOption="false" 
+						headerKey="" headerValue="Not set"/>					
+				</td>
+			</tr>
+
+			<tr>
+				<td align="right">
 					<s:text name="interface.label.wirelessEssid" />
 					<img src='struts/tooltip.gif'
 						title="<s:property value="getText('interface.tooltip.wirelessEssid')" />"
@@ -119,7 +133,7 @@
 					<s:textfield name="wirelessWpaPsk" cssClass="size-300px" />
 				</td>
 			</tr>
-			
+
 			<tr>
 				<jsp:include page="interface-editable.jsp"/>
 				
