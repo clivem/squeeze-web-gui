@@ -69,7 +69,7 @@ public class SqueezeliteAction extends SystemctlAction {
 
 	/*
 	 * FSL kernel 3.0.35
-	 */
+	 *
 	private final static String WANDBOARD_DEFAULT_AUDIO_DEVICE_3_0_35 = 
 			"sgtl5000audio";
 	// Force 16 bit playback. 24 bit results in distortion.
@@ -80,14 +80,16 @@ public class SqueezeliteAction extends SystemctlAction {
 	// Disable MMAP on hdmi audio output.
 	private final static String WANDBOARD_HDMI_AUDIO_DEVICE_ALSA_PARAMS_3_0_35 = 
 			":::0";
+	*/
 
 	/*
 	 * Kernel >= 3.12.6
-	 */
-	//private final static String WANDBOARD_DEFAULT_AUDIO_DEVICE1_3_12_6 = 
-	//		"imx6wandboardsg";
-	//private final static String WANDBOARD_HDMI_AUDIO_DEVICE_3_12_6 = 
-	//		"";
+	 *
+	private final static String WANDBOARD_DEFAULT_AUDIO_DEVICE1_3_12_6 = 
+			"imx6wandboardsg";
+	private final static String WANDBOARD_HDMI_AUDIO_DEVICE_3_12_6 = 
+			"";
+	*/
 	
 	public final static String LOG_NAME_ALL = "all";
 	public final static String LOG_NAME_SLIMPROTO = "slimproto";
@@ -623,7 +625,7 @@ public class SqueezeliteAction extends SystemctlAction {
 			list.add(CFG_MAX_RATE + "=\"" + CFG_MAX_RATE_OPTION + maxRate.trim() + "\"");
 		}
 		
-		String tmpAlsaParams = null;
+		//String tmpAlsaParams = null;
 		/*
 		 * -o <output device>
 		 * Specify output device, default "default" 
@@ -633,12 +635,13 @@ public class SqueezeliteAction extends SystemctlAction {
 			/*
 			 * If the user chooses sgtl5000audio or imxhdmisoc device, but doesn't set alsaParams, 
 			 * use the defaults to works around issues....
-			 */
+			 *
 			if (audioDev.contains(WANDBOARD_DEFAULT_AUDIO_DEVICE_3_0_35)) {
 				tmpAlsaParams = WANDBOARD_DEFAULT_AUDIO_DEVICE_ALSA_PARAMS_3_0_35;
 			} else if (audioDev.contains(WANDBOARD_HDMI_AUDIO_DEVICE_3_0_35)) {
 				tmpAlsaParams = WANDBOARD_HDMI_AUDIO_DEVICE_ALSA_PARAMS_3_0_35;
 			}
+			*/
 		}
 		
 		/*
@@ -847,9 +850,9 @@ public class SqueezeliteAction extends SystemctlAction {
 
 		if (alsaParams != null && alsaParams.trim().length() > 0) {
 			list.add(CFG_ALSA_PARAMS + "=\"" + CFG_ALSA_PARAMS_OPTION + alsaParams.trim() + "\"");
-		} else if (tmpAlsaParams != null && tmpAlsaParams.trim().length() > 0) {
+		} /* else if (tmpAlsaParams != null && tmpAlsaParams.trim().length() > 0) {
 			list.add(CFG_ALSA_PARAMS + "=\"" + CFG_ALSA_PARAMS_OPTION + tmpAlsaParams.trim() + "\"");
-		}
+		} */
 		
 		if (serverIp != null && serverIp.trim().length() > 0) {
 			list.add(CFG_SERVER_IP + "=\"" + CFG_SERVER_IP_OPTION + serverIp.trim() + "\"");
