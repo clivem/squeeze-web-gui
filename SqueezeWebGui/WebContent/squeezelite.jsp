@@ -177,6 +177,9 @@
 						<s:hidden name="audioDevList[%{#stat.index}]" value="%{audioDevList[#stat.index]}" />
 					</s:iterator>
 
+					<!-- store the codecs to exclude -->
+					<s:hidden name="excludeCodec" value="%{excludeCodec}" />
+					
 					<table>
 						<!-- name -->
 						<tr>

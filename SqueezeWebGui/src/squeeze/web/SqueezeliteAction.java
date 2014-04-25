@@ -135,6 +135,8 @@ public class SqueezeliteAction extends SystemctlAction {
 	private final static String CFG_BUFFER_OPTION = "-b ";
 	private final static String CFG_CODEC = "CODEC";
 	private final static String CFG_CODEC_OPTION = "-c ";
+	private final static String CFG_EXCLUDE_CODEC = "EXCLUDE_CODEC";
+	private final static String CFG_EXCLUDE_CODEC_OPTION = "-e ";
 	private final static String CFG_ALSA_PARAMS = "ALSA_PARAMS";
 	private final static String CFG_ALSA_PARAMS_OPTION = "-a ";
 	private final static String CFG_SERVER_IP = "SERVER_IP";
@@ -193,6 +195,8 @@ public class SqueezeliteAction extends SystemctlAction {
 	protected boolean codecAlac = false;
 	protected boolean codecDsd = false;
 	
+	protected String excludeCodec = null;
+
 	protected String alsaParamsBuffer = null;
 	protected String alsaParamsPeriod = null;
 	protected String alsaParamsFormat = null;
@@ -311,6 +315,8 @@ public class SqueezeliteAction extends SystemctlAction {
 		codecWma = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_WMA) != null);
 		codecAlac = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_ALAC) != null);
 		codecDsd = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_DSD) != null);
+		
+		excludeCodec = properties.get(CFG_EXCLUDE_CODEC);
 		
 		String alsaParams = properties.get(CFG_ALSA_PARAMS);
 		if (alsaParams != null) {
@@ -805,6 +811,14 @@ public class SqueezeliteAction extends SystemctlAction {
 		if (codecCount > 0) {
 			codec += "\"";
 			list.add(codec);
+		}
+		
+		/*
+		 * -e <codec1>,<codec2>....
+		 * Exclude native support of these codecs.
+		 */
+		if (excludeCodec != null && excludeCodec.trim().length() > 0) {
+			list.add(CFG_EXCLUDE_CODEC + "=\"" + CFG_EXCLUDE_CODEC_OPTION + excludeCodec.trim() + "\"");
 		}
 		
 		/*
@@ -1985,6 +1999,20 @@ public class SqueezeliteAction extends SystemctlAction {
 		this.mac6 = mac6;
 	}
 
+	/**
+	 * @return the excludeCodec
+	 */
+	public String getExcludeCodec() {
+		return excludeCodec;
+	}
+
+	/**
+	 * @param excludeCodec the excludeCodec to set
+	 */
+	public void setExcludeCodec(String excludeCodec) {
+		this.excludeCodec = excludeCodec;
+	}
+	
 	/**
 	 * @return the resampleQualityList
 	 */
