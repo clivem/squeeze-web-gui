@@ -57,7 +57,7 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 		}
 		
 		if (name != null && name.trim().length() > 0) {
-			if (!name.trim().matches(Validate.REGEX_ALPHA_NUMERIC)) {
+			if (!name.trim().matches(Validate.REGEX_ALPHA_NUMERIC_UNDERSCORE_DASH)) {
 				addActionError(getText("squeezelite.validation.name.fail"));
 			}
 		}
