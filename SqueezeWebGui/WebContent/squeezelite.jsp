@@ -177,8 +177,9 @@
 						<s:hidden name="audioDevList[%{#stat.index}]" value="%{audioDevList[#stat.index]}" />
 					</s:iterator>
 
-					<!-- store the codecs to exclude -->
+					<!-- store the codecs to exclude 
 					<s:hidden name="excludeCodec" value="%{excludeCodec}" />
+					-->
 					
 					<table>
 						<!-- name -->
@@ -296,6 +297,22 @@
 							</td>
 							<td>
 								<s:select id="logLevelOutput" name="logLevelOutput" list="logLevelList" 
+									listKey="flag" listValue="name" emptyOption="false" 
+									headerKey="" headerValue="Not set"/>
+							</td>
+						</tr>
+						<!-- log level ir -->
+						<tr>
+							<td align="right">
+								<label for="logLevelIr" style="font-style: italic; color: green;">
+									<s:text name="squeezelite.label.logLevel.ir" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tooltip.logLevel')" />"
+										alt="<s:property value="getText('squeezelite.tooltip.logLevel')" />" />
+								</label>
+							</td>
+							<td>
+								<s:select id="logLevelIr" name="logLevelIr" list="logLevelList" 
 									listKey="flag" listValue="name" emptyOption="false" 
 									headerKey="" headerValue="Not set"/>
 							</td>
@@ -574,6 +591,22 @@
 							</td>
 							<td>
 								<s:checkbox id="codecDsd" name="codecDsd" />
+							</td>
+						</tr>
+						<!-- blank -->
+						<tr>
+							<td>&nbsp;</td>
+						</tr>
+						<!-- exclude codec -->
+						<tr>
+							<td align="right">
+								<s:text name="squeezelite.label.excludeCodec" />
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.excludeCodec')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.excludeCodec')" />" />
+							</td>
+							<td>
+								<s:textfield name="excludeCodec" cssClass="size-300px" />
 							</td>
 						</tr>
 						<!-- blank -->

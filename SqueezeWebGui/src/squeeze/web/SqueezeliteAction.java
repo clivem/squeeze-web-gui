@@ -96,6 +96,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	public final static String LOG_NAME_STREAM = "stream";
 	public final static String LOG_NAME_DECODE = "decode";
 	public final static String LOG_NAME_OUTPUT = "output";
+	public final static String LOG_NAME_IR = "ir";
 	
 	public final static String LOG_LEVEL_SDEBUG = "sdebug";
 	public final static String LOG_LEVEL_DEBUG = "debug";
@@ -178,6 +179,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	protected String logLevelStream = null;
 	protected String logLevelDecode = null;
 	protected String logLevelOutput = null;
+	protected String logLevelIr = null;
 	
 	protected String priority = null;
 	
@@ -300,6 +302,7 @@ public class SqueezeliteAction extends SystemctlAction {
 		logLevelStream = properties.get(CFG_LOG_LEVEL + Util.UNDERSCORE + LOG_NAME_STREAM);
 		logLevelDecode = properties.get(CFG_LOG_LEVEL + Util.UNDERSCORE + LOG_NAME_DECODE);
 		logLevelOutput = properties.get(CFG_LOG_LEVEL + Util.UNDERSCORE + LOG_NAME_OUTPUT);
+		logLevelIr = properties.get(CFG_LOG_LEVEL + Util.UNDERSCORE + LOG_NAME_IR);
 		
 		priority = properties.get(CFG_PRIORITY);
 		
@@ -723,6 +726,14 @@ public class SqueezeliteAction extends SystemctlAction {
 				logLevel += Util.SPACE;
 			}
 			logLevel += CFG_LOG_LEVEL_OPTION + LOG_NAME_OUTPUT + Util.EQUALS + logLevelOutput;
+			logLevelCount++;
+		}		
+		// ir
+		if (logLevelIr != null && logLevelIr.length() > 0) {
+			if (logLevelCount > 0) {
+				logLevel += Util.SPACE;
+			}
+			logLevel += CFG_LOG_LEVEL_OPTION + LOG_NAME_IR + Util.EQUALS + logLevelIr;
 			logLevelCount++;
 		}
 		
@@ -1773,6 +1784,22 @@ public class SqueezeliteAction extends SystemctlAction {
 	public void setLogLevelOutput(String logLevelOutput) {
 		
 		this.logLevelOutput = logLevelOutput;
+	}
+
+	/**
+	 * @return the logLevelIr
+	 */
+	public String getLogLevelIr() {
+		
+		return logLevelIr;
+	}
+
+	/**
+	 * @param logLevelIr the logLevelIr to set
+	 */
+	public void setLogLevelIr(String logLevelIr) {
+		
+		this.logLevelIr = logLevelIr;
 	}
 
 	/**
