@@ -63,7 +63,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	private final static int DEFAULT_NUMBER_OF_LOG_LINES = 10;
 	
 	private final static String SQUEEZELITE_SERVICE_DEFAULT_NAME = 
-			"SqueezeliteWAND";
+			"Squeezelite";
 
 	private final static int SQUEEZELITE_MAX_RT_PRIORITY = 46;
 
