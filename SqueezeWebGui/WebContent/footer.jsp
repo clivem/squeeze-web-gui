@@ -12,7 +12,7 @@
 
 <div class="pull-left">
 	<p class="copyright">
-		<s:text name="copyright" /> &copy; 2013-2014 Clive Messer
+		<s:text name="copyright" /> &copy; 2013-2015 Clive Messer
 	</p>
 	<p class="copyright">
 		<s:text name="version" /> <s:text name="versionNumber" />
