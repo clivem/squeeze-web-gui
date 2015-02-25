@@ -95,14 +95,14 @@
 			</fieldset>
 		</s:form>
 
-		<!-- Samba -->
+		<!-- Samba
 		<s:form action="ConfigurationSamba_save" theme="simple">
 			<fieldset>
 				<legend>
 					<s:text name="configuration.label.samba" />
 				</legend>
 				<table>
-					<!-- sambaNetbiosName -->
+					# sambaNetbiosName
 					<tr><td>
 						<span class="features simptip-position-right simptip-smooth"
 							data-tooltip="<s:property value="getText('configuration.tooltip.sambaNetbiosName')" />">
@@ -113,7 +113,7 @@
 								cssClass="input" />
 						</span>
 					</td></tr>
-					<!-- sambaWorkgroup -->
+					# sambaWorkgroup
 					<tr><td>
 						<span class="features simptip-position-right simptip-smooth"
 							data-tooltip="<s:property value="getText('configuration.tooltip.sambaWorkgroup')" />">
@@ -124,7 +124,7 @@
 								cssClass="input" />
 						</span>
 					</td></tr>
-					<!-- submit -->
+					# submit
 					<tr><td align="right">
 						<s:reset key="button.reset" />
 						<s:submit action="ConfigurationSamba_save" key="button.save" />
@@ -132,6 +132,7 @@
 				</table>
 			</fieldset>
 		</s:form>
+		-->
 		
 		<!-- Location -->
 		<s:form action="ConfigurationLocation_save" theme="simple">		
