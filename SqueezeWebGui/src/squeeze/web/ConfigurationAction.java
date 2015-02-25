@@ -103,9 +103,11 @@ public class ConfigurationAction extends ActionSupport {
 		csosVersion = Util.getCsosVersion();
 		hostName = Util.getHostName();
 		
+		/*
 		SambaConfig sambaConfig = SambaConfig.getSambaConfig();
 		sambaNetbiosName = sambaConfig.getNetbiosName();
 		sambaWorkgroup = sambaConfig.getWorkgroup();
+		*/
 		
 		systemLocale = SystemLocale.getSystemLocale();
 		timeZone = TimeZone.getCurrentTimeZone();
