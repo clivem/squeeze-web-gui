@@ -67,6 +67,25 @@ public class Commands {
 	public final static String WPA_CLI_SCAN_OK = "OK";
 	public final static String WPA_CLI_SCAN_RESULTS = "scan_results"; 	
 	public final static String WPA_CLI_INTERFACE_FLAG = "-i"; 	
+
+	/*
+	 * nm_cli rescan
+	 * sudo nmcli -n device wifi rescan ifname wlan0
+	 * 
+	 * nm_cli list
+	 * sudo nmcli -n -f SSID device wifi list ifname wlan0 
+	 * 
+	 */
+	public final static String CMD_NMCLI = "nmcli";
+	public final static String NMCLI_DEVICE = "device";
+	public final static String NMCLI_RESCAN = "rescan";
+	public final static String NMCLI_IFNAME = "ifname";
+	public final static String NMCLI_WIFI = "wifi";
+	public final static String NMCLI_LIST = "list";
+	public final static String NMCLI_SSID = "SSID";
+	public final static String NMCLI_FILTER_FLAG = "-f";
+	public final static String NMCLI_NO_CHECK_VERSIONS_FLAG = "-n";
+	
 	
 	public final static String CMD_SYSTEMCTL = "systemctl"; 	
 	public final static String SYSTEMCTL_STATUS = "status"; 

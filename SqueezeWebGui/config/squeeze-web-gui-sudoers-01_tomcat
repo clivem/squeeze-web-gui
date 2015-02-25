@@ -25,4 +25,5 @@ tomcat ALL = NOPASSWD:\
  /usr/bin/mount,\
  /usr/bin/umount,\
  /usr/sbin/blkid,\
- /usr/bin/tail
+ /usr/bin/tail,\
+ /usr/bin/nmcli
