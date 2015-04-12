@@ -634,16 +634,18 @@ public final class Util {
 	public static List<String> getAvailableNetworks(String interfaceName) 
 			throws IOException, InterruptedException {
 
+		boolean useNmCli = true;
+		
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("getAvailableNetworks(interfaceName=" + 
 							interfaceName + ")");
 		}
 		
-		if (true) {
+		if (useNmCli) {
 			return nmCliScanResults(interfaceName);
+		} else {
+			return wpaCliScanResults(interfaceName);
 		}
-		
-		return wpaCliScanResults(interfaceName);
 	}
 	
 	/**
