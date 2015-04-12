@@ -53,6 +53,14 @@
 			}
 		}
 		
+		function displayLircOptions() {
+			if (document.getElementById('lircEnabled').checked) {
+				document.getElementById('lircConfigFileName').style.display = '';
+			} else {
+				document.getElementById('lircConfigFileName').style.display = 'none';
+			}
+		}
+		
 		function scrollLog() {
 			setTimeout(function() {
 				var textArea = document.getElementById('log');
@@ -374,6 +382,42 @@
 							</td>
 							<td>
 								<s:select name="audioDev" list="audioDevList" />
+							</td>
+						</tr>
+						<!-- audio device idle -->
+						<tr>
+							<td align="right">
+								<s:text name="squeezelite.label.audioDevIdle" />
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.audioDevIdle')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.audioDevIdle')" />" />
+							</td>
+							<td>
+								<s:textfield id="audioDevIdle" name="audioDevIdle" cssClass="size-100px" />
+							</td>
+						</tr>
+						<!-- alsa unmute control -->
+						<tr>
+							<td align="right">
+								<s:text name="squeezelite.label.alsaUnmuteControl" />
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.alsaUnmuteControl')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.alsaUnmuteControl')" />" />
+							</td>
+							<td>
+								<s:textfield id="alsaUnmuteControl" name="alsaUnmuteControl" cssClass="size-300px" />
+							</td>
+						</tr>
+						<!-- alsa volume control -->
+						<tr>
+							<td align="right">
+								<s:text name="squeezelite.label.alsaVolumeControl" />
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.alsaVolumeControl')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.alsaVolumeControl')" />" />
+							</td>
+							<td>
+								<s:textfield id="alsaVolumeControl" name="alsaVolumeControl" cssClass="size-300px" />
 							</td>
 						</tr>
 						<!-- max rate -->
@@ -848,6 +892,41 @@
 						<tr>
 							<td>&nbsp;</td>
 						</tr>
+						<!-- LIRC -->
+						<tr>
+							<td align="right">
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.lirc')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.lirc')" />" />
+							</td>
+							<td>
+								<s:checkbox id="lircEnabled" name="lirc"
+									onchange="javascript:displayLircOptions();" />
+								<label for="lircEnabled">
+									<s:text name="squeezelite.label.lirc" />
+								</label>
+							</td>
+						</tr>
+						<!-- LIRC config file name -->
+						<tr id="lircConfigFileName" 
+							<s:if test="%{lirc}">style="display:"</s:if>
+							<s:else>style="display:none"</s:else>>
+							<td align="right">
+								<label for="lircConfigFileName" style="font-style: italic; color: green;">
+									<s:text name="squeezelite.label.lirc.configFileName" />
+									<img src='struts/tooltip.gif'
+										title="<s:property value="getText('squeezelite.tootip.lirc.configFileName')" />"
+										alt="<s:property value="getText('squeezelite.tootip.lirc.configFileName')" />" />
+								</label>
+							</td>
+							<td>
+								<s:textfield id="lircConfigFileName" name="lircConfigFileName" cssClass="size-300px" />
+							</td>
+						</tr>
+						<!-- blank -->
+						<tr>
+							<td>&nbsp;</td>
+						</tr>
 						<!-- visulizer -->
 						<tr>
 							<td align="right">
@@ -913,6 +992,23 @@
 							<td>
 								<s:textfield name="serverIp" cssClass="size-300px" />
 							</td>
+						</tr>
+						<!-- pid -->
+						<tr>
+							<td align="right">
+								<s:text name="squeezelite.label.pid" />
+								<img src='struts/tooltip.gif'
+									title="<s:property value="getText('squeezelite.tooltip.pid')" />"
+									alt="<s:property value="getText('squeezelite.tooltip.pid')" />" />
+							</td>
+							<td>
+								<s:textfield name="pid" cssClass="size-300px" />
+							</td>
+						</tr>
+						<!-- dummy row -->
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
 						</tr>
 						<!-- other options -->
 						<tr>

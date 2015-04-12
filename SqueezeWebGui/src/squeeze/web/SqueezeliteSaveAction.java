@@ -233,6 +233,19 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 			}
 		}
 		
+		if (audioDevIdle != null && audioDevIdle.trim().length() > 0) {
+			try {
+				Integer.parseInt(audioDevIdle.trim());
+			} catch (NumberFormatException nfe) { 
+				addActionError(getText("squeezelite.validation.audioDevIdle.fail"));
+			}
+		}
+		
+		if (alsaUnmuteControl != null && alsaUnmuteControl.trim().length() > 0 &&
+				alsaVolumeControl != null && alsaVolumeControl.trim().length() > 0) {
+			addActionError(getText("squeezelite.validation.alsaControl.fail"));
+		}
+		
 		// validate the resample options
 		if (resample) {
 			

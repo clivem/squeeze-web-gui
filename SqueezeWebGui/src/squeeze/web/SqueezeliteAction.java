@@ -149,6 +149,16 @@ public class SqueezeliteAction extends SystemctlAction {
 	private final static String CFG_OPTIONS = "OPTIONS";
 	private final static String CFG_VISULIZER = "VISULIZER";
 	private final static String CFG_VISULIZER_OPTION = "-v ";
+	private final static String CFG_AUDIO_DEV_IDLE = "AUDIO_DEV_IDLE";
+	private final static String CFG_AUDIO_DEV_IDLE_OPTION = "-C ";
+	private final static String CFG_PID = "PID_FILE";
+	private final static String CFG_PID_OPTION = "-P ";
+	private final static String CFG_LIRC = "LIRC_CONFIG_FILE";
+	private final static String CFG_LIRC_OPTION = "-i ";
+	private final static String CFG_ALSA_UNMUTE_CONTROL = "ALSA_UNMUTE_CONTROL";
+	private final static String CFG_ALSA_UNMUTE_CONTROL_OPTION = "-U ";
+	private final static String CFG_ALSA_VOLUME_CONTROL = "ALSA_VOLUME_CONTROL";
+	private final static String CFG_ALSA_VOLUME_CONTROL_OPTION = "-V ";
 	
 	private final static List<String> PRIORITY_LIST = 
 			Util.generatePriorityList(SQUEEZELITE_MAX_RT_PRIORITY);
@@ -228,9 +238,19 @@ public class SqueezeliteAction extends SystemctlAction {
 	protected boolean dop = false;
 	protected String dopOptions = null;
 	
+	protected boolean lirc = false;
+	protected String lircConfigFileName = null;
+	
+	protected String pid = null;
+
+	protected String audioDevIdle = null;
+
 	protected String options = null;
 	
 	protected boolean visulizer = false;
+	
+	protected String alsaUnmuteControl = null;
+	protected String alsaVolumeControl = null;
 	
 	protected String log = null;
 	protected String logLines = String.valueOf(DEFAULT_NUMBER_OF_LOG_LINES);
@@ -338,6 +358,18 @@ public class SqueezeliteAction extends SystemctlAction {
 			dop = true;
 		}
 		
+		lircConfigFileName = properties.get(CFG_LIRC);
+		if (lircConfigFileName != null) {
+			lirc = true;
+		}
+		
+		pid = properties.get(CFG_PID);
+		
+		audioDevIdle = properties.get(CFG_AUDIO_DEV_IDLE);
+		
+		alsaUnmuteControl = properties.get(CFG_ALSA_UNMUTE_CONTROL);
+		alsaVolumeControl = properties.get(CFG_ALSA_VOLUME_CONTROL);
+
 		options = properties.get(CFG_OPTIONS);
 		
 		visulizer = (properties.get(CFG_VISULIZER) != null);
@@ -914,6 +946,29 @@ public class SqueezeliteAction extends SystemctlAction {
 						"\"");
 		}
 		
+		if (lirc) {
+			list.add(CFG_LIRC + "=\"" +  
+						((lircConfigFileName != null && lircConfigFileName.trim().length() > 0) ? 
+								(CFG_LIRC_OPTION + lircConfigFileName.trim()) : CFG_LIRC_OPTION.trim()) + 
+						"\"");
+		}
+		
+		if (pid != null && pid.trim().length() > 0) {
+			list.add(CFG_PID + "=\"" + CFG_PID_OPTION + pid.trim() + "\"");
+		}
+		
+		if (audioDevIdle != null && audioDevIdle.trim().length() > 0) {
+			list.add(CFG_AUDIO_DEV_IDLE + "=\"" + CFG_AUDIO_DEV_IDLE_OPTION + audioDevIdle.trim() + "\"");
+		}
+		
+		if (alsaUnmuteControl != null && alsaUnmuteControl.trim().length() > 0) {
+			list.add(CFG_ALSA_UNMUTE_CONTROL + "=\"" + CFG_ALSA_UNMUTE_CONTROL_OPTION + alsaUnmuteControl.trim() + "\"");
+		}
+		
+		if (alsaVolumeControl != null && alsaVolumeControl.trim().length() > 0) {
+			list.add(CFG_ALSA_VOLUME_CONTROL + "=\"" + CFG_ALSA_VOLUME_CONTROL_OPTION + alsaVolumeControl.trim() + "\"");
+		}
+		
 		if (options != null && options.trim().length() > 0) {
 			list.add(CFG_OPTIONS + "=\"" + options.trim() + "\"");
 		}
@@ -1027,6 +1082,13 @@ public class SqueezeliteAction extends SystemctlAction {
 								}
 							} else if (name.equals(CFG_DOP)) {
 								if (splitOption.length == 1 && splitOption[0].equals(CFG_DOP_OPTION.trim())) {
+									properties.put(name, "");
+									if (LOGGER.isTraceEnabled()) {
+										LOGGER.trace("Name='" + name + "', Value='" + "" + "'");
+									}									
+								}
+							} else if (name.equals(CFG_LIRC)) {
+								if (splitOption.length == 1 && splitOption[0].equals(CFG_LIRC_OPTION.trim())) {
 									properties.put(name, "");
 									if (LOGGER.isTraceEnabled()) {
 										LOGGER.trace("Name='" + name + "', Value='" + "" + "'");
@@ -1208,6 +1270,48 @@ public class SqueezeliteAction extends SystemctlAction {
 	}
 	
 	/**
+	 * @return the audioDevIdle
+	 */
+	public String getAudioDevIdle() {
+		return audioDevIdle;
+	}
+	
+	/**
+	 * @param audioDevIdle the audioDevIdle to set
+	 */
+	public void setAudioDevIdle(String audioDevIdle) {
+		this.audioDevIdle = audioDevIdle;
+	}
+	
+	/**
+	 * @return the alsaUnmuteControl
+	 */
+	public String getAlsaUnmuteControl() {
+		return alsaUnmuteControl;
+	}
+
+	/**
+	 * @param alsaUnmuteControl the alsaUnmuteControl to set
+	 */
+	public void setAlsaUnmuteControl(String alsaUnmuteControl) {
+		this.alsaUnmuteControl = alsaUnmuteControl;
+	}
+
+	/**
+	 * @return the alsaVolumeControl
+	 */
+	public String getAlsaVolumeControl() {
+		return alsaVolumeControl;
+	}
+
+	/**
+	 * @param alsaVolumeControl the alsaVolumeControl to set
+	 */
+	public void setAlsaVolumeControl(String alsaVolumeControl) {
+		this.alsaVolumeControl = alsaVolumeControl;
+	}
+
+	/**
 	 * @return
 	 */
 	public String getLogFile() {
@@ -1383,6 +1487,48 @@ public class SqueezeliteAction extends SystemctlAction {
 	public void setDopOptions(String dopOptions) {
 		
 		this.dopOptions = dopOptions;
+	}
+
+	/**
+	 * @return the lirc
+	 */
+	public boolean isLirc() {
+		return lirc;
+	}
+
+	/**
+	 * @param lirc the lirc to set
+	 */
+	public void setLirc(boolean lirc) {
+		this.lirc = lirc;
+	}
+
+	/**
+	 * @return the lircConfigFileName
+	 */
+	public String getLircConfigFileName() {
+		return lircConfigFileName;
+	}
+
+	/**
+	 * @param lircConfigFileName the lircConfigFileName to set
+	 */
+	public void setLircConfigFileName(String lircConfigFileName) {
+		this.lircConfigFileName = lircConfigFileName;
+	}
+
+	/**
+	 * @return the pid
+	 */
+	public String getPid() {
+		return pid;
+	}
+
+	/**
+	 * @param pid the pid to set
+	 */
+	public void setPid(String pid) {
+		this.pid = pid;
 	}
 
 	/**
