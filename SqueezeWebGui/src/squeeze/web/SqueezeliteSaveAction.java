@@ -219,11 +219,15 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 			}
 		}
 		
+		/*
+		 * Don't validate! We need to allow host names as well as IP's.
+		 * 
 		if (serverIp != null && serverIp.trim().length() > 0) {
 			if (!serverIp.trim().matches(Validate.REGEX_IP_ADDRESS)) {
 				addActionError(getText("squeezelite.validation.serverIp.fail"));
 			}
 		}
+		*/
 		
 		if (dop && dopOptions != null && dopOptions.trim().length() > 0) {
 			try {
