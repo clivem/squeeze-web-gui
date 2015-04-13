@@ -100,7 +100,7 @@ public class ConfigurationAction extends ActionSupport {
 		}
 		
 		fedoraVersion = Util.getFedoraVersion();
-		csosVersion = Util.getCsosVersion();
+		csosVersion = Util.getCustomVersion();
 		hostName = Util.getHostName();
 		
 		/*

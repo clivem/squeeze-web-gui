@@ -80,12 +80,10 @@ public final class Util {
 			Commands.SHUTDOWN_FORCE + ") option";
 		
 	private final static String HOSTNAME_FILENAME = "/etc/hostname";
-	private final static String FEDORA_VERSION_FILENAME = "/etc/fedora-release";
-	private final static String CSOS_VERSION_FILENAME = "/etc/csos-release";
 
 	public final static String FSTAB_FILENAME = "/etc/fstab";
 	
-	private static String CSOS_VERSION = null;
+	private static String CUSTOM_VERSION = null;
 	private static String FEDORA_VERSION = null;
 	
 	private final static String DEV_PATH = "/dev";
@@ -1196,7 +1194,7 @@ public final class Util {
 	public final static String getFedoraVersion() {
 		
 		if (FEDORA_VERSION == null) {
-			FEDORA_VERSION = getFirstLineFromFile(FEDORA_VERSION_FILENAME);
+			FEDORA_VERSION = getFirstLineFromFile(WebConfig.getFedoraReleaseFileName());
 		}
 
 		return FEDORA_VERSION;
@@ -1213,13 +1211,13 @@ public final class Util {
 	/**
 	 * @return
 	 */
-	public final static String getCsosVersion() {
+	public final static String getCustomVersion() {
 		
-		if (CSOS_VERSION == null) {
-			CSOS_VERSION = getFirstLineFromFile(CSOS_VERSION_FILENAME);
+		if (CUSTOM_VERSION == null) {
+			CUSTOM_VERSION = getFirstLineFromFile(WebConfig.getCustomReleaseFileName());
 		}
 		
-		return CSOS_VERSION;
+		return CUSTOM_VERSION;
 	}
 	
 	/**
