@@ -93,9 +93,13 @@ public class ExecuteProcess {
 					"'" + cmdLine + "' STDERR", stdErrWriter);
 			Thread t2 = stdErrLogger.execute(true);
 			
+			//LOGGER.debug("process.waitFor()");
 			process.waitFor();
+			//LOGGER.debug("t1.join()");
 			t1.join();
+			//LOGGER.debug("t2.join()");
 			t2.join();
+			//LOGGER.debug("process.exitValue()");
 			int exitValue = process.exitValue();
 			LOGGER.info("Finished: '" + cmdLine + "'. Exit Value: " + exitValue);
 			return exitValue;
