@@ -63,13 +63,13 @@ public class SqueezeliteAction extends SystemctlAction {
 	private final static int DEFAULT_NUMBER_OF_LOG_LINES = 10;
 	
 	private final static String SQUEEZELITE_SERVICE_DEFAULT_NAME = 
-			"SqueezeliteWAND";
+			"Squeezelite";
 
 	private final static int SQUEEZELITE_MAX_RT_PRIORITY = 46;
 
 	/*
 	 * FSL kernel 3.0.35
-	 */
+	 *
 	private final static String WANDBOARD_DEFAULT_AUDIO_DEVICE_3_0_35 = 
 			"sgtl5000audio";
 	// Force 16 bit playback. 24 bit results in distortion.
@@ -80,24 +80,43 @@ public class SqueezeliteAction extends SystemctlAction {
 	// Disable MMAP on hdmi audio output.
 	private final static String WANDBOARD_HDMI_AUDIO_DEVICE_ALSA_PARAMS_3_0_35 = 
 			":::0";
+	*/
 
 	/*
 	 * Kernel >= 3.12.6
-	 */
-	//private final static String WANDBOARD_DEFAULT_AUDIO_DEVICE1_3_12_6 = 
-	//		"imx6wandboardsg";
-	//private final static String WANDBOARD_HDMI_AUDIO_DEVICE_3_12_6 = 
-	//		"";
+	 *
+	private final static String WANDBOARD_DEFAULT_AUDIO_DEVICE1_3_12_6 = 
+			"imx6wandboardsg";
+	private final static String WANDBOARD_HDMI_AUDIO_DEVICE_3_12_6 = 
+			"";
+	*/
 	
 	public final static String LOG_NAME_ALL = "all";
 	public final static String LOG_NAME_SLIMPROTO = "slimproto";
 	public final static String LOG_NAME_STREAM = "stream";
 	public final static String LOG_NAME_DECODE = "decode";
 	public final static String LOG_NAME_OUTPUT = "output";
+	public final static String LOG_NAME_IR = "ir";
 	
 	public final static String LOG_LEVEL_SDEBUG = "sdebug";
 	public final static String LOG_LEVEL_DEBUG = "debug";
 	public final static String LOG_LEVEL_INFO = "info";
+	
+	public final static String ALSA_PARAMS_FORMAT_16 = "16";
+	public final static String ALSA_PARAMS_FORMAT_24_3 = "24_3";
+	public final static String ALSA_PARAMS_FORMAT_24 = "24";
+	public final static String ALSA_PARAMS_FORMAT_32 = "32";
+	
+	public final static String CODEC_MP3 = "mp3";
+	public final static String CODEC_MP3_MAD = "mad";
+	public final static String CODEC_MP3_MPG = "mpg";
+	public final static String CODEC_FLAC = "flac";
+	public final static String CODEC_PCM = "pcm";
+	public final static String CODEC_OGG = "ogg";
+	public final static String CODEC_AAC = "aac";
+	public final static String CODEC_WMA = "wma";
+	public final static String CODEC_ALAC = "alac";
+	public final static String CODEC_DSD = "dsd";
 	
 	private final static String CFG_NAME = "NAME";
 	private final static String CFG_NAME_OPTION = "-n ";
@@ -117,6 +136,8 @@ public class SqueezeliteAction extends SystemctlAction {
 	private final static String CFG_BUFFER_OPTION = "-b ";
 	private final static String CFG_CODEC = "CODEC";
 	private final static String CFG_CODEC_OPTION = "-c ";
+	private final static String CFG_EXCLUDE_CODEC = "EXCLUDE_CODEC";
+	private final static String CFG_EXCLUDE_CODEC_OPTION = "-e ";
 	private final static String CFG_ALSA_PARAMS = "ALSA_PARAMS";
 	private final static String CFG_ALSA_PARAMS_OPTION = "-a ";
 	private final static String CFG_SERVER_IP = "SERVER_IP";
@@ -128,6 +149,16 @@ public class SqueezeliteAction extends SystemctlAction {
 	private final static String CFG_OPTIONS = "OPTIONS";
 	private final static String CFG_VISULIZER = "VISULIZER";
 	private final static String CFG_VISULIZER_OPTION = "-v ";
+	private final static String CFG_AUDIO_DEV_IDLE = "AUDIO_DEV_IDLE";
+	private final static String CFG_AUDIO_DEV_IDLE_OPTION = "-C ";
+	private final static String CFG_PID = "PID_FILE";
+	private final static String CFG_PID_OPTION = "-P ";
+	private final static String CFG_LIRC = "LIRC_CONFIG_FILE";
+	private final static String CFG_LIRC_OPTION = "-i ";
+	private final static String CFG_ALSA_UNMUTE_CONTROL = "ALSA_UNMUTE_CONTROL";
+	private final static String CFG_ALSA_UNMUTE_CONTROL_OPTION = "-U ";
+	private final static String CFG_ALSA_VOLUME_CONTROL = "ALSA_VOLUME_CONTROL";
+	private final static String CFG_ALSA_VOLUME_CONTROL_OPTION = "-V ";
 	
 	private final static List<String> PRIORITY_LIST = 
 			Util.generatePriorityList(SQUEEZELITE_MAX_RT_PRIORITY);
@@ -138,7 +169,16 @@ public class SqueezeliteAction extends SystemctlAction {
 	protected HashMap<String, String> properties = new HashMap<String, String>();
 
 	protected String name = null;
-	protected String mac = null;
+	
+	//protected String mac = null;
+	
+	protected String mac1 = null;
+	protected String mac2 = null;
+	protected String mac3 = null;
+	protected String mac4 = null;
+	protected String mac5 = null;
+	protected String mac6 = null;
+	
 	protected String maxRate = null;
 	protected String audioDev = null;
 	
@@ -149,14 +189,26 @@ public class SqueezeliteAction extends SystemctlAction {
 	protected String logLevelStream = null;
 	protected String logLevelDecode = null;
 	protected String logLevelOutput = null;
+	protected String logLevelIr = null;
 	
 	protected String priority = null;
 	
 	protected String bufferStream = null;
 	protected String bufferOutput = null;
 	
-	protected String codec = null;
+	//protected String codec = null;
 	
+	protected String codecMp3 = null;
+	protected boolean codecFlac = false;
+	protected boolean codecPcm = false;
+	protected boolean codecOgg = false;
+	protected boolean codecAac = false;
+	protected boolean codecWma = false;
+	protected boolean codecAlac = false;
+	protected boolean codecDsd = false;
+	
+	protected String excludeCodec = null;
+
 	protected String alsaParamsBuffer = null;
 	protected String alsaParamsPeriod = null;
 	protected String alsaParamsFormat = null;
@@ -186,9 +238,19 @@ public class SqueezeliteAction extends SystemctlAction {
 	protected boolean dop = false;
 	protected String dopOptions = null;
 	
+	protected boolean lirc = false;
+	protected String lircConfigFileName = null;
+	
+	protected String pid = null;
+
+	protected String audioDevIdle = null;
+
 	protected String options = null;
 	
 	protected boolean visulizer = false;
+	
+	protected String alsaUnmuteControl = null;
+	protected String alsaVolumeControl = null;
 	
 	protected String log = null;
 	protected String logLines = String.valueOf(DEFAULT_NUMBER_OF_LOG_LINES);
@@ -229,7 +291,15 @@ public class SqueezeliteAction extends SystemctlAction {
 		
 		name = properties.get(CFG_NAME);
 		
-		mac = properties.get(CFG_MAC);
+		String mac = properties.get(CFG_MAC);
+		if (mac != null && mac.trim().matches(Validate.REGEX_MAC_ADDRESS)) {
+			mac1 = mac.substring(0, 2);
+			mac2 = mac.substring(3, 5);
+			mac3 = mac.substring(6, 8);
+			mac4 = mac.substring(9, 11);
+			mac5 = mac.substring(12, 14);
+			mac6 = mac.substring(15, 17);
+		}
 		
 		maxRate = properties.get(CFG_MAX_RATE);
 		
@@ -252,13 +322,24 @@ public class SqueezeliteAction extends SystemctlAction {
 		logLevelStream = properties.get(CFG_LOG_LEVEL + Util.UNDERSCORE + LOG_NAME_STREAM);
 		logLevelDecode = properties.get(CFG_LOG_LEVEL + Util.UNDERSCORE + LOG_NAME_DECODE);
 		logLevelOutput = properties.get(CFG_LOG_LEVEL + Util.UNDERSCORE + LOG_NAME_OUTPUT);
+		logLevelIr = properties.get(CFG_LOG_LEVEL + Util.UNDERSCORE + LOG_NAME_IR);
 		
 		priority = properties.get(CFG_PRIORITY);
 		
 		String buffer = properties.get(CFG_BUFFER);
 		parseBuffer(buffer);
 		
-		codec = properties.get(CFG_CODEC);
+		//codec = properties.get(CFG_CODEC);
+		codecMp3 = properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_MP3);
+		codecFlac = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_FLAC) != null);
+		codecPcm = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_PCM) != null);
+		codecOgg = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_OGG) != null);
+		codecAac = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_AAC) != null);
+		codecWma = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_WMA) != null);
+		codecAlac = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_ALAC) != null);
+		codecDsd = (properties.get(CFG_CODEC + Util.UNDERSCORE + CODEC_DSD) != null);
+		
+		excludeCodec = properties.get(CFG_EXCLUDE_CODEC);
 		
 		String alsaParams = properties.get(CFG_ALSA_PARAMS);
 		if (alsaParams != null) {
@@ -277,6 +358,18 @@ public class SqueezeliteAction extends SystemctlAction {
 			dop = true;
 		}
 		
+		lircConfigFileName = properties.get(CFG_LIRC);
+		if (lircConfigFileName != null) {
+			lirc = true;
+		}
+		
+		pid = properties.get(CFG_PID);
+		
+		audioDevIdle = properties.get(CFG_AUDIO_DEV_IDLE);
+		
+		alsaUnmuteControl = properties.get(CFG_ALSA_UNMUTE_CONTROL);
+		alsaVolumeControl = properties.get(CFG_ALSA_VOLUME_CONTROL);
+
 		options = properties.get(CFG_OPTIONS);
 		
 		visulizer = (properties.get(CFG_VISULIZER) != null);
@@ -527,20 +620,41 @@ public class SqueezeliteAction extends SystemctlAction {
 		/*
 		 * If mac has not populated by the user and default mac cb is populated, 
 		 * get the mac of the default wired network interface
-		 */
+		 *
 		if ((mac == null || mac.trim().length() < Validate.MAC_STRING_LENGTH) && defaultMac) {
 			String tmpMac = Util.getMacAddress(WebConfig.getWiredInterfaceName());
 			if (tmpMac != null && tmpMac.matches(Validate.REGEX_MAC_ADDRESS)) {
 				mac = tmpMac;
 			}
-		} 
+		}
+		*/
+
+		String mac = null;
+		if (mac1 != null && mac2 != null && mac3 != null && mac4 != null && mac5 != null && mac6 != null) {
+			String tmpMac = mac1.trim() + Util.COLON + mac2.trim() + Util.COLON + mac3.trim() + Util.COLON + 
+					mac4.trim() + Util.COLON + mac5.trim() + Util.COLON + mac6.trim();
+			if (tmpMac.matches(Validate.REGEX_MAC_ADDRESS)) {
+				mac = tmpMac;
+			}
+		}
 		
+		/*
+		 * If it hasn't been explicitly set but the defaultMac option has been checked, use the MAC
+		 * of the wired interface.
+		 */
+		if (mac == null && defaultMac) {
+			String tmpMac = Util.getMacAddress(WebConfig.getWiredInterfaceName());
+			if (tmpMac != null && tmpMac.matches(Validate.REGEX_MAC_ADDRESS)) {
+				mac = tmpMac;
+			}
+		}
+
 		/*
 		 * -m <mac addr>
 		 * Set mac address, format: ab:cd:ef:12:34:56
 		 */
-		if (mac != null && mac.trim().length() == Validate.MAC_STRING_LENGTH) {
-			list.add(CFG_MAC + "=\"" + CFG_MAC_OPTION + mac.trim() + "\"");
+		if (mac != null) {
+			list.add(CFG_MAC + "=\"" + CFG_MAC_OPTION + mac + "\"");
 		}
 		
 		/*
@@ -552,7 +666,7 @@ public class SqueezeliteAction extends SystemctlAction {
 			list.add(CFG_MAX_RATE + "=\"" + CFG_MAX_RATE_OPTION + maxRate.trim() + "\"");
 		}
 		
-		String tmpAlsaParams = null;
+		//String tmpAlsaParams = null;
 		/*
 		 * -o <output device>
 		 * Specify output device, default "default" 
@@ -562,12 +676,13 @@ public class SqueezeliteAction extends SystemctlAction {
 			/*
 			 * If the user chooses sgtl5000audio or imxhdmisoc device, but doesn't set alsaParams, 
 			 * use the defaults to works around issues....
-			 */
+			 *
 			if (audioDev.contains(WANDBOARD_DEFAULT_AUDIO_DEVICE_3_0_35)) {
 				tmpAlsaParams = WANDBOARD_DEFAULT_AUDIO_DEVICE_ALSA_PARAMS_3_0_35;
 			} else if (audioDev.contains(WANDBOARD_HDMI_AUDIO_DEVICE_3_0_35)) {
 				tmpAlsaParams = WANDBOARD_HDMI_AUDIO_DEVICE_ALSA_PARAMS_3_0_35;
 			}
+			*/
 		}
 		
 		/*
@@ -644,11 +759,18 @@ public class SqueezeliteAction extends SystemctlAction {
 			}
 			logLevel += CFG_LOG_LEVEL_OPTION + LOG_NAME_OUTPUT + Util.EQUALS + logLevelOutput;
 			logLevelCount++;
+		}		
+		// ir
+		if (logLevelIr != null && logLevelIr.length() > 0) {
+			if (logLevelCount > 0) {
+				logLevel += Util.SPACE;
+			}
+			logLevel += CFG_LOG_LEVEL_OPTION + LOG_NAME_IR + Util.EQUALS + logLevelIr;
+			logLevelCount++;
 		}
-
-		logLevel += "\"";
 		
 		if (logLevelCount > 0) {
+			logLevel += "\"";
 			list.add(logLevel);
 		}
 		
@@ -656,9 +778,90 @@ public class SqueezeliteAction extends SystemctlAction {
 		 * -c <codec1>,<codec2>
 		 * Restrict codecs those specified, otherwise loads all available codecs; 
 		 * known codecs: flac,pcm,mp3,ogg,aac (mad,mpg for specific mp3 codec)
-		 */
+		 *
 		if (codec != null && codec.trim().length() > 0) {
 			list.add(CFG_CODEC + "=\"" + CFG_CODEC_OPTION + codec.trim() + "\"");
+		}
+		*/
+		
+		int codecCount = 0;
+		String codec = CFG_CODEC + "=\"" + CFG_CODEC_OPTION;
+				
+		if (codecMp3 != null && codecMp3.trim().length() > 0) {
+			if (codecCount > 0) {
+				codec += Util.COMMA;
+			}
+			codec += codecMp3.trim();
+			codecCount++;
+		}
+		
+		if (codecFlac) {
+			if (codecCount > 0) {
+				codec += Util.COMMA;
+			}
+			codec += CODEC_FLAC;
+			codecCount++;
+		}
+		
+		if (codecPcm) {
+			if (codecCount > 0) {
+				codec += Util.COMMA;
+			}
+			codec += CODEC_PCM;
+			codecCount++;
+		}
+		
+		if (codecOgg) {
+			if (codecCount > 0) {
+				codec += Util.COMMA;
+			}
+			codec += CODEC_OGG;
+			codecCount++;
+		}
+		
+		if (codecAac) {
+			if (codecCount > 0) {
+				codec += Util.COMMA;
+			}
+			codec += CODEC_AAC;
+			codecCount++;
+		}
+		
+		if (codecWma) {
+			if (codecCount > 0) {
+				codec += Util.COMMA;
+			}
+			codec += CODEC_WMA;
+			codecCount++;
+		}
+		
+		if (codecAlac) {
+			if (codecCount > 0) {
+				codec += Util.COMMA;
+			}
+			codec += CODEC_ALAC;
+			codecCount++;
+		}
+		
+		if (codecDsd) {
+			if (codecCount > 0) {
+				codec += Util.COMMA;
+			}
+			codec += CODEC_DSD;
+			codecCount++;
+		}
+		
+		if (codecCount > 0) {
+			codec += "\"";
+			list.add(codec);
+		}
+		
+		/*
+		 * -e <codec1>,<codec2>....
+		 * Exclude native support of these codecs.
+		 */
+		if (excludeCodec != null && excludeCodec.trim().length() > 0) {
+			list.add(CFG_EXCLUDE_CODEC + "=\"" + CFG_EXCLUDE_CODEC_OPTION + excludeCodec.trim() + "\"");
 		}
 		
 		/*
@@ -704,9 +907,9 @@ public class SqueezeliteAction extends SystemctlAction {
 
 		if (alsaParams != null && alsaParams.trim().length() > 0) {
 			list.add(CFG_ALSA_PARAMS + "=\"" + CFG_ALSA_PARAMS_OPTION + alsaParams.trim() + "\"");
-		} else if (tmpAlsaParams != null && tmpAlsaParams.trim().length() > 0) {
+		} /* else if (tmpAlsaParams != null && tmpAlsaParams.trim().length() > 0) {
 			list.add(CFG_ALSA_PARAMS + "=\"" + CFG_ALSA_PARAMS_OPTION + tmpAlsaParams.trim() + "\"");
-		}
+		} */
 		
 		if (serverIp != null && serverIp.trim().length() > 0) {
 			list.add(CFG_SERVER_IP + "=\"" + CFG_SERVER_IP_OPTION + serverIp.trim() + "\"");
@@ -741,6 +944,29 @@ public class SqueezeliteAction extends SystemctlAction {
 						((dopOptions != null && dopOptions.trim().length() > 0) ? 
 								(CFG_DOP_OPTION + dopOptions.trim()) : CFG_DOP_OPTION.trim()) + 
 						"\"");
+		}
+		
+		if (lirc) {
+			list.add(CFG_LIRC + "=\"" +  
+						((lircConfigFileName != null && lircConfigFileName.trim().length() > 0) ? 
+								(CFG_LIRC_OPTION + lircConfigFileName.trim()) : CFG_LIRC_OPTION.trim()) + 
+						"\"");
+		}
+		
+		if (pid != null && pid.trim().length() > 0) {
+			list.add(CFG_PID + "=\"" + CFG_PID_OPTION + pid.trim() + "\"");
+		}
+		
+		if (audioDevIdle != null && audioDevIdle.trim().length() > 0) {
+			list.add(CFG_AUDIO_DEV_IDLE + "=\"" + CFG_AUDIO_DEV_IDLE_OPTION + audioDevIdle.trim() + "\"");
+		}
+		
+		if (alsaUnmuteControl != null && alsaUnmuteControl.trim().length() > 0) {
+			list.add(CFG_ALSA_UNMUTE_CONTROL + "=\"" + CFG_ALSA_UNMUTE_CONTROL_OPTION + alsaUnmuteControl.trim() + "\"");
+		}
+		
+		if (alsaVolumeControl != null && alsaVolumeControl.trim().length() > 0) {
+			list.add(CFG_ALSA_VOLUME_CONTROL + "=\"" + CFG_ALSA_VOLUME_CONTROL_OPTION + alsaVolumeControl.trim() + "\"");
 		}
 		
 		if (options != null && options.trim().length() > 0) {
@@ -827,12 +1053,18 @@ public class SqueezeliteAction extends SystemctlAction {
 							/*
 							 * Remove the arg flag
 							 */
-							String[] splitOption = value.split(" ");
+							String[] splitOption = value.split(Util.SPACE);
 							if (splitOption != null && splitOption.length == 2) {
-								String temp = splitOption[1].trim();
-								properties.put(name, temp);
-								if (LOGGER.isTraceEnabled()) {
-									LOGGER.trace("Name='" + name + "', Value='" + temp + "'");
+								if (name.equals(CFG_LOG_LEVEL)) {
+									parseLogLevel(splitOption[1].trim());
+								} else if (name.equals(CFG_CODEC)) {
+									parseCodecs(splitOption[1].trim());
+								} else {
+									String temp = splitOption[1].trim();
+									properties.put(name, temp);
+									if (LOGGER.isTraceEnabled()) {
+										LOGGER.trace("Name='" + name + "', Value='" + temp + "'");
+									}
 								}
 							} else if (name.equals(CFG_VISULIZER)) {
 								if (splitOption.length == 1 && splitOption[0].equals(CFG_VISULIZER_OPTION.trim())) {
@@ -855,34 +1087,19 @@ public class SqueezeliteAction extends SystemctlAction {
 										LOGGER.trace("Name='" + name + "', Value='" + "" + "'");
 									}									
 								}
+							} else if (name.equals(CFG_LIRC)) {
+								if (splitOption.length == 1 && splitOption[0].equals(CFG_LIRC_OPTION.trim())) {
+									properties.put(name, "");
+									if (LOGGER.isTraceEnabled()) {
+										LOGGER.trace("Name='" + name + "', Value='" + "" + "'");
+									}									
+								}
 							} else if (name.equals(CFG_LOG_LEVEL)) {
-								/*
-								String tmp = "";
-								int optionCount = splitOption.length / 2;
-								for (int i = 0; i < optionCount; i++) {
-									tmp += splitOption[(i * 2) + 1].trim();
-									if (i + 1 < optionCount) {
-										tmp += " ";
-									}
-								}
-								properties.put(name, tmp);
-								if (LOGGER.isTraceEnabled()) {
-									LOGGER.trace("Name='" + name + "', Value='" + tmp + "'");
-								}
-								*/									
-								int optionCount = splitOption.length / 2;
-								for (int i = 0; i < optionCount; i++) {
-									String tmp = splitOption[(i * 2) + 1].trim();
-									StringTokenizer logTok = new StringTokenizer(tmp, Util.EQUALS);
-									if (logTok.countTokens() == 2) {
-										String logName = logTok.nextToken();
-										String logLevel = logTok.nextToken();
-										String mapLogName = CFG_LOG_LEVEL + Util.UNDERSCORE + logName;
-										properties.put(mapLogName, logLevel);
-										if (LOGGER.isTraceEnabled()) {
-											LOGGER.trace("Name='" + mapLogName + 
-													"', Value='" + logLevel + "'");
-										}
+								if (splitOption.length > 2) {
+									int optionCount = splitOption.length / 2;
+									for (int i = 0; i < optionCount; i++) {
+										String tmp = splitOption[(i * 2) + 1].trim();
+										parseLogLevel(tmp);
 									}
 								}
 							}
@@ -903,6 +1120,49 @@ public class SqueezeliteAction extends SystemctlAction {
 				try {
 					br.close();
 				} catch (Exception e) {}
+			}
+		}
+	}
+	
+	/**
+	 * @param logOption
+	 */
+	private final void parseLogLevel(String logOption) {
+		
+		if (logOption != null) {
+			StringTokenizer tok = new StringTokenizer(logOption, Util.EQUALS);
+			if (tok.countTokens() == 2) {
+				String logName = tok.nextToken();
+				String logLevel = tok.nextToken();
+				String mapLogName = CFG_LOG_LEVEL + Util.UNDERSCORE + logName;
+				properties.put(mapLogName, logLevel);
+				if (LOGGER.isTraceEnabled()) {
+					LOGGER.trace("Name='" + mapLogName + 
+							"', Value='" + logLevel + "'");
+				}
+			}
+		}
+	}
+	
+	/**
+	 * @param codecs
+	 */
+	private final void parseCodecs(String codecs) {
+		
+		if (codecs != null) {
+			StringTokenizer tok = new StringTokenizer(codecs, Util.COMMA);
+			while (tok.hasMoreTokens()) {
+				String name = tok.nextToken();
+				String value = name;
+				if (CODEC_MP3_MAD.equals(name) || CODEC_MP3_MPG.equals(name)) {
+					name = CODEC_MP3;
+				}
+				name = CFG_CODEC + Util.UNDERSCORE + name;
+				properties.put(name, value);
+				if (LOGGER.isTraceEnabled()) {
+					LOGGER.trace("Name='" + name + 
+							"', Value='" + value + "'");
+				}
 			}
 		}
 	}
@@ -961,19 +1221,21 @@ public class SqueezeliteAction extends SystemctlAction {
 	
 	/**
 	 * @return
-	 */
+	 *
 	public String getMac() {
 		
 		return mac;
 	}
+	*/
 	
 	/**
 	 * @param mac
-	 */
+	 *
 	public void setMac(String mac) {
 		
 		this.mac = mac;
 	}
+	*/
 	
 	/**
 	 * @return
@@ -1007,6 +1269,48 @@ public class SqueezeliteAction extends SystemctlAction {
 		this.audioDev = audioDev;
 	}
 	
+	/**
+	 * @return the audioDevIdle
+	 */
+	public String getAudioDevIdle() {
+		return audioDevIdle;
+	}
+	
+	/**
+	 * @param audioDevIdle the audioDevIdle to set
+	 */
+	public void setAudioDevIdle(String audioDevIdle) {
+		this.audioDevIdle = audioDevIdle;
+	}
+	
+	/**
+	 * @return the alsaUnmuteControl
+	 */
+	public String getAlsaUnmuteControl() {
+		return alsaUnmuteControl;
+	}
+
+	/**
+	 * @param alsaUnmuteControl the alsaUnmuteControl to set
+	 */
+	public void setAlsaUnmuteControl(String alsaUnmuteControl) {
+		this.alsaUnmuteControl = alsaUnmuteControl;
+	}
+
+	/**
+	 * @return the alsaVolumeControl
+	 */
+	public String getAlsaVolumeControl() {
+		return alsaVolumeControl;
+	}
+
+	/**
+	 * @param alsaVolumeControl the alsaVolumeControl to set
+	 */
+	public void setAlsaVolumeControl(String alsaVolumeControl) {
+		this.alsaVolumeControl = alsaVolumeControl;
+	}
+
 	/**
 	 * @return
 	 */
@@ -1057,19 +1361,21 @@ public class SqueezeliteAction extends SystemctlAction {
 	
 	/**
 	 * @return
-	 */
+	 *
 	public String getCodec() {
 		
 		return codec;
 	}
+	*/
 	
 	/**
 	 * @param codec
-	 */
+	 *
 	public void setCodec(String codec) {
 		
 		this.codec = codec;
 	}
+	*/
 	
 	/**
 	 * @return
@@ -1181,6 +1487,48 @@ public class SqueezeliteAction extends SystemctlAction {
 	public void setDopOptions(String dopOptions) {
 		
 		this.dopOptions = dopOptions;
+	}
+
+	/**
+	 * @return the lirc
+	 */
+	public boolean isLirc() {
+		return lirc;
+	}
+
+	/**
+	 * @param lirc the lirc to set
+	 */
+	public void setLirc(boolean lirc) {
+		this.lirc = lirc;
+	}
+
+	/**
+	 * @return the lircConfigFileName
+	 */
+	public String getLircConfigFileName() {
+		return lircConfigFileName;
+	}
+
+	/**
+	 * @param lircConfigFileName the lircConfigFileName to set
+	 */
+	public void setLircConfigFileName(String lircConfigFileName) {
+		this.lircConfigFileName = lircConfigFileName;
+	}
+
+	/**
+	 * @return the pid
+	 */
+	public String getPid() {
+		return pid;
+	}
+
+	/**
+	 * @param pid the pid to set
+	 */
+	public void setPid(String pid) {
+		this.pid = pid;
 	}
 
 	/**
@@ -1491,6 +1839,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the log
 	 */
 	public String getLog() {
+		
 		return log;
 	}
 
@@ -1498,6 +1847,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return log the log to set
 	 *
 	public void setLog(String log) {
+	
 		this.log = log;
 	}
 	*/
@@ -1506,6 +1856,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the logLines
 	 */
 	public String getLogLines() {
+		
 		return logLines;
 	}
 	
@@ -1513,6 +1864,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param logLines the logLines to set
 	 */
 	public void setLogLines(String logLines) {
+		
 		this.logLines = logLines;
 	}
 
@@ -1520,6 +1872,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the logLevelSlimproto
 	 */
 	public String getLogLevelSlimproto() {
+		
 		return logLevelSlimproto;
 	}
 
@@ -1527,6 +1880,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param logLevelSlimproto the logLevelSlimproto to set
 	 */
 	public void setLogLevelSlimproto(String logLevelSlimproto) {
+		
 		this.logLevelSlimproto = logLevelSlimproto;
 	}
 
@@ -1534,6 +1888,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the logLevelStream
 	 */
 	public String getLogLevelStream() {
+		
 		return logLevelStream;
 	}
 
@@ -1541,6 +1896,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param logLevelStream the logLevelStream to set
 	 */
 	public void setLogLevelStream(String logLevelStream) {
+		
 		this.logLevelStream = logLevelStream;
 	}
 
@@ -1548,6 +1904,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the logLevelDecode
 	 */
 	public String getLogLevelDecode() {
+		
 		return logLevelDecode;
 	}
 
@@ -1555,6 +1912,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param logLevelDecode the logLevelDecode to set
 	 */
 	public void setLogLevelDecode(String logLevelDecode) {
+		
 		this.logLevelDecode = logLevelDecode;
 	}
 
@@ -1562,6 +1920,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @return the logLevelOutput
 	 */
 	public String getLogLevelOutput() {
+		
 		return logLevelOutput;
 	}
 
@@ -1569,15 +1928,270 @@ public class SqueezeliteAction extends SystemctlAction {
 	 * @param logLevelOutput the logLevelOutput to set
 	 */
 	public void setLogLevelOutput(String logLevelOutput) {
+		
 		this.logLevelOutput = logLevelOutput;
 	}
 
+	/**
+	 * @return the logLevelIr
+	 */
+	public String getLogLevelIr() {
+		
+		return logLevelIr;
+	}
+
+	/**
+	 * @param logLevelIr the logLevelIr to set
+	 */
+	public void setLogLevelIr(String logLevelIr) {
+		
+		this.logLevelIr = logLevelIr;
+	}
+
+	/**
+	 * @return the codecMp3
+	 */
+	public String getCodecMp3() {
+		
+		return codecMp3;
+	}
+
+	/**
+	 * @param codecMp3 the codecMp3 to set
+	 */
+	public void setCodecMp3(String codecMp3) {
+		
+		this.codecMp3 = codecMp3;
+	}
+
+	/**
+	 * @return the codecFlac
+	 */
+	public boolean isCodecFlac() {
+		
+		return codecFlac;
+	}
+
+	/**
+	 * @param codecFlac the codecFlac to set
+	 */
+	public void setCodecFlac(boolean codecFlac) {
+		
+		this.codecFlac = codecFlac;
+	}
+
+	/**
+	 * @return the codecPcm
+	 */
+	public boolean isCodecPcm() {
+		
+		return codecPcm;
+	}
+
+	/**
+	 * @param codecPcm the codecPcm to set
+	 */
+	public void setCodecPcm(boolean codecPcm) {
+		
+		this.codecPcm = codecPcm;
+	}
+
+	/**
+	 * @return the codecOgg
+	 */
+	public boolean isCodecOgg() {
+		
+		return codecOgg;
+	}
+
+	/**
+	 * @param codecOgg the codecOgg to set
+	 */
+	public void setCodecOgg(boolean codecOgg) {
+		
+		this.codecOgg = codecOgg;
+	}
+
+	/**
+	 * @return the codecAac
+	 */
+	public boolean isCodecAac() {
+		
+		return codecAac;
+	}
+
+	/**
+	 * @param codecAac the codecAac to set
+	 */
+	public void setCodecAac(boolean codecAac) {
+		
+		this.codecAac = codecAac;
+	}
+
+	/**
+	 * @return the codecWma
+	 */
+	public boolean isCodecWma() {
+		
+		return codecWma;
+	}
+
+	/**
+	 * @param codecWma the codecWma to set
+	 */
+	public void setCodecWma(boolean codecWma) {
+		
+		this.codecWma = codecWma;
+	}
+
+	/**
+	 * @return the codecAlac
+	 */
+	public boolean isCodecAlac() {
+		
+		return codecAlac;
+	}
+
+	/**
+	 * @param codecAlac the codecAlac to set
+	 */
+	public void setCodecAlac(boolean codecAlac) {
+		
+		this.codecAlac = codecAlac;
+	}
+
+	/**
+	 * @return the codecDsd
+	 */
+	public boolean isCodecDsd() {
+		
+		return codecDsd;
+	}
+
+	/**
+	 * @param codecDsd the codecDsd to set
+	 */
+	public void setCodecDsd(boolean codecDsd) {
+		
+		this.codecDsd = codecDsd;
+	}
+
+	/**
+	 * @return the mac1
+	 */
+	public String getMac1() {
+		
+		return mac1;
+	}
+
+	/**
+	 * @param mac1 the mac1 to set
+	 */
+	public void setMac1(String mac1) {
+		
+		this.mac1 = mac1;
+	}
+
+	/**
+	 * @return the mac2
+	 */
+	public String getMac2() {
+		
+		return mac2;
+	}
+
+	/**
+	 * @param mac2 the mac2 to set
+	 */
+	public void setMac2(String mac2) {
+		
+		this.mac2 = mac2;
+	}
+
+	/**
+	 * @return the mac3
+	 */
+	public String getMac3() {
+		
+		return mac3;
+	}
+
+	/**
+	 * @param mac3 the mac3 to set
+	 */
+	public void setMac3(String mac3) {
+		
+		this.mac3 = mac3;
+	}
+
+	/**
+	 * @return the mac4
+	 */
+	public String getMac4() {
+		
+		return mac4;
+	}
+
+	/**
+	 * @param mac4 the mac4 to set
+	 */
+	public void setMac4(String mac4) {
+		
+		this.mac4 = mac4;
+	}
+
+	/**
+	 * @return the mac5
+	 */
+	public String getMac5() {
+		
+		return mac5;
+	}
+
+	/**
+	 * @param mac5 the mac5 to set
+	 */
+	public void setMac5(String mac5) {
+		
+		this.mac5 = mac5;
+	}
+
+	/**
+	 * @return the mac6
+	 */
+	public String getMac6() {
+		
+		return mac6;
+	}
+
+	/**
+	 * @param mac6 the mac6 to set
+	 */
+	public void setMac6(String mac6) {
+		
+		this.mac6 = mac6;
+	}
+
+	/**
+	 * @return the excludeCodec
+	 */
+	public String getExcludeCodec() {
+		return excludeCodec;
+	}
+
+	/**
+	 * @param excludeCodec the excludeCodec to set
+	 */
+	public void setExcludeCodec(String excludeCodec) {
+		this.excludeCodec = excludeCodec;
+	}
+	
 	/**
 	 * @return the resampleQualityList
 	 */
 	public List<NameFlag> getResampleQualityList() {
 		
-		return NameFlag.getSoxResampleQualityList();
+		return NameFlag.SOXR_QUALITY_LIST;
 	}
 
 	/**
@@ -1585,7 +2199,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 */
 	public List<NameFlag> getResampleFilterList() {
 		
-		return NameFlag.getSoxResampleFilterList();
+		return NameFlag.SOXR_FILTER_LIST;
 	}
 	
 	/**
@@ -1593,7 +2207,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 */
 	public List<NameFlag> getAlsaParamsFormatList() {
 		
-		return NameFlag.getAlsaParamsFormatList();
+		return NameFlag.ALSA_PARAMS_FORMAT_LIST;
 	}	
 
 	/**
@@ -1601,7 +2215,7 @@ public class SqueezeliteAction extends SystemctlAction {
 	 */
 	public List<NameFlag> getAlsaParamsMmapList() {
 		
-		return NameFlag.getAlsaParamsMmapList();
+		return NameFlag.ALSA_PARAMS_MMAP_LIST;
 	}
 	
 	/**
@@ -1609,6 +2223,14 @@ public class SqueezeliteAction extends SystemctlAction {
 	 */
 	public List<NameFlag> getLogLevelList() {
 		
-		return NameFlag.getLogLevelList();
+		return NameFlag.LOG_LEVEL_LIST;
+	}
+
+	/**
+	 * @return the mp3List
+	 */
+	public List<NameFlag> getMp3List() {
+		
+		return NameFlag.MP3_LIST;
 	}
 }

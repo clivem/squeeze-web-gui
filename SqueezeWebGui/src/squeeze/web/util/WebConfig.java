@@ -37,26 +37,33 @@ public class WebConfig {
 	
 	private final static Logger LOGGER = Logger.getLogger(WebConfig.class);
 
+	/*
+	 * Config file
+	 */
 	private final static String SYSCONFIG_WEB_FILE = 
 			"/etc/sysconfig/squeeze-web-gui";
 	
+	/*
+	 * Config parameters
+	 */
 	private final static String CFG_TEMP_DIR = "TEMP_DIR";
-	private final static String CFG_WIRED_INTERFACE_NAME = 
-			"WIRED_INTERFACE";
-	private final static String CFG_WIRELESS_INTERFACE_NAME = 
-			"WIRELESS_INTERFACE";
-	private final static String STORAGE_DIRS_NAME = 
-			"STORAGE_DIRS";
+	private final static String CFG_WIRED_INTERFACE_NAME = "WIRED_INTERFACE";
+	private final static String CFG_WIRELESS_INTERFACE_NAME = "WIRELESS_INTERFACE";
+	private final static String CFG_STORAGE_DIRS_NAME = "STORAGE_DIRS";
+	private final static String CFG_FEDORA_RELEASE_FILENAME = "FEDORA_RELEASE_FILENAME";
+	private final static String CFG_CUSTOM_RELEASE_FILENAME = "CUSTOM_RELEASE_FILENAME";
 	
+	/*
+	 * Config values
+	 */
 	private static File TEMP_DIR = null;
-	
 	private static String WIRED_INTERFACE_NAME = "eth0";
-	
 	private static String WIRELESS_INTERFACE_NAME = "wlan0";
-	
 	private static String[] STORAGE_DIRS = 
 			new String[] {"/storage", "/mnt/storage"};
-	
+	private static String FEDORA_RELEASE_FILENAME = "/etc/fedora-release";
+	private static String CUSTOM_RELEASE_FILENAME = "/etc/csos-release";
+
 	static {
 		
 		init();
@@ -116,6 +123,22 @@ public class WebConfig {
 	}
 	
 	/**
+	 * @return
+	 */
+	public final static String getFedoraReleaseFileName() {
+		
+		return FEDORA_RELEASE_FILENAME;
+	}
+	
+	/**
+	 * @return
+	 */
+	public final static String getCustomReleaseFileName() {
+		
+		return CUSTOM_RELEASE_FILENAME;
+	}
+	
+	/**
 	 * 
 	 */
 	private final static void init() {
@@ -160,7 +183,7 @@ public class WebConfig {
 							}
 							WIRELESS_INTERFACE_NAME = value;
 						}
-					} else if (line.startsWith(STORAGE_DIRS_NAME)) {
+					} else if (line.startsWith(CFG_STORAGE_DIRS_NAME)) {
 						String value = getValue(line);
 						if (value.length() > 0) {
 							StringTokenizer tok = new StringTokenizer(value, Util.COMMA);
@@ -183,6 +206,22 @@ public class WebConfig {
 									STORAGE_DIRS = tempList;
 								}
 							}
+						}
+					} else if (line.startsWith(CFG_FEDORA_RELEASE_FILENAME)) {
+						String value = getValue(line);
+						if (value.length() > 0) {
+							if (LOGGER.isDebugEnabled()) {
+								LOGGER.debug("Setting Fedora release file name: " + value);
+							}
+							FEDORA_RELEASE_FILENAME = value;
+						}
+					} else if (line.startsWith(CFG_CUSTOM_RELEASE_FILENAME)) {
+						String value = getValue(line);
+						if (value.length() > 0) {
+							if (LOGGER.isDebugEnabled()) {
+								LOGGER.debug("Setting Custom release file name: " + value);
+							}
+							CUSTOM_RELEASE_FILENAME = value;
 						}
 					} else {
 						LOGGER.info("Ignoring line: " + line);

@@ -25,12 +25,14 @@
 		<span id="nav-shutdown">
 			<s:a action="Shutdown"><s:text name="nav.shutdown" /></s:a>
 		</span>
+		<!-- 
 		<span id="nav-faq">
 			<s:a href="faq.jsp"><s:text name="nav.faq" /></s:a>
 		</span>
 		<span id="nav-help">
 			<s:a href="help.jsp"><s:text name="nav.help" /></s:a>
-		</span> 
+		</span>
+		 --> 
 		<br class="separator" />
 	</div>
 	

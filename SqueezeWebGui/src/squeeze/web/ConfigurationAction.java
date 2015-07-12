@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import squeeze.web.util.SambaConfig;
+//import squeeze.web.util.SambaConfig;
 import squeeze.web.util.SystemLocale;
 import squeeze.web.util.TimeZone;
 import squeeze.web.util.Util;
@@ -100,12 +100,14 @@ public class ConfigurationAction extends ActionSupport {
 		}
 		
 		fedoraVersion = Util.getFedoraVersion();
-		csosVersion = Util.getCsosVersion();
+		csosVersion = Util.getCustomVersion();
 		hostName = Util.getHostName();
 		
+		/*
 		SambaConfig sambaConfig = SambaConfig.getSambaConfig();
 		sambaNetbiosName = sambaConfig.getNetbiosName();
 		sambaWorkgroup = sambaConfig.getWorkgroup();
+		*/
 		
 		systemLocale = SystemLocale.getSystemLocale();
 		timeZone = TimeZone.getCurrentTimeZone();

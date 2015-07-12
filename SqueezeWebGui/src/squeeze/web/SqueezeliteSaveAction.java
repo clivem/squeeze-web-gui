@@ -57,17 +57,45 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 		}
 		
 		if (name != null && name.trim().length() > 0) {
-			if (!name.trim().matches(Validate.REGEX_ALPHA_NUMERIC)) {
+			if (!name.trim().matches(Validate.REGEX_ALPHA_NUMERIC_UNDERSCORE_DASH)) {
 				addActionError(getText("squeezelite.validation.name.fail"));
 			}
 		}
 		
+		/*
 		if (mac != null && mac.trim().length() > 0) {
 			if (!mac.trim().matches(Validate.REGEX_MAC_ADDRESS)) {
 				addActionError(getText("squeezelite.validation.mac.fail"));
 			}
 		}
-		
+		*/
+
+		if((mac1 == null || mac1.trim().length() < 1) && 
+				(mac2 == null || mac2.trim().length() < 1) &&
+				(mac3 == null || mac3.trim().length() < 1) &&
+				(mac4 == null || mac4.trim().length() < 1) &&
+				(mac5 == null || mac5.trim().length() < 1) &&
+				(mac6 == null || mac6.trim().length() < 1)) {
+			/*
+			 * Don't set mac.
+			 */
+		} else {
+			/* 
+			 * Set mac.
+			 */
+			if (mac1 == null || mac1.trim().length() < 2 || mac2 == null || mac2.trim().length() < 2 || 
+					mac3 == null || mac3.trim().length() < 2 || mac4 == null || mac4.trim().length() < 2 || 
+					mac5 == null || mac5.trim().length() < 2 || mac6 == null || mac6.trim().length() < 2) {
+				addActionError(getText("squeezelite.validation.mac.fail"));
+			} else {
+				String mac = mac1.trim() + Util.COLON + mac2.trim() + Util.COLON + mac3.trim() + Util.COLON + 
+						mac4.trim() + Util.COLON + mac5.trim() + Util.COLON + mac6.trim();
+				if (!mac.matches(Validate.REGEX_MAC_ADDRESS)) {
+					addActionError(getText("squeezelite.validation.mac.fail"));
+				}
+			}
+		}
+				
 		if(maxRate != null && maxRate.trim().length() > 0) {
 			if (maxRate.trim().matches(Validate.SQUEEZELITE_REGEX_MAX_RATE) || 
 					maxRate.trim().matches(Validate.SQUEEZELITE_REGEX_MAX_RATE_RANGE) ||
@@ -152,6 +180,7 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 		}
 		*/
 		
+		/*
 		if (codec != null && codec.trim().length() > 0) {
 			String[] tempList = codec.trim().split(",");
 			for (int i = 0; i < tempList.length; i++) {
@@ -165,6 +194,7 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 				}
 			}
 		}
+		*/
 		
 		/*
 		if (alsaParams != null && alsaParams.trim().length() > 0) {
@@ -189,11 +219,15 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 			}
 		}
 		
+		/*
+		 * Don't validate! We need to allow host names as well as IP's.
+		 * 
 		if (serverIp != null && serverIp.trim().length() > 0) {
 			if (!serverIp.trim().matches(Validate.REGEX_IP_ADDRESS)) {
 				addActionError(getText("squeezelite.validation.serverIp.fail"));
 			}
 		}
+		*/
 		
 		if (dop && dopOptions != null && dopOptions.trim().length() > 0) {
 			try {
@@ -201,6 +235,19 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 			} catch (NumberFormatException nfe) { 
 				addActionError(getText("squeezelite.validation.dopOptions.fail"));
 			}
+		}
+		
+		if (audioDevIdle != null && audioDevIdle.trim().length() > 0) {
+			try {
+				Integer.parseInt(audioDevIdle.trim());
+			} catch (NumberFormatException nfe) { 
+				addActionError(getText("squeezelite.validation.audioDevIdle.fail"));
+			}
+		}
+		
+		if (alsaUnmuteControl != null && alsaUnmuteControl.trim().length() > 0 &&
+				alsaVolumeControl != null && alsaVolumeControl.trim().length() > 0) {
+			addActionError(getText("squeezelite.validation.alsaControl.fail"));
 		}
 		
 		// validate the resample options
@@ -374,7 +421,7 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 	/**
 	 * @param codec
 	 * @return
-	 */
+	 *
 	private final static boolean validateCodec(final String codec) {
 		
 		if (LOGGER.isTraceEnabled()) {
@@ -383,4 +430,5 @@ public class SqueezeliteSaveAction extends SqueezeliteAction {
 		
 		return Util.contains(Validate.SQUEEZELITE_CODECS, codec);
 	}
+	*/
 }

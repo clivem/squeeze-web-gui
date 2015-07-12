@@ -80,12 +80,10 @@ public final class Util {
 			Commands.SHUTDOWN_FORCE + ") option";
 		
 	private final static String HOSTNAME_FILENAME = "/etc/hostname";
-	private final static String FEDORA_VERSION_FILENAME = "/etc/fedora-release";
-	private final static String CSOS_VERSION_FILENAME = "/etc/csos-release";
 
 	public final static String FSTAB_FILENAME = "/etc/fstab";
 	
-	private static String CSOS_VERSION = null;
+	private static String CUSTOM_VERSION = null;
 	private static String FEDORA_VERSION = null;
 	
 	private final static String DEV_PATH = "/dev";
@@ -373,11 +371,76 @@ public final class Util {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	private static boolean scanWirelessNetworks(String interfaceName) 
+	private static boolean nmCliScan(String interfaceName) 
 			throws IOException, InterruptedException {
 		
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("scanWirelessNetworks(interfaceName=" + 
+			LOGGER.debug("nmCliScan(interfaceName=" + 
+					interfaceName + ")");
+		}
+		
+		File tmpStdOutFile = null, tmpStdErrFile = null;
+		// BufferedReader reader = null;
+		try {
+			tmpStdOutFile = Util.createTempFile("nm_cli_scan_out_", ".txt");
+			Writer outWriter = new FileWriter(tmpStdOutFile);
+
+			tmpStdErrFile = Util.createTempFile("nm_cli_scan_err_", ".txt");
+			Writer errWriter = new FileWriter(tmpStdErrFile);
+
+			// sudo nmcli -n device wifi rescan ifname wlan0
+			String[] cmdLineArgs = new String[] {
+					Commands.CMD_SUDO, Commands.CMD_NMCLI, Commands.NMCLI_NO_CHECK_VERSIONS_FLAG,
+					Commands.NMCLI_DEVICE, Commands.NMCLI_WIFI, Commands.NMCLI_RESCAN, 
+					Commands.NMCLI_IFNAME, interfaceName
+			};
+			
+			return (ExecuteProcess.executeCommand(cmdLineArgs, outWriter, errWriter) == 0);
+			/*
+			reader = new BufferedReader(new FileReader(tmpFile));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				if (line.contains(Commands.WPA_CLI_SCAN_OK)) {
+					return true;
+				}
+			}
+			*/
+		} finally {
+			/*
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (Exception e) {}
+			}
+			*/
+			
+			if (tmpStdOutFile != null) {
+				try {
+					tmpStdOutFile.delete();
+				} catch (Exception e) {}
+			}
+
+			if (tmpStdErrFile != null) {
+				try {
+					tmpStdErrFile.delete();
+				} catch (Exception e) {}
+			}
+		}
+		
+		// return false;
+	}
+		
+	/**
+	 * @param interfaceName
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	private static boolean wpaCliScan(String interfaceName) 
+			throws IOException, InterruptedException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("wpaCliScan(interfaceName=" + 
 					interfaceName + ")");
 		}
 		
@@ -423,17 +486,96 @@ public final class Util {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	private static List<String> scanResultsWirelessNetworks(String interfaceName) 
+	private static List<String> nmCliScanResults(String interfaceName) 
 			throws IOException, InterruptedException {
 		
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("scanResultsWirelessNetworks(interfaceName=" + 
+			LOGGER.debug("nmCliScanResults(interfaceName=" + 
 							interfaceName + ")");
 		}
 		
 		List<String> networkList = new ArrayList<String>();
 		
-		if (scanWirelessNetworks(interfaceName)) {
+		nmCliScan(interfaceName);
+		
+		//if (nmCliScan(interfaceName)) {
+			
+			File tmpFile = Util.createTempFile("nm_cli_scan_results_", ".txt");
+			BufferedReader reader = null;
+			try {
+				Writer writer = new FileWriter(tmpFile);
+	
+				String[] cmdLineArgs = new String[] {
+						// sudo nmcli -n -f SSID device wifi list ifname wlan0
+						Commands.CMD_SUDO, Commands.CMD_NMCLI, Commands.NMCLI_NO_CHECK_VERSIONS_FLAG,
+						Commands.NMCLI_FILTER_FLAG, Commands.NMCLI_SSID, Commands.NMCLI_DEVICE,
+						Commands.NMCLI_WIFI, Commands.NMCLI_LIST, Commands.NMCLI_IFNAME, interfaceName
+				};
+				
+				ExecuteProcess.executeCommand(cmdLineArgs, writer, null);
+				reader = new BufferedReader(new FileReader(tmpFile));
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					/*
+					if (line.matches(Validate.REGEX_MAC_ADDRESS_IN_LINE)) {
+						int index = line.lastIndexOf("\t");
+						if (index > -1) {
+							String name = line.substring(index + 1).trim();
+							if (LOGGER.isTraceEnabled()) {
+								LOGGER.trace("Adding ESSID: '" + name + "' to networkList.");
+							}
+							networkList.add(name);
+						}
+					}
+					*/
+					if (!line.contains(Commands.NMCLI_SSID)) {
+						String name = line.trim();
+						if (LOGGER.isTraceEnabled()) {
+							LOGGER.trace("Adding ESSID: '" + name + "' to networkList.");
+						}
+						networkList.add(name);
+					}
+				}
+				Collections.sort(networkList, StringIgnoreCaseComparator.COMPARATOR);
+			} finally {
+				if (reader != null) {
+					try {
+						reader.close();
+					} catch (Exception e) {}
+				}
+				
+				if (tmpFile != null) {
+					try {
+						tmpFile.delete();
+					} catch (Exception e) {}
+				}
+			}
+		//}
+		
+		networkList.add(0, BLANK_STRING);
+		
+		return networkList;
+	}
+		
+	/**
+	 * @param interfaceName
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	private static List<String> wpaCliScanResults(String interfaceName) 
+			throws IOException, InterruptedException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("wpaCliScanResults(interfaceName=" + 
+							interfaceName + ")");
+		}
+		
+		List<String> networkList = new ArrayList<String>();
+		
+		nmCliScan(interfaceName);
+		
+		if (wpaCliScan(interfaceName)) {
 			
 			File tmpFile = Util.createTempFile("wpa_cli_scan_results_", ".txt");
 			BufferedReader reader = null;
@@ -490,12 +632,18 @@ public final class Util {
 	public static List<String> getAvailableNetworks(String interfaceName) 
 			throws IOException, InterruptedException {
 
+		boolean useNmCli = true;
+		
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("getAvailableNetworks(interfaceName=" + 
 							interfaceName + ")");
 		}
 		
-		return scanResultsWirelessNetworks(interfaceName);
+		if (useNmCli) {
+			return nmCliScanResults(interfaceName);
+		} else {
+			return wpaCliScanResults(interfaceName);
+		}
 	}
 	
 	/**
@@ -1046,7 +1194,7 @@ public final class Util {
 	public final static String getFedoraVersion() {
 		
 		if (FEDORA_VERSION == null) {
-			FEDORA_VERSION = getFirstLineFromFile(FEDORA_VERSION_FILENAME);
+			FEDORA_VERSION = getFirstLineFromFile(WebConfig.getFedoraReleaseFileName());
 		}
 
 		return FEDORA_VERSION;
@@ -1063,13 +1211,13 @@ public final class Util {
 	/**
 	 * @return
 	 */
-	public final static String getCsosVersion() {
+	public final static String getCustomVersion() {
 		
-		if (CSOS_VERSION == null) {
-			CSOS_VERSION = getFirstLineFromFile(CSOS_VERSION_FILENAME);
+		if (CUSTOM_VERSION == null) {
+			CUSTOM_VERSION = getFirstLineFromFile(WebConfig.getCustomReleaseFileName());
 		}
 		
-		return CSOS_VERSION;
+		return CUSTOM_VERSION;
 	}
 	
 	/**

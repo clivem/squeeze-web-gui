@@ -20,6 +20,7 @@
  */
 package squeeze.web;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -64,6 +65,8 @@ public abstract class InterfaceAction extends ActionSupport {
 		{"255.255.255.252", "30"},
 		{"255.255.255.254", "31"}
 	};
+	
+	private final static String WIRELESS_REG_DOMAIN_FILE = "/etc/sysconfig/regdomain";
 	
 	private final static String NETWORK_CONFIG_PATH = "/etc/sysconfig/network-scripts/";
 	private final static String IFCFG_PREFIX = "ifcfg-";
@@ -110,10 +113,17 @@ public abstract class InterfaceAction extends ActionSupport {
 	public final static String DUMMY_ESSID = "YOUR_ESSID_HERE";
 	public final static String DUMMY_WPA_PSK = "YOUR_PSK_HERE";
 	public final static String ESSID_SELECT_OTHER = "User Specified (below):";
+		
+	//public final static String ONBOOT_TRUE = "yes";
+	//private final static String TRUE = "true";
+	private final static String YES = "yes";
+
+	//public final static String ONBOOT_FALSE = "no";
+	private final static String FALSE = "false";
+	private final static String NO = "no";
 	
-	public final static String ONBOOT_TRUE = "yes";
-	public final static String ONBOOT_FALSE = "no";
-	
+	private final static String COUNTRY = "COUNTRY";
+		
 	protected SortedMap<String, String> interfaceProperties = 
 			new TreeMap<String, String>(StringIgnoreCaseComparator.COMPARATOR);
 	protected SortedMap<String, String> keysProperties = 
@@ -149,6 +159,8 @@ public abstract class InterfaceAction extends ActionSupport {
 	protected String status;
 	
 	protected boolean cbForceReboot = false;
+	
+	protected String wirelessRegDomain = null;
 
 	/**
 	 * 
@@ -504,6 +516,7 @@ public abstract class InterfaceAction extends ActionSupport {
 	 * @return the cbForceReboot
 	 */
 	public boolean isCbForceReboot() {
+		
 		return cbForceReboot;
 	}
 
@@ -511,7 +524,24 @@ public abstract class InterfaceAction extends ActionSupport {
 	 * @param cbForceReboot the cbForceReboot to set
 	 */
 	public void setCbForceReboot(boolean cbForceReboot) {
+		
 		this.cbForceReboot = cbForceReboot;
+	}
+
+	/**
+	 * @return the wirelessRegDomain
+	 */
+	public String getWirelessRegDomain() {
+		
+		return wirelessRegDomain;
+	}
+
+	/**
+	 * @param wirelessRegDomain the wirelessRegDomain to set
+	 */
+	public void setWirelessRegDomain(String wirelessRegDomain) {
+		
+		this.wirelessRegDomain = wirelessRegDomain;
 	}
 
 	/**
@@ -637,6 +667,7 @@ public abstract class InterfaceAction extends ActionSupport {
 
 		File tmpInterfaceFile = null;
 		File tmpKeysFile = null;
+		File tmpRegDomainFile = null;
 		try {
 			/*
 			 * populate the property map
@@ -654,14 +685,22 @@ public abstract class InterfaceAction extends ActionSupport {
 			 * replace the real config file with the temp file
 			 */
 			replaceInterfaceConfig(tmpInterfaceFile);
-			
+
 			/*
-			 * write the wireless keys file
+			 * Wireless connection
 			 */
 			if (type != null && type.equals(CFG_TYPE_WIRELESS)) {
+				/*
+				 * write the wireless keys file
+				 */
 				tmpKeysFile = writeTempKeysProperties();
 				replaceKeysConfig(tmpKeysFile);
-			}
+				/*
+				 * update the wireless regulatory domain
+				 */
+				tmpRegDomainFile = writeWirelessRegDomain(wirelessRegDomain);
+				replaceRegDomainConfig(tmpRegDomainFile);
+			}			
 		} catch (Exception e) {
 			LOGGER.error("Caught exception saving " + getInterfaceName() + "!", e);
 			throw e;
@@ -674,6 +713,11 @@ public abstract class InterfaceAction extends ActionSupport {
 			if (tmpKeysFile != null) {
 				try {
 					tmpKeysFile.delete();
+				} catch (Exception e) {}
+			}
+			if (tmpRegDomainFile != null) {
+				try {
+					tmpRegDomainFile.delete();
 				} catch (Exception e) {}
 			}
 		}
@@ -849,7 +893,7 @@ public abstract class InterfaceAction extends ActionSupport {
 			interfaceProperties.remove(CFG_DOMAIN);
 		}
 		
-		interfaceProperties.put(CFG_ONBOOT, (onBoot) ? ONBOOT_TRUE : ONBOOT_FALSE);
+		interfaceProperties.put(CFG_ONBOOT, (onBoot) ? YES : NO);
 	}
 
 	/**
@@ -902,7 +946,7 @@ public abstract class InterfaceAction extends ActionSupport {
 		dns3 = interfaceProperties.get(CFG_DNS3);
 		domain = interfaceProperties.get(CFG_DOMAIN);
 		String tmp = interfaceProperties.get(CFG_ONBOOT);
-		if (tmp != null && tmp.equals("no")) {
+		if (tmp != null && (NO.equals(tmp) || FALSE.equals(tmp))) {
 			onBoot = false;
 		} else {
 			onBoot = true;
@@ -951,6 +995,15 @@ public abstract class InterfaceAction extends ActionSupport {
 					networkList.add(0, wirelessEssid);
 				}
 			}
+			
+			try {
+				readWirelessRegDomain();
+			} catch (FileNotFoundException fnfe) {
+				/*
+				 * It's OK to ignore this. keys-<interface> might not exist.
+				 * We'll create it, when we save()
+				 */
+			}			
 		}
 	}	
 	
@@ -993,6 +1046,36 @@ public abstract class InterfaceAction extends ActionSupport {
 	/**
 	 * @throws FileNotFoundException
 	 * @throws IOException
+	 */
+	protected void readWirelessRegDomain() throws FileNotFoundException, IOException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("readWirelessRegDomain()");
+		}
+
+		File regDomainFile = new File(WIRELESS_REG_DOMAIN_FILE);
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(regDomainFile));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				line = line.trim();
+				if (line.startsWith(COUNTRY + Util.EQUALS)) {
+					wirelessRegDomain = line.substring(8);
+				}
+			}
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (Exception e) {}
+			}
+		}
+	}
+		
+	/**
+	 * @throws FileNotFoundException
+	 * @throws IOException
 	 * @throws InterruptedException
 	 */
 	protected void readKeysConfigProperties() 
@@ -1023,6 +1106,39 @@ public abstract class InterfaceAction extends ActionSupport {
 				} catch (Exception e) {}
 			}
 		}		
+	}
+	
+	/**
+	 * @return
+	 * @throws IOException
+	 */
+	protected File writeWirelessRegDomain(String countryCode) 
+			throws IOException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("writeWirelessRegDomain(countryCode=" + countryCode + ")");
+		}
+
+		BufferedWriter writer = null;
+		try {
+			File file = Util.createTempFile("regDomain" + "_", ".txt");
+			writer = new BufferedWriter(new FileWriter(file));
+			writer.write(Util.getModifiedComment());
+			if (countryCode != null && countryCode.trim().length() == 2) {
+				writer.write(COUNTRY + Util.EQUALS + countryCode + Util.LINE_SEP);
+			}
+			return file;
+		} finally {
+			if (writer != null) {
+				try {
+					writer.flush();
+				} catch (Exception e) {}
+				
+				try {
+					writer.close();
+				} catch (Exception e) {}
+			}
+		}
 	}
 	
 	/**
@@ -1153,6 +1269,26 @@ public abstract class InterfaceAction extends ActionSupport {
 		String[] cmdLineArgs = new String[] {
 				Commands.CMD_SUDO, Commands.SCRIPT_KEYS_UPDATE, 
 				tmpFile.getAbsolutePath(), getInterfaceName()
+		};
+		
+		return ExecuteProcess.executeCommand(cmdLineArgs);
+	}
+	
+	/**
+	 * @param tmpFile
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	protected int replaceRegDomainConfig(File tmpFile)
+			throws IOException, InterruptedException {
+		
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("replaceregDomainConfig(tmpFile=" + tmpFile + ")");
+		}
+
+		String[] cmdLineArgs = new String[] {
+				Commands.CMD_SUDO, Commands.SCRIPT_REG_DOMAIN_UPDATE, tmpFile.getAbsolutePath()
 		};
 		
 		return ExecuteProcess.executeCommand(cmdLineArgs);
